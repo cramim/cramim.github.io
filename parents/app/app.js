@@ -12,6 +12,7 @@
             // dataType:'json',
             // data:JSON.stringify(json_post_data),
             success: (response)=>{
+                $("#mm_test").val(response);
                 console.log(response);
             },
             error: (jqXHR, textStatus, errorThrown)=> {

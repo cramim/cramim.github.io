@@ -1,3 +1,10 @@
-h1{
+body{
     text-align: center;
+}
+
+#mm_test{
+    width: 90%;
+    height: 600px;
+    display: inline-block;  
+    margin:40px;  
 }
