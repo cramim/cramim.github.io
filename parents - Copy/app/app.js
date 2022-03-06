@@ -40,25 +40,17 @@
         $("#main_box").on("scroll", ()=>{
             var st = $("#main_box")[0].scrollTop;
             var hc = $("#main_box").hasClass("head_shrink");
-            if (st>120 && !hc) $("#main_box").addClass("head_shrink");
+            if (st>250 && !hc) $("#main_box").addClass("head_shrink");
             if (st<50 && hc) $("#main_box").removeClass("head_shrink");
-        });
-    },
-    init_buttons: ()=>{
-        $("#bt_home").click(()=>{
-            $("#main_box")[0].scrollTo({top: 0, behavior: 'smooth'});
         });
     },
     init: ()=>{
         app.init_scroll();
-        app.init_buttons();
         app.progress_bar.write($("#user_box_progress"));
         app.progress_bar.set_progress($("#user_box_progress"), 50);
 
-        $(".dv_activity_progress").each((i,el)=>{
-            app.progress_bar.write($(el));
-            app.progress_bar.set_progress($(el), Math.floor(Math.random() * 101));
-        });
+        app.progress_bar.write($("#dv_activity_progress_1"));
+        app.progress_bar.set_progress($("#dv_activity_progress_1"), 80);
         
         // app.progress_bar.set_progress($("#dv_progress_test"));
         $("#bt_test").click(app.get_sheet_data);
