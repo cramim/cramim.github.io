@@ -409,6 +409,7 @@ body{
     display: inline-block;
 }
 
+/*
 .filter_box>div:not(:first-child, :last-child){
     border-left: 2px gray solid;
     padding-left: 1.5em;
@@ -421,12 +422,33 @@ body{
     padding-right: 0.5em;
 }
 
+.filter_box_item:hover label{
+    color: blue;
+    transform: scale(1.1);
+}
+
 .filter_box_item label{
     cursor: pointer;
 }
 
 .filter_box>div:not(:first-child, :last-child){
     border-left: 2px gray solid;
+    cursor: pointer;
+} */
+
+.filter_box_item:hover{
+    box-shadow: 0 0 5px gray;
+}
+
+.filter_box_item{
+    border-radius: 5px;
+    background-color: white;
+    padding: 5px;
+    margin: 0 10px;
+    cursor: pointer;
+}
+
+.filter_box_item label{
     cursor: pointer;
 }
 

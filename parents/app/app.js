@@ -48,6 +48,10 @@
         $("#bt_home").click(()=>{
             $("#main_box")[0].scrollTo({top: 0, behavior: 'smooth'});
         });
+        $(".filter_box_item").click((ev)=>{
+            if (ev.target.tagName.toLowerCase() == "input") return;
+            $(ev.target).closest(".filter_box_item").find("input").click();
+        });
     },
     init: ()=>{
         app.init_scroll();
