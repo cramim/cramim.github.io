@@ -298,6 +298,7 @@ body{
 #activity_boxes_wrapper{
     text-align: center;
     padding-top: 1em;
+    background-image: url("../img/bg.jpg");
 }
 
 .activity_box{
