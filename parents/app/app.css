@@ -316,6 +316,12 @@ body{
     border-radius: 10px;
 }
 
+.activity_box:hover{
+    transform: scale(1.05);
+    transition: 200ms;
+    box-shadow: 0 0 15px grey;
+}
+
 .activity_box_title{
     color: #2f4f4f;
     font-weight: bold;
