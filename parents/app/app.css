@@ -36,6 +36,8 @@ body{
     grid-row-gap: 0px;
     position: absolute;
     inset: 0;
+    background-image: url(../img/bg.jpg);
+    background-attachment: fixed;
 }
 .parent>div{ overflow-y: auto; }
 
@@ -45,11 +47,12 @@ body{
 .div3 {
     box-shadow: 0 0 15px gray;
     z-index: 2;
+    background-color: white;
 }
 
-.div2 {
+/* .div2 {
     background-color: #f6f6f6;
-}
+} */
 
 
 #user_box_head_wrapper{
@@ -240,7 +243,8 @@ body{
 #header{
     position: relative;
     background-color: white;
-    border-bottom: 1px silver solid;
+    /* border-bottom: 1px silver solid; */
+    box-shadow: 0px 5px 6px #80808080;
     padding: 0 17.5em 1.4em 1em;
     padding-top: 1em;
     position: sticky;
@@ -261,6 +265,7 @@ body{
     width: 10em;
     border-radius: 10em;
     border: 1px silver solid;
+    box-shadow: 0px 5px 6px #80808080;
     transition: 0.2s;
 }
 
@@ -298,14 +303,13 @@ body{
 #activity_boxes_wrapper{
     text-align: center;
     padding-top: 1em;
-    background-image: url("../img/bg.jpg");
 }
 
 .activity_box{
     width: 20em;
     background-color: white;
-    box-shadow: 0 0 20px gray;
-    margin: 2em;
+    box-shadow: 0 0 10px grey;
+    margin: 1em;
     display: inline-block;
     padding: 10px;
     text-align: right;
@@ -399,6 +403,7 @@ body{
 #filter_box_wrapper{
     padding: 15px;
     border-bottom: 1px silver solid;
+    background-color: #f0ffffa8;
 }
 
 .filter_box{
@@ -455,7 +460,7 @@ body{
 
 .filter_box input[type="checkbox"]{
     transform: scale(1.5);
-    margin-right: 1em;
+    margin-left: 1em;
     cursor: pointer;
 }
 
