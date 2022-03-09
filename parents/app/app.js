@@ -90,6 +90,7 @@ var app = {
         });
     },
     filter:()=>{
+        // fliter
         $cat = $("#filter_box_cat input[type='checkbox']");
         $circle = $("#filter_box_circle input[type='checkbox']");
         $timing = $("#filter_box_timing input[type='checkbox']");
