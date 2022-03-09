@@ -11,6 +11,7 @@
     <script src="app/app.js"></script>
 </head>
 <body>
+	<div id="mask_div"></div>
     <div id="parent" class="parent">
         <div class="div2" id="main_box">
             <div id="header">
@@ -20,61 +21,62 @@
                 <div id="bt_home"></div>
             </div>
             <div id="filter_box_wrapper">
-                <div class="filter_box">
+                <div class="filter_box" id="filter_box_cat">
                     <div class="filter_box_title">קטגוריה:</div>
                     <div class="filter_box_item">
-                        <input type="checkbox" name="cb_filter_cat_1" id="cb_filter_cat_1">
+                        <input type="checkbox" name="cb_filter_cat_1" id="cb_filter_cat_1" filter_name="וועדות">
+                        <span>וועדות</span>
+                    </div>
+                    <div class="filter_box_item">
+                        <input type="checkbox" name="cb_filter_cat_1" id="cb_filter_cat_1" filter_name="העברת פעילות">
                         <span>העברת פעילות</span>
                     </div>
                     <div class="filter_box_item">
-                        <input type="checkbox" name="cb_filter_cat_2" id="cb_filter_cat_2">
+                        <input type="checkbox" name="cb_filter_cat_2" id="cb_filter_cat_2" filter_name="ארגון">
                         <span>ארגון</span>
                     </div>
                     <div class="filter_box_item">
-                        <input type="checkbox" name="cb_filter_cat_3" id="cb_filter_cat_3">
+                        <input type="checkbox" name="cb_filter_cat_3" id="cb_filter_cat_3" filter_name='סעפש"ים'
                         <span>סעפש"ים</span>
                     </div>
                     <div class="filter_box_item">
-                        <input type="checkbox" name="cb_filter_cat_4" id="cb_filter_cat_4">
+                        <input type="checkbox" name="cb_filter_cat_4" id="cb_filter_cat_4" filter_name="ליווי פעילות">
                         <span>ליווי פעילות</span>
                     </div>
                 </div>
-                <div class="filter_box">
+                <div class="filter_box" id="filter_box_circle">
                     <div class="filter_box_title">מעגל השפעה:</div>
                     <div class="filter_box_item">
-                        <input type="checkbox" name="cb_filter_circle_1" id="cb_filter_circle_1">
+                        <input type="checkbox" name="cb_filter_circle_1" id="cb_filter_circle_1" filter_name="כיתה">
                         <span>כיתה</span>
                     </div>
                     <div class="filter_box_item">
-                        <input type="checkbox" name="cb_filter_circle_2" id="cb_filter_circle_2">
+                        <input type="checkbox" name="cb_filter_circle_2" id="cb_filter_circle_2" filter_name="שכבה">
                         <span>שכבה</span>
                     </div>
                     <div class="filter_box_item">
-                        <input type="checkbox" name="cb_filter_circle_3" id="cb_filter_circle_3">
+                        <input type="checkbox" name="cb_filter_circle_3" id="cb_filter_circle_3" filter_name="בית ספר">
                         <span>בית ספר</span>
                     </div>
                 </div>
-                <div class="filter_box">
+                <div class="filter_box" id="filter_box_timing">
                     <div class="filter_box_title">תזמון:</div>
                     <div class="filter_box_item">
-                        <input type="checkbox" name="cb_filter_timing_1" id="cb_filter_timing_1">
+                        <input type="checkbox" name="cb_filter_timing_1" id="cb_filter_timing_1 filter_name="פעם בשבוע">
                         <span>פעם בשבוע</span>
                     </div>
                     <div class="filter_box_item">
-                        <input type="checkbox" name="cb_filter_timing_2" id="cb_filter_timing_2">
+                        <input type="checkbox" name="cb_filter_timing_2" id="cb_filter_timing_2" filter_name="חד פעמי אינטנסיבי">
                         <span>חד פעמי אינטנסיבי</span>
                     </div>
                     <div class="filter_box_item">
-                        <input type="checkbox" name="cb_filter_circle_3" id="cb_filter_circle_3">
+                        <input type="checkbox" name="cb_filter_circle_3" id="cb_filter_circle_3" filter_name="זמין למשימות קצרות">
                         <span>זמין למשימות קצרות</span>
                     </div>
                 </div>
             </div>
             <div id="activity_boxes_wrapper">
-                <!-- <div id="filter_box_wrapper">
-
-                </div> -->
-                <div class="activity_box">
+                <!--div class="activity_box">
                     <div class="activity_box_title">הרצאה חד פעמית</div>
                     <div class="activity_box_desc">הגעה לבית ספר ועזרה בפעילות, שתי פעילויות ברבעון, שעתיים, שני הורים לכיתה ועוד כל מיני תיאורים שונים שמסבירים</div>
                     <div class="activity_box_status"><table><tr>
@@ -86,150 +88,7 @@
                         <div id="dv_activity_progress_1" class="dv_activity_progress"></div>
                         <input class="bt_activity_add" type="button" value="הצטרף">
                     </div>
-                </div>
-                <div class="activity_box">
-                    <div class="activity_box_title">הדרכה בלמידת חוץ/טיולים</div>
-                    <div class="activity_box_desc">הגעה לבית ספר ועזרה בפעילות, שתי פעילויות ברבעון, שעתיים, שני הורים לכיתה ועוד כל מיני תיאורים שונים שמסבירים</div>
-                    <div class="activity_box_status"><table><tr>
-                        <td class="activity_box_status_value_title">שעות:</td><td class="activity_box_status_value">6</td>
-                        <td class="activity_box_status_joined_title">הצטרפו:</td><td class="activity_box_status_joined">12</td>
-                        <td class="activity_box_status_goal_title">מתוך:</td><td class="activity_box_status_goal">15</td>
-                    </tr></table></div>
-                    <div class="activity_box_toolbox">
-                        <div id="dv_activity_progress_2" class="dv_activity_progress"></div>
-                        <input class="bt_activity_add" type="button" value="הצטרף">
-                    </div>
-                </div>
-                <div class="activity_box">
-                    <div class="activity_box_title">ליווי למידה בכיתה</div>
-                    <div class="activity_box_desc">הגעה לבית ספר ועזרה בפעילות, שתי פעילויות ברבעון, שעתיים, שני הורים לכיתה ועוד כל מיני תיאורים שונים שמסבירים</div>
-                    <div class="activity_box_status"><table><tr>
-                        <td class="activity_box_status_value_title">שעות:</td><td class="activity_box_status_value">6</td>
-                        <td class="activity_box_status_joined_title">הצטרפו:</td><td class="activity_box_status_joined">12</td>
-                        <td class="activity_box_status_goal_title">מתוך:</td><td class="activity_box_status_goal">15</td>
-                    </tr></table></div>
-                    <div class="activity_box_toolbox">
-                        <div id="dv_activity_progress_3" class="dv_activity_progress"></div>
-                        <input class="bt_activity_add" type="button" value="הצטרף">
-                    </div>
-                </div>
-                <div class="activity_box">
-                    <div class="activity_box_title">אחריות על חדר קהילה</div>
-                    <div class="activity_box_desc">הגעה לבית ספר ועזרה בפעילות, שתי פעילויות ברבעון, שעתיים, שני הורים לכיתה ועוד כל מיני תיאורים שונים שמסבירים</div>
-                    <div class="activity_box_status"><table><tr>
-                        <td class="activity_box_status_value_title">שעות:</td><td class="activity_box_status_value">6</td>
-                        <td class="activity_box_status_joined_title">הצטרפו:</td><td class="activity_box_status_joined">12</td>
-                        <td class="activity_box_status_goal_title">מתוך:</td><td class="activity_box_status_goal">15</td>
-                    </tr></table></div>
-                    <div class="activity_box_toolbox">
-                        <div id="dv_activity_progress_4" class="dv_activity_progress"></div>
-                        <input class="bt_activity_add" type="button" value="הצטרף">
-                    </div>
-                </div>
-                <div class="activity_box">
-                    <div class="activity_box_title">ניהול מחסן קהילה</div>
-                    <div class="activity_box_desc">הגעה לבית ספר ועזרה בפעילות, שתי פעילויות ברבעון, שעתיים, שני הורים לכיתה ועוד כל מיני תיאורים שונים שמסבירים</div>
-                    <div class="activity_box_status"><table><tr>
-                        <td class="activity_box_status_value_title">שעות:</td><td class="activity_box_status_value">6</td>
-                        <td class="activity_box_status_joined_title">הצטרפו:</td><td class="activity_box_status_joined">12</td>
-                        <td class="activity_box_status_goal_title">מתוך:</td><td class="activity_box_status_goal">15</td>
-                    </tr></table></div>
-                    <div class="activity_box_toolbox">
-                        <div id="dv_activity_progress_5" class="dv_activity_progress"></div>
-                        <input class="bt_activity_add" type="button" value="הצטרף">
-                    </div>
-                </div>
-                <div class="activity_box">
-                    <div class="activity_box_title">פעילות כלשהי</div>
-                    <div class="activity_box_desc">הגעה לבית ספר ועזרה בפעילות, שתי פעילויות ברבעון, שעתיים, שני הורים לכיתה ועוד כל מיני תיאורים שונים שמסבירים</div>
-                    <div class="activity_box_status"><table><tr>
-                        <td class="activity_box_status_value_title">שעות:</td><td class="activity_box_status_value">6</td>
-                        <td class="activity_box_status_joined_title">הצטרפו:</td><td class="activity_box_status_joined">12</td>
-                        <td class="activity_box_status_goal_title">מתוך:</td><td class="activity_box_status_goal">15</td>
-                    </tr></table></div>
-                    <div class="activity_box_toolbox">
-                        <div id="dv_activity_progress_6" class="dv_activity_progress"></div>
-                        <input class="bt_activity_add" type="button" value="הצטרף">
-                    </div>
-                </div>
-                <div class="activity_box">
-                    <div class="activity_box_title">פעילות כלשהי</div>
-                    <div class="activity_box_desc">הגעה לבית ספר ועזרה בפעילות, שתי פעילויות ברבעון, שעתיים, שני הורים לכיתה ועוד כל מיני תיאורים שונים שמסבירים</div>
-                    <div class="activity_box_status"><table><tr>
-                        <td class="activity_box_status_value_title">שעות:</td><td class="activity_box_status_value">6</td>
-                        <td class="activity_box_status_joined_title">הצטרפו:</td><td class="activity_box_status_joined">12</td>
-                        <td class="activity_box_status_goal_title">מתוך:</td><td class="activity_box_status_goal">15</td>
-                    </tr></table></div>
-                    <div class="activity_box_toolbox">
-                        <div id="dv_activity_progress_7" class="dv_activity_progress"></div>
-                        <input class="bt_activity_add" type="button" value="הצטרף">
-                    </div>
-                </div>
-                <div class="activity_box">
-                    <div class="activity_box_title">פעילות כלשהי</div>
-                    <div class="activity_box_desc">הגעה לבית ספר ועזרה בפעילות, שתי פעילויות ברבעון, שעתיים, שני הורים לכיתה ועוד כל מיני תיאורים שונים שמסבירים</div>
-                    <div class="activity_box_status"><table><tr>
-                        <td class="activity_box_status_value_title">שעות:</td><td class="activity_box_status_value">6</td>
-                        <td class="activity_box_status_joined_title">הצטרפו:</td><td class="activity_box_status_joined">12</td>
-                        <td class="activity_box_status_goal_title">מתוך:</td><td class="activity_box_status_goal">15</td>
-                    </tr></table></div>
-                    <div class="activity_box_toolbox">
-                        <div id="dv_activity_progress_8" class="dv_activity_progress"></div>
-                        <input class="bt_activity_add" type="button" value="הצטרף">
-                    </div>
-                </div>
-                <div class="activity_box">
-                    <div class="activity_box_title">פעילות כלשהי</div>
-                    <div class="activity_box_desc">הגעה לבית ספר ועזרה בפעילות, שתי פעילויות ברבעון, שעתיים, שני הורים לכיתה ועוד כל מיני תיאורים שונים שמסבירים</div>
-                    <div class="activity_box_status"><table><tr>
-                        <td class="activity_box_status_value_title">שעות:</td><td class="activity_box_status_value">6</td>
-                        <td class="activity_box_status_joined_title">הצטרפו:</td><td class="activity_box_status_joined">12</td>
-                        <td class="activity_box_status_goal_title">מתוך:</td><td class="activity_box_status_goal">15</td>
-                    </tr></table></div>
-                    <div class="activity_box_toolbox">
-                        <div id="dv_activity_progress_9" class="dv_activity_progress"></div>
-                        <input class="bt_activity_add" type="button" value="הצטרף">
-                    </div>
-                </div>
-                <div class="activity_box">
-                    <div class="activity_box_title">פעילות כלשהי</div>
-                    <div class="activity_box_desc">הגעה לבית ספר ועזרה בפעילות, שתי פעילויות ברבעון, שעתיים, שני הורים לכיתה ועוד כל מיני תיאורים שונים שמסבירים</div>
-                    <div class="activity_box_status"><table><tr>
-                        <td class="activity_box_status_value_title">שעות:</td><td class="activity_box_status_value">6</td>
-                        <td class="activity_box_status_joined_title">הצטרפו:</td><td class="activity_box_status_joined">12</td>
-                        <td class="activity_box_status_goal_title">מתוך:</td><td class="activity_box_status_goal">15</td>
-                    </tr></table></div>
-                    <div class="activity_box_toolbox">
-                        <div id="dv_activity_progress_10" class="dv_activity_progress"></div>
-                        <input class="bt_activity_add" type="button" value="הצטרף">
-                    </div>
-                </div>
-                <div class="activity_box">
-                    <div class="activity_box_title">פעילות כלשהי</div>
-                    <div class="activity_box_desc">הגעה לבית ספר ועזרה בפעילות, שתי פעילויות ברבעון, שעתיים, שני הורים לכיתה ועוד כל מיני תיאורים שונים שמסבירים</div>
-                    <div class="activity_box_status"><table><tr>
-                        <td class="activity_box_status_value_title">שעות:</td><td class="activity_box_status_value">6</td>
-                        <td class="activity_box_status_joined_title">הצטרפו:</td><td class="activity_box_status_joined">12</td>
-                        <td class="activity_box_status_goal_title">מתוך:</td><td class="activity_box_status_goal">15</td>
-                    </tr></table></div>
-                    <div class="activity_box_toolbox">
-                        <div id="dv_activity_progress_11" class="dv_activity_progress"></div>
-                        <input class="bt_activity_add" type="button" value="הצטרף">
-                    </div>
-                </div>
-                <div class="activity_box">
-                    <div class="activity_box_title">פעילות כלשהי</div>
-                    <div class="activity_box_desc">הגעה לבית ספר ועזרה בפעילות, שתי פעילויות ברבעון, שעתיים, שני הורים לכיתה ועוד כל מיני תיאורים שונים שמסבירים</div>
-                    <div class="activity_box_status"><table><tr>
-                        <td class="activity_box_status_value_title">שעות:</td><td class="activity_box_status_value">6</td>
-                        <td class="activity_box_status_joined_title">הצטרפו:</td><td class="activity_box_status_joined">12</td>
-                        <td class="activity_box_status_goal_title">מתוך:</td><td class="activity_box_status_goal">15</td>
-                    </tr></table></div>
-                    <div class="activity_box_toolbox">
-                        <div id="dv_activity_progress_12" class="dv_activity_progress"></div>
-                        <input class="bt_activity_add" type="button" value="הצטרף">
-                    </div>
-                </div>
+                </div-->
             </div>
         </div>
         <div id="user_box" class="div3">

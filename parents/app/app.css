@@ -4,6 +4,18 @@ body{
     font-family: Verdana, Arial, Tahoma, Serif;    
 }
 
+#mask_div{
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    display:none;
+    background-image: url(../img/loading.gif); 
+    background-repeat: no-repeat; 
+    background-position: center;
+    opacity: 0.5;
+    background-color: white;
+}
+
 /* ===== Scrollbar CSS ===== */
   /* Firefox */
   * {
