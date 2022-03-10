@@ -8,6 +8,7 @@
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
     <title>מעורבות הורים למען כרמים</title>
+    <script src="lib/sweetalert2/sweetalert2.all.js"></script>
     <link rel="icon" type="image/png" href="img/cramim96.png" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link rel="stylesheet" href="app/app.css">
@@ -104,7 +105,12 @@
                 <div id="user_box_progress_desc">6 מתוך 12 שעות</div>
             </div>
             <div id="user_box_items">
-                <div class="user_box_item">
+                <div id="user_box_help">
+                    <div>באזור זה יפורטו הפעילויות אליהן הצטרפתם.</div>
+                    <div>בחרו אחת מהפעילויות שמימין ולחצו על הכפתור "הצטרפ/י".</div>
+                    <div>:)</div>
+                </div>
+                <!-- <div class="user_box_item">
                     <div class="user_box_item_toolbox">
                         <div class="bt_item_delete"></div>
                         <div class="bt_item_info"></div>
@@ -113,97 +119,7 @@
                         <tr><td>פעילות:</td><td class="user_box_item_title">הדרכה בלמידת חוץ</td></tr>
                         <tr><td>שעות:</td><td class="user_box_item_value">5</td></tr>
                     </table>
-                </div>
-                <div class="user_box_item">
-                    <div class="user_box_item_toolbox">
-                        <div class="bt_item_delete"></div>
-                        <div class="bt_item_info"></div>
-                    </div>
-                    <table class="tb_user_box_item">
-                        <tr><td>פעילות:</td><td class="user_box_item_title">הדרכה בלמידת חוץ</td></tr>
-                        <tr><td>שעות:</td><td class="user_box_item_value">5</td></tr>
-                    </table>
-                </div>
-                <div class="user_box_item">
-                    <div class="user_box_item_toolbox">
-                        <div class="bt_item_delete"></div>
-                        <div class="bt_item_info"></div>
-                    </div>
-                    <table class="tb_user_box_item">
-                        <tr><td>פעילות:</td><td class="user_box_item_title">הדרכה בלמידת חוץ</td></tr>
-                        <tr><td>שעות:</td><td class="user_box_item_value">5</td></tr>
-                    </table>
-                </div>
-                <div class="user_box_item">
-                    <div class="user_box_item_toolbox">
-                        <div class="bt_item_delete"></div>
-                        <div class="bt_item_info"></div>
-                    </div>
-                    <table class="tb_user_box_item">
-                        <tr><td>פעילות:</td><td class="user_box_item_title">הדרכה בלמידת חוץ</td></tr>
-                        <tr><td>שעות:</td><td class="user_box_item_value">5</td></tr>
-                    </table>
-                </div>
-                <div class="user_box_item">
-                    <div class="user_box_item_toolbox">
-                        <div class="bt_item_delete"></div>
-                        <div class="bt_item_info"></div>
-                    </div>
-                    <table class="tb_user_box_item">
-                        <tr><td>פעילות:</td><td class="user_box_item_title">הדרכה בלמידת חוץ</td></tr>
-                        <tr><td>שעות:</td><td class="user_box_item_value">5</td></tr>
-                    </table>
-                </div>
-                <div class="user_box_item">
-                    <div class="user_box_item_toolbox">
-                        <div class="bt_item_delete"></div>
-                        <div class="bt_item_info"></div>
-                    </div>
-                    <table class="tb_user_box_item">
-                        <tr><td>פעילות:</td><td class="user_box_item_title">הדרכה בלמידת חוץ</td></tr>
-                        <tr><td>שעות:</td><td class="user_box_item_value">5</td></tr>
-                    </table>
-                </div>
-                <div class="user_box_item">
-                    <div class="user_box_item_toolbox">
-                        <div class="bt_item_delete"></div>
-                        <div class="bt_item_info"></div>
-                    </div>
-                    <table class="tb_user_box_item">
-                        <tr><td>פעילות:</td><td class="user_box_item_title">הדרכה בלמידת חוץ</td></tr>
-                        <tr><td>שעות:</td><td class="user_box_item_value">5</td></tr>
-                    </table>
-                </div>
-                <div class="user_box_item">
-                    <div class="user_box_item_toolbox">
-                        <div class="bt_item_delete"></div>
-                        <div class="bt_item_info"></div>
-                    </div>
-                    <table class="tb_user_box_item">
-                        <tr><td>פעילות:</td><td class="user_box_item_title">הדרכה בלמידת חוץ</td></tr>
-                        <tr><td>שעות:</td><td class="user_box_item_value">5</td></tr>
-                    </table>
-                </div>
-                <div class="user_box_item">
-                    <div class="user_box_item_toolbox">
-                        <div class="bt_item_delete"></div>
-                        <div class="bt_item_info"></div>
-                    </div>
-                    <table class="tb_user_box_item">
-                        <tr><td>פעילות:</td><td class="user_box_item_title">הדרכה בלמידת חוץ</td></tr>
-                        <tr><td>שעות:</td><td class="user_box_item_value">5</td></tr>
-                    </table>
-                </div>
-                <div class="user_box_item">
-                    <div class="user_box_item_toolbox">
-                        <div class="bt_item_delete"></div>
-                        <div class="bt_item_info"></div>
-                    </div>
-                    <table class="tb_user_box_item">
-                        <tr><td>פעילות:</td><td class="user_box_item_title">הדרכה בלמידת חוץ</td></tr>
-                        <tr><td>שעות:</td><td class="user_box_item_value">5</td></tr>
-                    </table>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>    
