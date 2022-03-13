@@ -15,13 +15,30 @@
     <script src="app/app.js"></script>
 </head>
 <body>
+    <div id="dv_login">
+        <table>
+            <tr><td>
+                <div id="dv_login_wait"></div>
+                <div id="dv_login_logo"></div>
+            </td></tr>
+            <tr><td id="dv_login_title">
+                מעורבות הורים למען כרמים</td></tr>
+            <tr><td>
+                <input id="eb_login" type="text" placeholder="כתובת אימייל או מס' טלפון">
+            </td></tr>
+            <tr><td id="td_login_bottom">
+                <input id="bt_login" type="button" value="כניסה">
+                <div id="ani_login" class="lds-facebook"><div></div><div></div><div></div></div>
+            </td></tr>
+        </table>
+    </div>
 	<div id="mask_div"></div>
     <div id="parent" class="parent">
         <div class="div2" id="main_box">
             <div id="header">
                 <div id="header_logo"></div>
                 <div id="header_title_1">מעורבות הורים למען כרמים</div>
-                <div id="header_title_2">לוח פעילויות - שנה"ל 2022</div>
+                <div id="header_title_2">לוח פעילויות - רישום לרבעון 4 של שנת תשפ"ב</div>
                 <div id="bt_home"></div>
             </div>
             <div id="filter_box_wrapper">
@@ -98,18 +115,23 @@
         <div id="user_box" class="div3">
             <div id="user_box_head_wrapper">
                 <div id="user_box_head">
-                    <div id="user_box_head_name">משפחת קופפר</div>
-                    <div id="user_box_head_id">menikupfer@gmail.com</div>
+                    <div id="user_box_head_name"></div>
+                    <div id="user_box_head_id"></div>
                 </div>
                 <div id="user_box_progress"></div>
-                <div id="user_box_progress_desc">6 מתוך 12 שעות</div>
+                <div id="user_box_progress_desc"><span id="user_hours">0</span> מתוך <span id="hours_goal">0</span> שעות נדרשות</div>
+                <div id="user_toolbox">
+                    <input id="bt_user_save" type="button" value="שמירה">
+                    <input id="bt_user_abort" type="button" value="ביטול">
+                    <div id="bt_user_exit" title="יציאה"></div>
+                </div>
+            </div>
+            <div id="user_box_help">
+                <div>באזור זה יפורטו הפעילויות אליהן הצטרפתם.</div>
+                <div>בחרו אחת מהפעילויות שמימין ולחצו על הכפתור "הצטרפ/י".</div>
+                <div>:)</div>
             </div>
             <div id="user_box_items">
-                <div id="user_box_help">
-                    <div>באזור זה יפורטו הפעילויות אליהן הצטרפתם.</div>
-                    <div>בחרו אחת מהפעילויות שמימין ולחצו על הכפתור "הצטרפ/י".</div>
-                    <div>:)</div>
-                </div>
                 <!-- <div class="user_box_item">
                     <div class="user_box_item_toolbox">
                         <div class="bt_item_delete"></div>

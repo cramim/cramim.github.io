@@ -1,13 +1,24 @@
+html{
+    font-size: clamp(0.85em, 0.85vw, 4em);
+}
+
 body{
     text-align: right;
     direction: rtl;
-    font-family: Verdana, Arial, Tahoma, Serif;    
+    /* font-family: Verdana, Arial, Tahoma, Serif;     */
+
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+    /* font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; */
+
+    font-family: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
+  
 }
 
 #mask_div{
     position: fixed;
     inset: 0;
-    z-index: 999;
+    z-index: 1000;
     display:none;
     background-image: url(../img/loading.gif); 
     background-repeat: no-repeat; 
@@ -26,6 +37,7 @@ body{
   /* Chrome, Edge, and Safari */
   *::-webkit-scrollbar {
     width: 2px;
+    height: 4px;
   }
 
   *::-webkit-scrollbar-track {
@@ -35,7 +47,7 @@ body{
   *::-webkit-scrollbar-thumb {
     /* background-color: #2f4f4f; */
     background-color: gray;
-    border-radius: 10px;
+    border-radius: 2px;
     /* border: 1px solid #ffffff; */
   }
 
@@ -197,6 +209,7 @@ body{
     background-image: url(../img/check.png);
     background-repeat: no-repeat;
     background-position: right 10px top 10px;
+    display: none;
 }
 
 .user_box_item>div{
@@ -338,7 +351,7 @@ body{
     color: #2f4f4f;
     font-weight: bold;
     font-size: 1.5em;
-    padding: 8px;
+    padding: 0.5em;
     border-bottom: 1px gray dotted;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -346,18 +359,18 @@ body{
 }
 
 .activity_box_desc{
-    height: 4em;
-    padding: 8px;
+    height: 4.1em;
+    padding: 0.5em;
     overflow-y: auto;
 }
 
 .activity_box_value{
-    padding: 0 8px 8px 8px;
+    padding: 0 0.5em 0.5em 0.5em;
     border-bottom: 1px gray dotted;
 }
 
 .activity_box_status{
-    padding: 0 8px 8px 8px;
+    padding: 0 0.5em 0.5em 0.5em;
 }
 
 .activity_box_status_value{
@@ -420,8 +433,9 @@ body{
 
 #filter_box_wrapper{
     padding: 15px;
-    border-bottom: 1px silver solid;
-    background-color: #f0ffffa8;
+    /* border-bottom: 1px silver solid; */
+    background-color: #1b74e46b;
+    overflow: auto;
 }
 
 .filter_box{
@@ -435,11 +449,13 @@ body{
 
 .filter_box_item:hover{
     box-shadow: 0 0 5px gray;
+    border:1px #1b74e4 solid;
 }
 
 .filter_box_item{
+    border:1px #ffffff00 solid;
     border-radius: 5px;
-    background-color: white;
+    /* background-color: white; */
     padding: 5px;
     margin: 0 10px;
     cursor: pointer;
@@ -489,7 +505,7 @@ body{
 .swal2-hidden_buttons button{display: none;}
 .swal2-popup .swal2-title{margin:4px;}
 .assign_dlg_initial .swal2-validation-message::before{background-color: yellow; color: black;border: 1px #80808080 solid;}
-
+.swal2-popup .swal2-content {font-weight: 500};
 .error_code{
     background-color: #f17475;
     font-size: 14px;
@@ -524,11 +540,173 @@ body{
     display: none;
 }
 
-.activity_box.already_signed .bt_already_signed{
+.activity_box.already_signed .bt_already_signed{display: block;}
+.activity_box.already_signed .bt_activity_add{ display: none;}
+.activity_box.already_signed_pending .bt_already_signed{
     display: block;
+    background-image: url(../img/check-pending.png);
+}
+.activity_box.already_signed_pending .bt_activity_add{ display: none;}
+
+#dv_login {
+    inset: 0;
+    position: absolute;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    text-align: center;
+    background-image: url(../img/bg_login.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 
-.activity_box.already_signed .bt_activity_add{
+#dv_login table {
+    padding: 2rem;
+    background-color: #ffffffa6;
+    border-radius: 4rem;
+}
+
+#dv_login table td{
+    position: relative;
+}
+
+#eb_login {
+    font-size: 2rem;
+    direction: ltr;
+    text-align: left;
+    padding: 8px;
+    border-radius: 1rem;
+    border: 2px gray solid;
+    box-shadow: 2px 2px 2px white;
+}
+
+#dv_login_logo {
+    background-image: url(../img/logo.png);
+    height: 12rem;
+    width: 12rem;
+    background-repeat: no-repeat;
+    background-size: contain;
+    border-radius: 10rem;
+    background-position: center;
+    display: inline-block;
+    box-shadow: 0 8px 11px grey;
+    position: absolute;
+    margin: auto;
+    top: -10rem;
+    right: 0;
+    left: 0;
+}
+
+#dv_login_title {
+    font-size: 2.5rem;
+    padding: 3rem 1rem;
+    color: #2f4f4f;
+    text-shadow: 2px 2px 2px white;
+}
+
+#bt_login {
+    font-size: 1.5rem;
+    border-radius: 12px;
+    background-color: #2f4f4f;
+    color: white;
+    padding: 1rem 2.5rem;
+    cursor: pointer;
+    border: 1px white solid;
+    box-shadow: 0px 0px 20px white;
+    display: inline-block;
+    margin-top: 3rem;
+}
+
+#td_login_bottom{
+    height: 8rem;
+}
+
+.dv_login_loading #bt_login{
     display: none;
 }
 
+.dv_login_loading #td_login_bottom{
+    background-image: url(../img/loading_2.gif);
+    background-repeat: no-repeat;
+    background-position: center 1em;
+    background-size: 10em;
+}
+
+
+::-webkit-input-placeholder { /* Edge */
+color: blue;
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+color: red;
+}
+
+::placeholder {
+    color: #2f4f4f;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-weight: 100;
+    font-size: 1.6rem;
+    text-align: center;
+}
+
+#user_toolbox{
+    background-color: #f0f0f0;
+    text-align: center;
+}
+
+#user_toolbox input[type="button"] {
+    /* background-color:#a0a0a0; */
+    border:1px #c0c0c0 solid;
+    color: #d0d0d0;
+    margin: 0.5rem;
+    border-radius: 5px;
+    font-size: 1.3rem;
+    padding: 0.3rem;
+    min-width: 6rem;
+}
+
+#user_toolbox.user_toolbox_enabled input[type="button"] {
+    border: white;
+    color: white;
+    cursor: pointer;
+}
+
+.user_toolbox_enabled #bt_user_abort {
+    background-color:#dd3333;
+}
+
+.user_toolbox_enabled #bt_user_abort:hover {
+    background-color:darkred;
+}
+
+.user_toolbox_enabled #bt_user_save {
+    background-color:#06b12e;
+}
+
+.user_toolbox_enabled #bt_user_save:hover {
+    background-color:darkgreen;
+}
+
+#bt_user_exit {
+    width: 32px;
+    height: 32px;
+    background-image: url(../img/exit.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    display: inline-block;
+    margin: 0;
+    vertical-align: middle;
+    border-radius: 32px;
+}
+
+#bt_user_exit:hover{
+    box-shadow: 0 0 8px gray;
+}
+
+.user_box_item.user_box_item_pending {
+    background-image: url(../img/check-pending.png);
+    display: none;
+}
