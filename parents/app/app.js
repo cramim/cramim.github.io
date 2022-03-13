@@ -41,7 +41,7 @@ var app = {
         app.pop_err(`תקלה בביצוע הפעולה<div class="error_code">${s_stack}}<div><a href="${mail}" target="_blank">Send</a></div></div>`, true);
     },
     pop_srv_err:(srv_err)=>{
-        const msg = `message from server:\ncode:${srv_err.code}\nmessage:${srv_err.desc}`;
+        const msg = `message from server:\ncode: ${srv_err.code}\nmessage: ${srv_err.desc}`;
         const mtml_msg = js.r(msg, "\n", "<br>");
         var mail = `https://mail.google.com/mail/?view=cm&fs=1&body=${encodeURIComponent("An error has occurred at " + new Date() + "\n" + msg)}&to=cramim.community@gmail.com`;
         app.pop_err(`תקלה בביצוע הפעולה<div class="error_code">${mtml_msg}<div><a href="${mail}" target="_blank">Send</a></div></div>`, true);
