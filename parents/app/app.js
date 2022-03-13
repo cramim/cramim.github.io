@@ -470,13 +470,19 @@ var app = {
     init: ()=>{
         console.log("app.init")
         app.init_mobile();
-        app.init_scroll();
-        app.init_buttons();
-        app.init_user();
-        // app.init_demo();
-        if (app.dat.user) {
+        if (app.is_mobile) {
             $("#dv_login").hide();
-            app.login(app.dat.user.uid);
+            $("#parent").hide();
+            $("#dv_mobile").show().css("display", "flex");
+        } else {
+            app.init_scroll();
+            app.init_buttons();
+            app.init_user();
+            // app.init_demo();
+            if (app.dat.user) {
+                $("#dv_login").hide();
+                app.login(app.dat.user.uid);
+            }
         }
     }
 }

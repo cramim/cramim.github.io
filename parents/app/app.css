@@ -710,3 +710,13 @@ color: red;
     background-image: url(../img/check-pending.png);
     display: none;
 }
+
+#dv_mobile{
+    position: absolute;
+    inset: 0;
+    /* display: flex; */
+    align-items: center;
+    justify-content: center;
+    font-size: 3vw;
+    display: none;
+}
