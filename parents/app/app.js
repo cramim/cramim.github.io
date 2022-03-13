@@ -470,6 +470,7 @@ var app = {
     init: ()=>{
         console.log("app.init")
         app.init_mobile();
+        // app.is_mobile = true;
         if (app.is_mobile) {
             $("#dv_login").hide();
             $("#parent").hide();
