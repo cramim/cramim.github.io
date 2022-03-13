@@ -261,6 +261,7 @@ var app = {
             $("#eb_login").val("");
             $("#dv_login").fadeIn(600);
         };
+        swal.ok = false;
         if (!app.changed()) do_logout();
         else swal({
             title: 'יציאה',
@@ -353,6 +354,7 @@ var app = {
             app.clear();
             app.rebuild(app.dat.server_load_response);
         };
+        swal.ok = false;
         swal({
             title: 'ביטול שינויים',
             html: 'לאבד את כל השינויים ולהתחיל מחדש?',
