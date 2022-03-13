@@ -448,7 +448,7 @@ var app = {
         });
         $("#filter_box_wrapper input[type='checkbox']").change(app.filter);
         window.onbeforeunload = function(){
-            if (app.changed())  return 'אזהרה! השינויים לא נשמרו.';
+            if (app.changed() && $("#dv_login").is(":hidden"))  return 'אזהרה! השינויים לא נשמרו.';
         };
     },
     init_mobile: ()=>{
