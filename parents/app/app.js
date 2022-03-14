@@ -147,8 +147,9 @@ var app = {
         });
         var html = "";
         $.each(app.dat.activity_list, (i, item)=>{
+            var already_full = (item.mambers_maximum > 0) && (item.signedup >= item.mambers_maximum);
             html +=
-                `<div class="activity_box" activity_id="${item.id}" category="${item.category||''}" circle="${item.circle||''}" timing="${item.timing||''}">` + 
+                `<div class="activity_box ${(already_full)?'already_full':''}" activity_id="${item.id}" category="${item.category||''}" circle="${item.circle||''}" timing="${item.timing||''}">` + 
                     `<div class="activity_box_title">${item.name||'&nbsp'}</div>` +
                     `<div class="activity_box_desc">${item.description||'&nbsp'}</div>` +
                     `<div class="activity_box_status"><table><tr>` +
@@ -160,6 +161,7 @@ var app = {
                         `<div id="dv_activity_progress_${item.id}" progress="${(item.members_goal)?100*(item.signedup||0)/item.members_goal:'&nbsp'}" class="dv_activity_progress"></div>` +
                         `<input class="bt_activity_add" type="button" value="הצטרפ/י">` +
                         `<div class="bt_already_signed"></div>` +
+                        `<div class="bt_already_full"></div>` +
                     `</div>`+
                 `</div>`;
         });

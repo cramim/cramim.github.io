@@ -540,13 +540,32 @@ body{
     display: none;
 }
 
+.bt_already_full {
+    background-image: url(../img/ico_full.png);
+    background-repeat: no-repeat;
+    width: 74px;
+    height: 40px;
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    display: none;
+    background-size: contain;
+}
+
+.activity_box.already_full .bt_already_full{display: block;}
+.activity_box.already_signed .bt_already_full{display: none;}
+
 .activity_box.already_signed .bt_already_signed{display: block;}
-.activity_box.already_signed .bt_activity_add{ display: none;}
 .activity_box.already_signed_pending .bt_already_signed{
     display: block;
     background-image: url(../img/check-pending.png);
 }
-.activity_box.already_signed_pending .bt_activity_add{ display: none;}
+.activity_box.already_signed .bt_activity_add,
+.activity_box.already_signed_pending .bt_activity_add,
+.activity_box.already_full .bt_activity_add
+{
+    display: none;
+}
 
 #dv_login {
     inset: 0;
