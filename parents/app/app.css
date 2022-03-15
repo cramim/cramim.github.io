@@ -739,6 +739,7 @@ body{
     align-items: center;
     justify-content: center;
     text-align: center;
+    background-color: #efefef;
 }
 
 #dv_screen_message>div{
@@ -747,6 +748,8 @@ body{
 
 #dv_screen_message_txt{
     font-size: 5vw;
+    font-weight: 200;
+    color: #606060;
 }
 
 #dv_screen_message_logo{

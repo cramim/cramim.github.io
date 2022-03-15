@@ -79,13 +79,13 @@ var app = {
                 error: (jqXHR, textStatus, errorThrown)=> {
                     app.please_wait(false);
                     console.error("app.get.error", `content_id="${content_id}"`, jqXHR, textStatus, errorThrown);
-                    if (on_failure) on_failure({code:-1, desc:"app.get connection error"});
+                    if (on_connect_error) on_connect_error({code:-1, desc:"app.get connection error"});
                 }
             });
         } catch (error) {
             app.please_wait(false);
             console.error("app.get.catch", `act_id="${content_id}"`, error);
-            if (on_failure) on_failure({code:-2, desc:"client side error"});
+            if (on_failure) on_js_error({code:-2, desc:"client side error"});
         }
     },
     post: (postdata, callback)=>{
@@ -113,15 +113,15 @@ var app = {
                 error: (jqXHR, textStatus, errorThrown)=> {
                     please_wait(false);
                     console.error("app.post.error", `act_id="${postdata.act_id}"`, jqXHR, textStatus, errorThrown);
-                    app.pop_err((errorThrown && errorThrown != '')?errorThrown:"בעיית תקשורת" + ": " + postdata.act_id||"unknown act");
-                    if (callback?.on_failure) callback.on_failure({code:-1, desc:"app.post connection error"});
+                    if (callback?.on_connect_error) callback.on_connect_error({code:-1, desc:"app.post connection error"});
+                    else app.pop_err((errorThrown && errorThrown != '')?errorThrown:"בעיית תקשורת" + ": " + postdata.act_id||"unknown act");
                 }
             });
         } catch(error) {
             please_wait(false);
             console.error("app.post.catch", `act_id="${postdata.act_id}"`, error);
             app.pop_js_err(error);
-            if (callback?.on_failure) callback.on_failure({code:-2, desc:"client side error"});
+            if (callback?.on_js_error) callback.on_js_error({code:-2, desc:"client side error"});
         }
     },
     build_activity_list:(response_activity_list)=>{
@@ -275,7 +275,7 @@ var app = {
             swal.ok = true;
         });
     },
-    login:(uid)=>{
+    login:(uid, on_connect_error)=>{
         app.clear();
         uid = uid || $("#eb_login").val().trim();
         if (uid == "") return;
@@ -292,7 +292,8 @@ var app = {
                 if (error.code == 4) {
                     app.pop_err("לא מצאנו משפחה לפי המידע שהוקלד");
                 } else app.pop_srv_err(error);
-            }
+            },
+            on_connect_error: on_connect_error
         });
     },
     signup: ($activity_box)=>{
@@ -489,7 +490,7 @@ var app = {
             app.init_user();
             // app.init_demo();
             if (app.dat.user) {
-                app.login(app.dat.user.uid);
+                app.login(app.dat.user.uid, ()=>{app.show_screen_message("אין תקשורת עם השרת :(")});
             } else {
                 $("#dv_login").fadeIn();
             }
