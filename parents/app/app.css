@@ -12,7 +12,7 @@ body{
     /* font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; */
 
     font-family: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
-  
+    display: none;
 }
 
 #mask_div{
@@ -732,12 +732,31 @@ body{
     display: none;
 }
 
-#dv_mobile{
+#dv_screen_message{
     position: absolute;
     inset: 0;
-    /* display: flex; */
+    display: flex;
     align-items: center;
     justify-content: center;
+    text-align: center;
+}
+
+#dv_screen_message>div{
+    padding-bottom: 10vh;
+}
+
+#dv_screen_message_txt{
     font-size: 5vw;
-    display: none;
+}
+
+#dv_screen_message_logo{
+    background-image: url(../img/logo.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    height: 20vw;
+    width: 20vw;
+    border-radius: 20vw;
+    border: 1px gray solid;
+    display: inline-block;
 }

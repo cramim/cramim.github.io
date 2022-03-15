@@ -261,7 +261,7 @@ var app = {
             app.clear();
             app.clear_storage();
             $("#eb_login").val("");
-            $("#dv_login").fadeIn(600);
+            $("#dv_login").fadeIn();
         };
         swal.ok = false;
         if (!app.changed()) do_logout();
@@ -277,7 +277,6 @@ var app = {
     },
     login:(uid)=>{
         app.clear();
-        app.clear_storage();
         uid = uid || $("#eb_login").val().trim();
         if (uid == "") return;
         app.post({
@@ -286,7 +285,8 @@ var app = {
         },{
             on_success :(response)=>{
                 app.rebuild(response);
-                $("#dv_login").fadeOut(600);
+                $("#dv_login").fadeOut();
+                $("#parent").fadeIn();
             }, 
             on_error_response: (error)=>{
                 if (error.code == 4) {
@@ -469,24 +469,32 @@ var app = {
         };
         console.log("app.init_demo user:", app.dat.user);
     },
+    show_screen_message(msg){
+        $("#dv_screen_message").fadeIn();
+        $("#dv_screen_message_txt").html(msg);
+    },
     init: ()=>{
         console.log("app.init")
+        $("#parent").hide();
+        $("#dv_login").hide();
+        $("#dv_screen_message").hide();
         app.init_mobile();
         // app.is_mobile = true;
         if (app.is_mobile) {
-            $("#dv_login").hide();
-            $("#parent").hide();
-            $("#dv_mobile").show().css("display", "flex");
+            // $("#dv_mobile").fadeIn();
+            app.show_screen_message("הדף עדיין לא מתאים למכשירים ניידים");
         } else {
             app.init_scroll();
             app.init_buttons();
             app.init_user();
             // app.init_demo();
             if (app.dat.user) {
-                $("#dv_login").hide();
                 app.login(app.dat.user.uid);
+            } else {
+                $("#dv_login").fadeIn();
             }
         }
+        $("body").show();
     }
 }
 
