@@ -17,7 +17,8 @@ var app = {
         activity_list:[],
         signup_list:[],
         user_goal:0,
-        server_signup_list:[],
+        initial_signup_list:[],
+        mandatory_activity_list:[],
         idx:{
             activity_list:{}
         }
@@ -140,16 +141,23 @@ var app = {
                 members_goal: item[8],
                 members_minimum: item[9],
                 mambers_maximum: item[10],
-                signedup: item[11]
+                signedup: item[11],
+                mandatory: item[12]
             };
             app.dat.activity_list.push(activity)
             app.dat.idx.activity_list[activity.id] = activity;
+            if (activity.mandatory) app.dat.mandatory_activity_list.push(activity.id);
         });
         var html = "";
         $.each(app.dat.activity_list, (i, item)=>{
-            var already_full = (item.mambers_maximum > 0) && (item.signedup >= item.mambers_maximum);
             html +=
-                `<div class="activity_box ${(already_full)?'already_full':''}" activity_id="${item.id}" category="${item.category||''}" circle="${item.circle||''}" timing="${item.timing||''}">` + 
+                `<div class="activity_box" activity_id="${item.id}"` + 
+                    ` category="${item.category||''}"` + 
+                    ` circle="${item.circle||''}"` +
+                    ` timing="${item.timing||''}"` + 
+                    ` already_full="${(item.mambers_maximum > 0) && (item.signedup >= item.mambers_maximum)}"` + 
+                    ` signup_state="not_signed"` + 
+                    ` mandatory="${item.mandatory}">` + 
                     `<div class="activity_box_title">${item.name||'&nbsp'}</div>` +
                     `<div class="activity_box_desc">${item.description||'&nbsp'}</div>` +
                     `<div class="activity_box_status"><table><tr>` +
@@ -160,8 +168,6 @@ var app = {
                     `<div class="activity_box_toolbox">` +
                         `<div id="dv_activity_progress_${item.id}" progress="${(item.members_goal)?100*(item.signedup||0)/item.members_goal:'&nbsp'}" class="dv_activity_progress"></div>` +
                         `<input class="bt_activity_add" type="button" value="הצטרפ/י">` +
-                        `<div class="bt_already_signed"></div>` +
-                        `<div class="bt_already_full"></div>` +
                     `</div>`+
                 `</div>`;
         });
@@ -173,9 +179,9 @@ var app = {
             app.signup($(ev.target).closest(".activity_box"));
         });
     },
-    signup_tmpl:(item, pending_class)=>{ 
+    signup_tmpl:(item, signup_state)=>{ 
         tmpl =
-            `<div class="user_box_item ${pending_class||''}" activity_id="${item.id}">` +
+            `<div class="user_box_item" activity_id="${item.id}" signup_state="${signup_state}" mandatory="${item.mandatory}">` +
                 `<div class="user_box_item_toolbox">` +
                     `<div class="bt_item_delete" title="הסר"></div>` +
                     `<div class="bt_item_info"></div>` +
@@ -189,22 +195,36 @@ var app = {
     },
     build_signup_list:(response_signup_list)=>{
         app.dat.signup_list = [];
-        $.each(response_signup_list, (i, item)=>{
+        var html = "";
+        $.each(response_signup_list.reverse(), (i, item)=>{
             const activity = app.dat.idx.activity_list[item[1]];
             if (activity) {
-                app.dat.signup_list.push(activity);
-                $(`.activity_box[activity_id='${activity.id}']`).addClass("already_signed");
-                app.dat.server_signup_list.push(item[1]);
+                app.dat.initial_signup_list.push(item[1]);
+                if (!activity.mandatory) {
+                    app.dat.signup_list.push(activity);
+                    $(`.activity_box[activity_id='${activity.id}']`).attr("signup_state", "signed");
+                    html += app.signup_tmpl(activity, "signed");
+                }
             }
         });
-        var html = "";
-        $.each(app.dat.signup_list, (i, item)=>{
-            html += app.signup_tmpl(item);
+        
+        $.each(app.dat.mandatory_activity_list, (i, activity_id)=>{
+            const activity = app.dat.idx.activity_list[activity_id];
+            if (activity) {
+                app.dat.signup_list.push(activity);
+                const signup_state  = (app.dat.initial_signup_list.indexOf(activity_id) == -1) ? "not_signed" : "signed"; 
+                $(`.activity_box[activity_id='${activity.id}']`).attr("signup_state", signup_state);
+                if (signup_state == "not_signed") {
+                    app.dat.initial_signup_list.push(activity_id);
+                    activity.save_anyway = true;
+                }
+                html += app.signup_tmpl(activity, "not_signed");
+            }
         });
+        
         $("#user_box_items").html(html);
         $("#user_box_help").toggle(Boolean(html==''));
         $(".bt_item_delete").click((ev)=>{
-            // app.unsign($(ev.target).closest(".user_box_item").attr("activity_id"));
             app.unsign($(ev.target).closest(".user_box_item"));
         });
         $(".user_box_item").slideDown();
@@ -248,7 +268,8 @@ var app = {
         app.dat.idx.activity_list = {};
         app.dat.user = {};
         app.dat.signup_list = [];
-        app.dat.server_signup_list =[];
+        app.dat.initial_signup_list = [];
+        app.dat.mandatory_activity_list = [];
     },
     clear_storage:()=>{
         window.localStorage.setObj("cramim-parents-user", null);
@@ -299,11 +320,12 @@ var app = {
     signup: ($activity_box)=>{
         $("#user_box_help").hide();
         const activity_id = parseInt($activity_box.attr("activity_id"));
-        const server_already = app.dat.server_signup_list.indexOf(activity_id) > -1;
-        $activity_box.addClass((server_already)?"already_signed":"already_signed_pending");
+        const server_already = app.dat.initial_signup_list.indexOf(activity_id) > -1;
+        const signup_state = (server_already)?"signed":"pending";
+        $activity_box.attr("signup_state", signup_state);
         const activity = app.dat.idx.activity_list[activity_id];
         app.dat.signup_list.push(activity);
-        const html = app.signup_tmpl(activity, (server_already)?null:'user_box_item_pending');
+        const html = app.signup_tmpl(activity, signup_state);
         $("#user_box_items").prepend(html);
         $user_item_box = $(`.user_box_item[activity_id="${activity_id}"]`);
         $("#user_box")[0].scrollTo({top: 0});
@@ -322,8 +344,7 @@ var app = {
             $user_box_item.remove()
         });
         var $activity_box = $(`.activity_box[activity_id='${activity.id}']`);
-        if ($activity_box.hasClass("already_signed_pending")) $activity_box.removeClass("already_signed_pending");
-            else $activity_box.removeClass("already_signed");
+        $activity_box.attr("signup_state", "not_signed");
         app.enable_user_toolbox();
         app.refresh_user_progress();
     },
@@ -336,10 +357,10 @@ var app = {
         }
         var idx_signup_list = {};
         $.each(app.dat.signup_list, (i, item)=>{
-            if (app.dat.server_signup_list.indexOf(item.id) < 0) post_data.signup_list.push(item.id);
+            if (item.save_anyway || app.dat.initial_signup_list.indexOf(item.id) < 0) post_data.signup_list.push(item.id);
             idx_signup_list[item.id]=item;
         });
-        $.each(app.dat.server_signup_list, (i, item)=>{
+        $.each(app.dat.initial_signup_list, (i, item)=>{
             if (!idx_signup_list[item]) post_data.unsign_list.push(item);
         });
         app.post(post_data, {
@@ -392,15 +413,15 @@ var app = {
         });
     },
     enable_user_toolbox:()=>{
-        var enabled = app.dat.signup_list.length != app.dat.server_signup_list.length;
+        var enabled = app.dat.signup_list.length != app.dat.initial_signup_list.length;
         if (!enabled) {
             var idx_signup_list = {};
             $.each(app.dat.signup_list, (i, item)=>{
-                if (app.dat.server_signup_list.indexOf(item.id) < 0) enabled = true;
+                if (app.dat.initial_signup_list.indexOf(item.id) < 0) enabled = true;
                 idx_signup_list[item.id]=item;
                 if (enabled) return false;
             });
-            if (!enabled) $.each(app.dat.server_signup_list, (i, item)=>{
+            if (!enabled) $.each(app.dat.initial_signup_list, (i, item)=>{
                 if (!idx_signup_list[item]) {
                     enabled = true;
                     return false;

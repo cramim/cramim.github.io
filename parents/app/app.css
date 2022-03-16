@@ -206,11 +206,24 @@ body{
     border-bottom: 1px gray dotted;
     padding: 20px 60px 20px 10px;
     position: relative;
-    background-image: url(../img/check.png);
     background-repeat: no-repeat;
     background-position: right 10px top 10px;
+    background-size: 40px;
     display: none;
 }
+
+.user_box_item[signup_state="signed"] {
+    background-image: url(../img/check.png);
+}
+
+.user_box_item[signup_state="pending"] {
+    background-image: url(../img/check-pending.png);
+}
+
+.user_box_item[mandatory="true"] {
+    background-image: url(../img/pin.png);
+}
+
 
 .user_box_item>div{
     padding: 4px;
@@ -251,6 +264,10 @@ body{
     background-size: 70%;
     border-radius: 36px;
     cursor: pointer;
+}
+
+.user_box_item[mandatory="true"] .bt_item_delete{
+    display: none;
 }
 
 .bt_item_delete{
@@ -409,28 +426,6 @@ body{
     inset: 0.1em;
 }
 
-.activity_box_toolbox{
-    padding: 16px 8px 4px 8px;
-    border-top: 1px gray dotted;
-    position: relative;
-}
-
-.bt_activity_add{
-    background-color: #1b74e4;
-    border-radius: 8px;
-    color: white;
-    font-weight: bold;
-    position: absolute;
-    left: 10px;
-    padding: 10px;
-    border: 0;
-    cursor: pointer;
-}
-
-.bt_activity_add:hover{
-    background-color: darkblue;
-}
-
 #filter_box_wrapper{
     padding: 15px;
     /* border-bottom: 1px silver solid; */
@@ -527,44 +522,6 @@ body{
     font-size: 1.5em;
     padding: 0.6em;
     color: #2f4f4f;
-}
-
-.bt_already_signed{
-    background-image: url(../img/check.png);
-    background-repeat: no-repeat;
-    width: 40px;
-    height: 40px;
-    position: absolute;
-    left: 10px;
-    top: 10px;
-    display: none;
-}
-
-.bt_already_full {
-    background-image: url(../img/ico_full.png);
-    background-repeat: no-repeat;
-    width: 74px;
-    height: 40px;
-    position: absolute;
-    left: 10px;
-    top: 10px;
-    display: none;
-    background-size: contain;
-}
-
-.activity_box.already_full .bt_already_full{display: block;}
-.activity_box.already_signed .bt_already_full{display: none;}
-
-.activity_box.already_signed .bt_already_signed{display: block;}
-.activity_box.already_signed_pending .bt_already_signed{
-    display: block;
-    background-image: url(../img/check-pending.png);
-}
-.activity_box.already_signed .bt_activity_add,
-.activity_box.already_signed_pending .bt_activity_add,
-.activity_box.already_full .bt_activity_add
-{
-    display: none;
 }
 
 #dv_login {
@@ -727,11 +684,6 @@ body{
     box-shadow: 0 0 8px gray;
 }
 
-.user_box_item.user_box_item_pending {
-    background-image: url(../img/check-pending.png);
-    display: none;
-}
-
 #dv_screen_message{
     position: absolute;
     inset: 0;
@@ -762,4 +714,58 @@ body{
     border-radius: 20vw;
     border: 1px gray solid;
     display: inline-block;
+}
+
+
+/*============== activity_box_toolbox =================*/
+
+.activity_box_toolbox{
+    padding: 16px 8px 4px 8px;
+    border-top: 1px gray dotted;
+    position: relative;
+    background-repeat: no-repeat;
+    background-position: 10px 10px;
+}
+
+.bt_activity_add{
+    background-color: #1b74e4;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    position: absolute;
+    left: 10px;
+    padding: 10px;
+    border: 0;
+    cursor: pointer;
+}
+
+.bt_activity_add:hover{
+    background-color: darkblue;
+}
+
+.activity_box:not([signup_state="not_signed"]) .bt_activity_add,
+.activity_box[already_full="true"] .bt_activity_add,
+.activity_box[mandatory="true"] .bt_activity_add /* should never happen anyway */
+{
+    display: none;
+}
+
+.activity_box[already_full="true"] .activity_box_toolbox{
+    background-image: url(../img/ico_full.png);
+    background-size: 70px;
+}
+
+.activity_box[signup_state="signed"] .activity_box_toolbox{
+    background-image: url(../img/check.png);
+    background-size: 40px;
+}
+
+.activity_box[signup_state="pending"] .activity_box_toolbox{
+    background-image: url(../img/check-pending.png);
+    background-size: 40px;
+}
+
+.activity_box[mandatory="true"] .activity_box_toolbox{
+    background-image: url(../img/pin.png);
+    background-size: 40px;
 }
