@@ -82,11 +82,15 @@ body{
     inset: 0;
 }
 
-#dv_header_title{
-    padding: 10px 10px 10px 40px;
+#dv_header_title {
+    padding: 10px 80px 10px 40px;
     font-size: 1.5em;
+    background-image: url(../img/cramim96.png);
+    background-repeat: no-repeat;
+    background-position: right 5px top 5px;
+    background-size: contain;
+    font-weight: 500;
 }
-
 #dv_header_tabs{
     text-align: center;
     white-space: nowrap;
