@@ -271,6 +271,10 @@ body{
     display: none;
 }
 
+.user_box_item[locked="true"] .bt_item_delete{
+    display: none;
+}
+
 .bt_item_delete{
     background-image: url(../img/delete.png);
 }
@@ -746,7 +750,8 @@ body{
 
 .activity_box:not([signup_state="not_signed"]) .bt_activity_add,
 .activity_box[already_full="true"] .bt_activity_add,
-.activity_box[mandatory="true"] .bt_activity_add /* should never happen anyway */
+.activity_box[mandatory="true"] .bt_activity_add, /* should never happen anyway */
+.activity_box[locked="true"] .bt_activity_add 
 {
     display: none;
 }
@@ -768,5 +773,10 @@ body{
 
 .activity_box[mandatory="true"] .activity_box_toolbox{
     background-image: url(../img/pin.png);
+    background-size: 40px;
+}
+
+.activity_box[locked="true"] .activity_box_toolbox{
+    background-image: url(../img/lock.png);
     background-size: 40px;
 }

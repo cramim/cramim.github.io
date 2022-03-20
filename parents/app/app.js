@@ -142,7 +142,8 @@ var app = {
                 members_minimum: item[9],
                 mambers_maximum: item[10],
                 signedup: item[11],
-                mandatory: item[12]
+                mandatory: item[12],
+                locked: item[13]
             };
             app.dat.activity_list.push(activity)
             app.dat.idx.activity_list[activity.id] = activity;
@@ -157,7 +158,8 @@ var app = {
                     ` timing="${item.timing||''}"` + 
                     ` already_full="${(item.mambers_maximum > 0) && (item.signedup >= item.mambers_maximum)}"` + 
                     ` signup_state="not_signed"` + 
-                    ` mandatory="${item.mandatory}">` + 
+                    ` mandatory="${item.mandatory}"` + 
+                    ` locked="${item.locked}">` + 
                     `<div class="activity_box_title">${item.name||'&nbsp'}</div>` +
                     `<div class="activity_box_desc">${item.description||'&nbsp'}</div>` +
                     `<div class="activity_box_status"><table><tr>` +
@@ -181,7 +183,7 @@ var app = {
     },
     signup_tmpl:(item, signup_state)=>{ 
         tmpl =
-            `<div class="user_box_item" activity_id="${item.id}" signup_state="${signup_state}" mandatory="${item.mandatory}">` +
+            `<div class="user_box_item" activity_id="${item.id}" signup_state="${signup_state}" mandatory="${item.mandatory}" locked="${item.locked}">` +
                 `<div class="user_box_item_toolbox">` +
                     `<div class="bt_item_delete tooltip"><span class="tooltiptext">הסר</span></div>` +
                     `<div class="bt_item_info tooltip"><span class="tooltiptext"><span>${item.name}</span><br>${item.description}</span></div>` +
