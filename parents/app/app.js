@@ -183,8 +183,8 @@ var app = {
         tmpl =
             `<div class="user_box_item" activity_id="${item.id}" signup_state="${signup_state}" mandatory="${item.mandatory}">` +
                 `<div class="user_box_item_toolbox">` +
-                    `<div class="bt_item_delete" title="הסר"></div>` +
-                    `<div class="bt_item_info"></div>` +
+                    `<div class="bt_item_delete tooltip"><span class="tooltiptext">הסר</span></div>` +
+                    `<div class="bt_item_info tooltip"><span class="tooltiptext"><span>${item.name}</span><br>${item.description}</span></div>` +
                 `</div>` +
                 `<table class="tb_user_box_item">` +
                     `<tr><td>פעילות:</td><td class="user_box_item_title">${item.name}</td></tr>` +
@@ -221,7 +221,7 @@ var app = {
                 html += app.signup_tmpl(activity, "not_signed");
             }
         });
-        
+
         $("#user_box_items").html(html);
         $("#user_box_help").toggle(Boolean(html==''));
         $(".bt_item_delete").click((ev)=>{

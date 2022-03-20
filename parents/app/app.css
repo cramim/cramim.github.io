@@ -87,7 +87,7 @@ body{
 }
 
 #user_box_head{
-    background-color: darkslategray;
+    background-color: #2f4f4f;
     padding: 8px 15px 15px 80px;
     color: white;    
     background-image: url(../img/ico_profile.png);
@@ -204,7 +204,7 @@ body{
 .user_box_item{
     /* min-height: 100px; */
     border-bottom: 1px gray dotted;
-    padding: 20px 60px 20px 10px;
+    padding: 10px 60px 10px 10px;
     position: relative;
     background-repeat: no-repeat;
     background-position: right 10px top 10px;
@@ -264,6 +264,7 @@ body{
     background-size: 70%;
     border-radius: 36px;
     cursor: pointer;
+    position: relative;
 }
 
 .user_box_item[mandatory="true"] .bt_item_delete{

@@ -13,6 +13,7 @@
     <link rel="icon" type="image/png" href="img/cramim96.png" />
     <script src="lib/jquery/3.5.1/jquery.min.js"></script>
     <link rel="stylesheet" href="app/app.css">
+    <link rel="stylesheet" href="app/tooltip.css">
     <script src="app/app.js"></script>
 </head>
 <body>
@@ -26,8 +27,7 @@
                 <div id="dv_login_wait"></div>
                 <div id="dv_login_logo"></div>
             </td></tr>
-            <tr><td id="dv_login_title">
-                מעורבות הורים למען כרמים</td></tr>
+            <tr><td id="dv_login_title">מעורבות הורים למען כרמים</td></tr>
             <tr><td>
                 <input id="eb_login" type="text" placeholder="כתובת אימייל או מס' טלפון">
             </td></tr>
@@ -96,8 +96,20 @@
                         <span>חד פעמי אינטנסיבי</span>
                     </div>
                     <div class="filter_box_item">
-                        <input type="checkbox" name="cb_filter_timing_3" id="cb_filter_timing_3" filter_name="זמין למשימות קצרות">
-                        <span>זמין למשימות קצרות</span>
+                        <input type="checkbox" name="cb_filter_timing_3" id="cb_filter_timing_3" filter_name="משימות קצרות בהתראה קצרה">
+                        <span>משימות קצרות בהתראה קצרה</span>
+                    </div>
+                    <div class="filter_box_item">
+                        <input type="checkbox" name="cb_filter_timing_3" id="cb_filter_timing_3" filter_name="משתנה לפי הצורך">
+                        <span>משתנה לפי הצורך</span>
+                    </div>
+                    <div class="filter_box_item">
+                        <input type="checkbox" name="cb_filter_timing_3" id="cb_filter_timing_3" filter_name="מאמץ ממוקד">
+                        <span>מאמץ ממוקד</span>
+                    </div>
+                    <div class="filter_box_item">
+                        <input type="checkbox" name="cb_filter_timing_3" id="cb_filter_timing_3" filter_name="כמעט מתי שבא לך">
+                        <span>כמעט מתי שבא לך</span>
                     </div>
                 </div>
             </div>
@@ -128,7 +140,7 @@
                 <div id="user_toolbox">
                     <input id="bt_user_save" type="button" value="שמירה">
                     <input id="bt_user_abort" type="button" value="ביטול">
-                    <div id="bt_user_exit" title="יציאה"></div>
+                    <div id="bt_user_exit" class="tooltip"><span class="tooltiptext">יציאה</span></div>
                 </div>
             </div>
             <div id="user_box_help">

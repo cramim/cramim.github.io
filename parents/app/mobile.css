@@ -1,0 +1,44 @@
+html, body{
+    margin: 0;
+    padding: 0;
+    font-size: 2vm;
+}
+
+body{
+    text-align: right;
+    direction: rtl;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-family: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
+    display: none;
+}
+
+#dv_header{
+    background-color: #2f4f4f;
+    color: white;
+    text-align: right;
+    padding: 10px 10px 10px 52vw;
+    font-weight: 500;
+}
+
+.ico_head {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 60%;
+    position: absolute;
+    width: 20vw;
+    height: 20vw;
+    border-radius: 20vw;
+    border: 4px white solid;
+    background-color:#2f4f4f;
+    top: 2vh;
+}
+
+#ico_profile {
+    background-image: url(../img/ico_profile.png);
+    left: 4vw;
+}
+
+#ico_activity {
+    background-image: url(../img/cramim96.png);
+    left: 27vw;
+}
