@@ -1,7 +1,8 @@
 html, body{
     margin: 0;
     padding: 0;
-    font-size: clamp(0.85em, 0.85vw, 1em);
+    font-size: clamp(0.8em, 1vw, 1em);
+    /* font-size: clamp(0.85em, 0.85vw, 1em); */
 }
 
 body{
@@ -104,6 +105,13 @@ body{
     background-position: right 5px top 5px;
     background-size: contain;
     font-weight: 500;
+}
+
+#dv_header_title>div {
+    overflow: hidden;
+}
+#dv_header_title>div>span {
+    white-space: nowrap;
 }
 #dv_header_tabs{
     text-align: center;
