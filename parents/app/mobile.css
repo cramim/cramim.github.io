@@ -1,7 +1,7 @@
 html, body{
     margin: 0;
     padding: 0;
-    font-size: 2vm;
+    font-size: clamp(0.85em, 0.85vw, 1em);
 }
 
 body{
@@ -12,15 +12,15 @@ body{
     display: none;
 }
 
-#dv_header{
+#dv_header {
     background-color: #2f4f4f;
     color: white;
     text-align: right;
-    padding: 10px 10px 10px 52vw;
-    font-weight: 500;
+    /* padding: 10px 10px 10px 50vw; */
+    /* font-weight: 500; */
 }
 
-.ico_head {
+/* .ico_head.ico_head_active {
     background-repeat: no-repeat;
     background-position: center;
     background-size: 60%;
@@ -30,15 +30,101 @@ body{
     border-radius: 20vw;
     border: 4px white solid;
     background-color:#2f4f4f;
-    top: 2vh;
+    top: 3.5vh;
+    transition: 50ms;
 }
 
+#ico_profile.ico_head_active {
+    left:9vw;
+}
+
+#ico_activity.ico_head_active {
+    left:22vw;
+}
+
+.ico_head {
+    background-repeat: no-repeat;
+    background-position: center;
+    position: absolute;
+    width: 10vw;
+    height: 10vw;
+    top: 1vh;
+    background-size: contain;
+}
+
+#ico_menu {
+    background-image: url(../img/menu.png);
+    left: 2vw;
+}
 #ico_profile {
     background-image: url(../img/ico_profile.png);
-    left: 4vw;
+    left: 15vw;
 }
 
 #ico_activity {
-    background-image: url(../img/cramim96.png);
-    left: 27vw;
+    background-image: url(../img/plus.png);
+    left: 28vw;
+} */
+
+#ico_menu {
+    left: 1vw;
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 1vw;
+    border-radius: 40px;
 }
+
+#ico_menu:after {
+    content: "";
+    background-image: url(../img/menu.png);
+    position: absolute;
+    inset: 0;
+}
+
+#dv_header_title{
+    padding: 10px 10px 10px 40px;
+    font-size: 1.5em;
+}
+
+#dv_header_tabs{
+    text-align: center;
+    white-space: nowrap;
+}
+
+#dv_header_tabs>div {
+    display: inline-block;
+    width: 7em;
+    padding: 0.5em;
+    font-size: 1.5em;
+}
+
+#tab_indicator_wrapper{
+    padding: 1px;
+    height: 0.3em;
+}
+#tab_indicator {
+    background-color: white;
+    width: 0;
+    height: 0.3em;
+    border-radius: 0.3em;
+    position: absolute;
+    transition: 100ms;
+    left: 0;
+}
+
+/* Ripple effect */
+.ripple {
+    background-position: center;
+    transition: background 0.8s;
+    outline: none;
+}
+  .ripple:hover {
+    background: #2f4f4f radial-gradient(circle, transparent 1%, #2f4f4f 1%) center/15000%;
+  }
+  
+  .ripple:active {
+    background-color: #2f8f8f;
+    background-size: 100%;
+    transition: background 0s;
+  }

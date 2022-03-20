@@ -13,12 +13,21 @@
     <script src="lib/jquery/3.5.1/jquery.min.js"></script>
     <link rel="stylesheet" href="app/mobile.css">
     <script src="app/app.js"></script>
+    <script src="app/mobile.js"></script>
 </head>
 <body>
     <div id="dv_header">
-        <div>מעורבות הורים למען כרמים, רבעון 4 - תשפ"ב</div>
-        <div class="ico_head" id="ico_profile"></div>
-        <div class="ico_head" id="ico_activity"></div>
+        <div id="dv_header_title">מעורבות הורים למען כרמים, רבעון 4 - תשפ"ב</div>
+        <div id="ico_menu" class="ripple"></div>
+        <div id="dv_header_tabs">
+            <div id="tab_user" class="ripple">הרשימה שלנו</div>
+            <div id="tab_activity" class="ripple">הוספת משימות</div>
+            <!-- <div id="tab_user" class="ripple">הרשימה שלנו</div>
+            <div id="tab_activity" class="ripple">הוספת משימות</div> -->
+        </div>
+        <div id="tab_indicator_wrapper"><div id="tab_indicator"></div></div>
+        <!-- <div class="ico_head" id="ico_profile"></div>
+        <div class="ico_head" id="ico_activity"></div> -->
     </div>
 </body>
 </html>
