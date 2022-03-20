@@ -66,8 +66,7 @@ body{
     left: 28vw;
 } */
 
-#ico_menu {
-    left: 1vw;
+.ico_header{
     width: 40px;
     height: 40px;
     position: absolute;
@@ -75,15 +74,30 @@ body{
     border-radius: 40px;
 }
 
-#ico_menu:after {
+.ico_header:after {
     content: "";
-    background-image: url(../img/menu.png);
     position: absolute;
     inset: 0;
 }
 
+#ico_menu {
+    left: 1vw;
+}
+
+#ico_menu:after {
+    background-image: url(../img/menu.png);
+}
+
+#ico_filter {
+    left: 12vw;
+}
+
+#ico_filter:after {
+    background-image: url(../img/search.png);
+}
+
 #dv_header_title {
-    padding: 10px 80px 10px 40px;
+    padding: 10px 80px 10px 90px;;
     font-size: 1.5em;
     background-image: url(../img/cramim96.png);
     background-repeat: no-repeat;
