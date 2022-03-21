@@ -17,61 +17,18 @@ body{
     background-color: #2f4f4f;
     color: white;
     text-align: right;
+    position: sticky;
+    top:0;
+    z-index: 1;
     /* padding: 10px 10px 10px 50vw; */
     /* font-weight: 500; */
 }
-
-/* .ico_head.ico_head_active {
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 60%;
-    position: absolute;
-    width: 20vw;
-    height: 20vw;
-    border-radius: 20vw;
-    border: 4px white solid;
-    background-color:#2f4f4f;
-    top: 3.5vh;
-    transition: 50ms;
-}
-
-#ico_profile.ico_head_active {
-    left:9vw;
-}
-
-#ico_activity.ico_head_active {
-    left:22vw;
-}
-
-.ico_head {
-    background-repeat: no-repeat;
-    background-position: center;
-    position: absolute;
-    width: 10vw;
-    height: 10vw;
-    top: 1vh;
-    background-size: contain;
-}
-
-#ico_menu {
-    background-image: url(../img/menu.png);
-    left: 2vw;
-}
-#ico_profile {
-    background-image: url(../img/ico_profile.png);
-    left: 15vw;
-}
-
-#ico_activity {
-    background-image: url(../img/plus.png);
-    left: 28vw;
-} */
 
 .ico_header{
     width: 40px;
     height: 40px;
     position: absolute;
-    top: 1vw;
+    top: 2vw;
     border-radius: 40px;
 }
 
@@ -91,6 +48,7 @@ body{
 
 #ico_filter {
     left: 12vw;
+    transition: 200ms;
 }
 
 #ico_filter:after {
@@ -105,6 +63,23 @@ body{
     background-position: right 5px top 5px;
     background-size: contain;
     font-weight: 500;
+    transition: 200ms;
+    max-height: 500px;
+}
+
+.head_shrink #dv_header_title {
+    max-height: 0px;
+    padding: 0;
+    overflow: hidden;
+}
+
+.head_shrink #ico_menu {
+    display: none;
+}
+
+.head_shrink #ico_filter {
+    left: 1vw;
+    top: 0.3vw;
 }
 
 #dv_header_title>div {
@@ -163,3 +138,31 @@ body{
     -ms-user-select: none;
     user-select: none;
 }
+
+.page{
+    min-height: 1400px;
+    display: none;
+}
+
+.tab_title{
+    color:white;
+    font-weight: 500;
+}
+
+.tab_title_inactive{
+    color:silver;
+    font-weight: initial;
+}
+
+#page_user{
+    background-color: green;
+}
+
+#page_activity{
+    background-color: blue;
+}
+
+#page_filter{
+    background-color: yellow;
+}
+

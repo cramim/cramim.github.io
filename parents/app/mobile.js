@@ -1,16 +1,39 @@
 app = $.extend(app, {
+    current_page:null,
+    change_tab:(id)=>{
+        $("#tab_indicator").css("width", $(`#tab_${id}`).outerWidth());
+        $("#tab_indicator").css("left", $(`#tab_${id}`).position().left);
+        $(".tab_title").addClass("tab_title_inactive");
+        $(`.tab_title[page_id="${id}"]`).removeClass("tab_title_inactive");
+    },
+    change_page:(id)=>{
+        if (id == app.current_page) return;
+        $('.page').hide();
+        $(`#page_${id}`).fadeIn();
+        app.current_page = id;
+    },
     init_buttons:()=>{
-        $("#ico_profile").click(()=>{
-            $("#ico_activity").removeClass("ico_head_active");
-            $("#ico_profile").addClass("ico_head_active");
-        })
-        $("#ico_activity").click(()=>{
-            $("#ico_profile").removeClass("ico_head_active");
-            $("#ico_activity").addClass("ico_head_active");
-        })
         $("#tab_activity, #tab_user").click((el)=>{
-            $("#tab_indicator").css("width", $(el.target).outerWidth());
-            $("#tab_indicator").css("left", $(el.target).position().left);
+            const id = $(el.target).attr("page_id");
+            app.change_tab(id);
+            app.change_page(id);
+        })
+        $("#ico_filter").click((el)=>{
+            app.change_tab("activity");
+            app.change_page("filter");
+        })
+        $(window).scroll(()=>{
+            const st = $(window).scrollTop();
+            if (Math.abs(st-(window.scroll_switch||0))>100) {
+                if (st > window.last_scroll_top) $("#dv_header").addClass("head_shrink");
+                if (st < window.last_scroll_top) $("#dv_header").removeClass("head_shrink");
+                window.scroll_switch = st;
+            }
+            window.last_scroll_top = st;
+        })
+        $(document).ready(()=>{
+            app.change_tab("user");
+            app.change_page("user");
         });
     }
 });
