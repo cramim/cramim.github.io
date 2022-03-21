@@ -505,7 +505,7 @@ var app = {
         app.init_mobile();
         // app.is_mobile = true;
         if (app.is_mobile) {
-            // app.show_screen_message("הדף עדיין לא מתאים למכשירים ניידים");
+            app.show_screen_message("הדף עדיין לא מתאים למכשירים ניידים");
             app.init_buttons();
         } else {
             app.init_scroll();
