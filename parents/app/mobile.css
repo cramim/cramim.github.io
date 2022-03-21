@@ -142,6 +142,7 @@ body{
 .page{
     min-height: 1400px;
     display: none;
+    font-size: 5em;
 }
 
 .tab_title{
@@ -166,3 +167,21 @@ body{
     background-color: yellow;
 }
 
+#ico_up {
+    width: 40px;
+    height: 40px;
+    position: fixed;
+    bottom: 4vw;
+    left: 4vw;
+    border-radius: 40px;
+    background-color: white;
+    box-shadow: 2px 2px 6px darkslategray;
+    display: none;
+}
+
+#ico_up:after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url(../img/mobile_up.png);
+}

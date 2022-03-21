@@ -22,14 +22,18 @@ app = $.extend(app, {
             app.change_tab("activity");
             app.change_page("filter");
         })
+        $("#ico_up").click(()=>{
+            $(window)[0].scrollTo({top:0, behavior: 'smooth'});
+        });
         $(window).scroll(()=>{
             const st = $(window).scrollTop();
-            if (Math.abs(st-(window.scroll_switch||0))>100) {
+            if (Math.abs(st-(window.scroll_switch||0))>80) {
                 if (st > window.last_scroll_top) $("#dv_header").addClass("head_shrink");
                 if (st < window.last_scroll_top) $("#dv_header").removeClass("head_shrink");
                 window.scroll_switch = st;
             }
             window.last_scroll_top = st;
+            $("#ico_up").toggle(st>200);
         })
         $(document).ready(()=>{
             app.change_tab("user");
