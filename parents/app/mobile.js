@@ -1,5 +1,6 @@
 app = $.extend(app, {
     current_page:null,
+
     change_tab:(id)=>{
         $("#tab_indicator").css("width", $(`#tab_${id}`).outerWidth());
         $("#tab_indicator").css("left", $(`#tab_${id}`).position().left);
@@ -34,10 +35,35 @@ app = $.extend(app, {
             }
             window.last_scroll_top = st;
             $("#ico_up").toggle(st>200);
-        })
+        });
+    },
+    login: ()=>{
         $(document).ready(()=>{
             app.change_tab("user");
             app.change_page("user");
         });
+    },
+    init: ()=>{
+        $("#dv_header").hide();
+        $("#dv_screen_message").hide();
+        app.init_buttons();
+        app.init_user();
+        if (app.dat.user) {
+            $("#dv_login").hide();
+            app.login(app.dat.user.uid, ()=>{app.show_screen_message("אין תקשורת עם השרת :(")});
+        } else {
+            $("#dv_login").show();
+        }
+        $("body").show();
+    },
+    start_mobile: ()=>{
+        if (!js.is_mobile()) {
+            // app.show_screen_message("דף זה מיועד למכשירים ניידים");
+            if (window.location.href.toLowerCase().indexOf("index.html")<0) window.location.href = "index.html";
+        } else {
+            app.init();
+        }
     }
 });
+
+$(app.start_mobile)

@@ -185,3 +185,151 @@ body{
     inset: 0;
     background-image: url(../img/mobile_up.png);
 }
+
+#dv_screen_message{
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background-color: #efefef;
+    z-index: 9999;
+}
+
+#dv_screen_message>div{
+    padding-bottom: 10vh;
+}
+
+#dv_screen_message_txt{
+    font-size: 5vw;
+    font-weight: 200;
+    color: #606060;
+}
+
+#dv_screen_message_logo{
+    background-image: url(../img/logo.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    height: 20vw;
+    width: 20vw;
+    border-radius: 20vw;
+    border: 1px gray solid;
+    display: inline-block;
+}
+
+
+#dv_login {
+    inset: 0;
+    position: absolute;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    text-align: center;
+    background-image: url(../img/bg_login.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+#dv_login::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: white;
+    background: linear-gradient(0deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 120%);
+}
+
+#dv_login table {
+    padding:1rem;
+    /* background-color: #ffffffa6; */
+    border-radius: 2rem;
+}
+
+#dv_login table td{
+    position: relative;
+}
+
+#eb_login {
+    font-size: 1rem;
+    direction: ltr;
+    text-align: left;
+    padding: 0.2rem;
+    border-radius: 1rem;
+    border: 2px gray solid;
+    box-shadow: 2px 2px 2px white;
+}
+
+#dv_login_logo {
+    background-image: url(../img/logo.png);
+    height: 10rem;
+    width: 10rem;
+    background-repeat: no-repeat;
+    background-size: contain;
+    border-radius: 10rem;
+    background-position: center;
+    display: inline-block;
+    box-shadow: 0 8px 11px grey;
+    position: absolute;
+    margin: auto;
+    top: -8rem;
+    right: 0;
+    left: 0;
+}
+
+#bt_login {
+    font-size: 1.5rem;
+    border-radius: 8px;
+    background-color: #2f4f4f;
+    color: white;
+    padding: 1rem 1rem;
+    cursor: pointer;
+    border: 1px white solid;
+    box-shadow: 0px 0px 20px white;
+    display: inline-block;
+    margin: 2rem 0 1rem 0;
+}
+
+#dv_login_title {
+    font-size: 2.5rem;
+    padding: 3rem 1rem 2rem;
+    color: #2f4f4f;
+    text-shadow: 2px 2px 2px white;
+}
+
+#eb_login {
+    font-size: 1.5rem;
+    direction: ltr;
+    text-align: left;
+    padding: 0.3rem;
+    border-radius: 8px;
+    border: 2px gray solid;
+    box-shadow: 2px 2px 2px white;
+}
+
+::-webkit-input-placeholder { /* Edge */
+    color: #2f4f4f;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-weight: 100;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: #2f4f4f;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-weight: 100;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+::placeholder {
+    color: #2f4f4f;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-weight: 100;
+    font-size: 1.5rem;
+    text-align: center;
+}
