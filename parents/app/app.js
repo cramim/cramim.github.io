@@ -62,38 +62,6 @@ var app = {
             });
         }
     },
-    get: (content_id, params, on_success, on_failure)=>{
-        app.please_wait(true);
-        try {
-            $.ajax({
-                type: 'GET',
-                url: app.dat.srv_url,
-                accept: 'application/json',
-                contentType: 'text/plain',
-                async:true,
-                //timeout: 10000,
-                cache: false,
-                data:$.extend({content_id:content_id}, params),
-                success:(response)=>{
-                    app.please_wait(false);
-                    if (response?.error?.code && response?.error?.code != 0){
-                        console.error("app.get.success", `content_id="${content_id}"`, response.error);
-                    } else {
-                        if (on_success) on_success(response);
-                    }
-                },
-                error: (jqXHR, textStatus, errorThrown)=> {
-                    app.please_wait(false);
-                    console.error("app.get.error", `content_id="${content_id}"`, jqXHR, textStatus, errorThrown);
-                    if (on_connect_error) on_connect_error({code:-1, desc:"app.get connection error"});
-                }
-            });
-        } catch (error) {
-            app.please_wait(false);
-            console.error("app.get.catch", `act_id="${content_id}"`, error);
-            if (on_failure) on_js_error({code:-2, desc:"client side error"});
-        }
-    },
     post: (postdata, callback)=>{
         please_wait = callback.please_wait || app.please_wait;
         please_wait(true);
@@ -230,7 +198,6 @@ var app = {
         });
 
         $("#user_box_items").html(html);
-        $("#user_box_help").toggle(Boolean(html==''));
         $(".bt_item_delete").click((ev)=>{
             app.unsign($(ev.target).closest(".user_box_item"));
         });
@@ -262,7 +229,10 @@ var app = {
         app.enable_user_toolbox();
         app.refresh_user_progress();
         app.filter();
-        $("#bt_home").click();
+        app.scroll_home();
+    },
+    scroll_home:()=>{
+        $("#main_box")[0].scrollTo({top: 0, behavior: 'smooth'});
     },
     clear:()=>{
         $("#user_box_head_name").html('');
@@ -270,7 +240,6 @@ var app = {
         $("#user_box_items").html('');
         $("#activity_boxes_wrapper").html('');
         $("#filter_box_wrapper input[type='checkbox']").prop("checked", false);
-        $("#user_box_help").show();
         app.dat.activity_list = [];
         app.dat.idx.activity_list = {};
         app.dat.user = {};
@@ -325,7 +294,6 @@ var app = {
         });
     },
     signup: ($activity_box)=>{
-        $("#user_box_help").hide();
         const activity_id = parseInt($activity_box.attr("activity_id"));
         const server_already = app.dat.initial_signup_list.indexOf(activity_id) > -1;
         const signup_state = (server_already)?"signed":"pending";
@@ -342,6 +310,7 @@ var app = {
         });
         app.enable_user_toolbox();
         app.refresh_user_progress();
+        if (app.on_after_signup) app.on_after_signup();
     },
     unsign: ($user_box_item)=>{
         const activity_id = parseInt($user_box_item.attr("activity_id"));
@@ -435,6 +404,9 @@ var app = {
                 }
             });
         };
+        app.on_user_toolbox_enabled(enabled);
+    },
+    on_user_toolbox_enabled:(enabled)=>{
         $("#user_toolbox").toggleClass("user_toolbox_enabled", Boolean(enabled));
     },
     init_scroll:()=>{
@@ -452,9 +424,7 @@ var app = {
         });
     },
     init_buttons: ()=>{
-        $("#bt_home").click(()=>{
-            $("#main_box")[0].scrollTo({top: 0, behavior: 'smooth'});
-        });
+        $("#bt_home").click(app.scroll_home);
         $(".filter_box_item").click((ev)=>{
             if (ev.target.tagName.toLowerCase() == "input") return;
             $(ev.target).closest(".filter_box_item").find("input").click();
@@ -465,17 +435,12 @@ var app = {
         $("#bt_user_save").click(()=>{
             app.save();
         });
-        $("#bt_login").click(()=>{
+        $("#frm_login").submit((e)=>{
+            e.preventDefault(e);
             app.login();
         });
         $("#bt_user_exit").click(()=>{
             app.logout();
-        });
-        $("#eb_login").keypress(function(event){
-            var keycode = (event.keyCode ? event.keyCode : event.which);
-            if (keycode == '13') {
-                if ($("#mask_div").is(":hidden")) $("#bt_login").click();
-            }
         });
         $("#filter_box_wrapper input[type='checkbox']").change(app.filter);
         window.onbeforeunload = function(){

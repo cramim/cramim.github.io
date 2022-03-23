@@ -13,7 +13,7 @@
     <link rel="icon" type="image/png" href="img/cramim96.png" />
     <script src="lib/jquery/3.5.1/jquery.min.js"></script>
     <link rel="stylesheet" href="app/app.css">
-    <link rel="stylesheet" href="app/tooltip.css">
+    <!-- <link rel="stylesheet" href="app/tooltip.css"> -->
     <script src="app/app.js"></script>
 </head>
 <body>
@@ -22,7 +22,7 @@
         <div id="dv_screen_message_txt"></div>
     </div></div>
     <div id="dv_login">
-        <table>
+        <form id="frm_login"><table>
             <tr><td>
                 <div id="dv_login_logo"></div>
             </td></tr>
@@ -31,10 +31,9 @@
                 <input id="eb_login" type="text" placeholder="כתובת אימייל או מס' טלפון">
             </td></tr>
             <tr><td id="td_login_bottom">
-                <input id="bt_login" type="button" value="כניסה">
-                <div id="ani_login" class="lds-facebook"><div></div><div></div><div></div></div>
+                <input id="bt_login" type="submit" value="כניסה">
             </td></tr>
-        </table>
+        </table></form>
     </div>
 	<div id="mask_div"></div>
     <div id="parent" class="parent">
@@ -112,21 +111,7 @@
                     </div>
                 </div>
             </div>
-            <div id="activity_boxes_wrapper">
-                <!--div class="activity_box">
-                    <div class="activity_box_title">הרצאה חד פעמית</div>
-                    <div class="activity_box_desc">הגעה לבית ספר ועזרה בפעילות, שתי פעילויות ברבעון, שעתיים, שני הורים לכיתה ועוד כל מיני תיאורים שונים שמסבירים</div>
-                    <div class="activity_box_status"><table><tr>
-                        <td class="activity_box_status_value_title">שעות:</td><td class="activity_box_status_value">6</td>
-                        <td class="activity_box_status_joined_title">הצטרפו:</td><td class="activity_box_status_joined">12</td>
-                        <td class="activity_box_status_goal_title">מתוך:</td><td class="activity_box_status_goal">15</td>
-                    </tr></table></div>
-                    <div class="activity_box_toolbox">
-                        <div id="dv_activity_progress_1" class="dv_activity_progress"></div>
-                        <input class="bt_activity_add" type="button" value="הצטרף">
-                    </div>
-                </div-->
-            </div>
+            <div id="activity_boxes_wrapper"></div>
         </div>
         <div id="user_box" class="div3">
             <div id="user_box_head_wrapper">
@@ -142,23 +127,7 @@
                     <div id="bt_user_exit" class="tooltip"><span class="tooltiptext">יציאה</span></div>
                 </div>
             </div>
-            <div id="user_box_help">
-                <div>באזור זה יפורטו הפעילויות אליהן הצטרפתם.</div>
-                <div>בחרו אחת מהפעילויות שמימין ולחצו על הכפתור "הצטרפ/י".</div>
-                <div>:)</div>
-            </div>
-            <div id="user_box_items">
-                <!-- <div class="user_box_item">
-                    <div class="user_box_item_toolbox">
-                        <div class="bt_item_delete"></div>
-                        <div class="bt_item_info"></div>
-                    </div>
-                    <table class="tb_user_box_item">
-                        <tr><td>פעילות:</td><td class="user_box_item_title">הדרכה בלמידת חוץ</td></tr>
-                        <tr><td>שעות:</td><td class="user_box_item_value">5</td></tr>
-                    </table>
-                </div> -->
-            </div>
+            <div id="user_box_items"></div>
         </div>
     </div>    
 </body>
