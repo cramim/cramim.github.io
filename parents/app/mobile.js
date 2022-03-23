@@ -53,6 +53,9 @@ app = $.extend(app, {
             e.preventDefault(e);
             app.login();
         });
+        window.onbeforeunload = function(){
+            if (app.changed() && $("#dv_login").is(":hidden"))  return 'אזהרה! השינויים לא נשמרו.';
+        };
         $("#bt_user_abort").click(()=>{
             app.abort();
         });
