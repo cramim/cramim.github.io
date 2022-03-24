@@ -549,12 +549,12 @@ body{
     text-overflow: ellipsis;
 }
 
-#user_box_head_name{
+#user_box_head_name {
     font-size: 1.5em;
-    font-weight: bold;
+    font-weight: 500;
     overflow: hidden;
+    text-shadow: 0 0 3px black;
 }
-
 #user_box_progress{
     height: 12px;
     position: relative;
