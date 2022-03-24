@@ -158,6 +158,10 @@ body{
     padding-bottom: 5em;
 }
 
+.page.footer_offset{
+    padding-bottom: 9em;
+}
+
 .tab_title{
     color:white;
     font-weight: 500;

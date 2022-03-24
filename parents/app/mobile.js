@@ -38,6 +38,7 @@ app = $.extend(app, {
     on_user_toolbox_enabled:(enabled)=>{
         $("#user_toolbox").toggle(enabled);
         $("#ico_up").css("bottom", $("#user_box_head_wrapper").outerHeight()+10);
+        $(".page").toggleClass("footer_offset", enabled);
     },
     head_shrink:(st)=>{
         const scroll_inf = app.nav.scroll_inf[app.nav.current_page];
