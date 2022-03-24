@@ -13,6 +13,12 @@ body{
     display: none;
 }
 
+input {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
 #dv_header {
     background-color: #2f4f4f;
     color: white;
