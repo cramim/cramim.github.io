@@ -66,8 +66,8 @@ body{
     background-position: right 5px top 5px;
     background-size: contain;
     font-weight: 500;
-    transition: 200ms;
-    max-height: 500px;
+    /* transition: 200ms;
+    max-height: 500px; */
 }
 
 .head_shrink #dv_header_title {
@@ -664,18 +664,22 @@ body{
 #filter_box_wrapper{
     font-size: 1.5em;
 }
-.filter_box:not(:last-child){
+
+/* .filter_box:not(:last-child){
     border-bottom: 1px darkslategray solid;
-}
+} */
 
 .filter_box>div {
     padding: 0.8em 1em;
     border-top: 1px #d8d8d8 dotted;
 }
 
-.filter_box_title{
+.filter_box_title {
     font-weight: bold;
     color: darkslategray;
+    text-align: center;
+    background-color: #f1fdfd;
+    text-decoration: underline;
 }
 
 .filter_box input[type="checkbox"] {
