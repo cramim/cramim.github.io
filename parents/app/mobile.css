@@ -13,7 +13,7 @@ body{
     display: none;
 }
 
-input {
+input[type="button"]{
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
