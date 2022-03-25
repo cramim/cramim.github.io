@@ -31,7 +31,8 @@ var app = {
         mode:null,
         idx:{
             activity_list:{},
-            activity_groups:{}
+            activity_groups:{},
+            group_by_activity:{}
         }
     },
     is_mobile: false,
@@ -126,15 +127,18 @@ var app = {
                 group_name: item[14]
             };
             if (activity.group_name) {
-                activity_group = app.dat.idx.activity_groups[activity.group_name];
+                var activity_group = app.dat.idx.activity_groups[activity.group_name];
                 if (activity_group) {
                     activity_group.members_goal += activity.members_goal;
                     activity_group.signedup += activity.signedup;
                     activity_group.mambers_maximum += activity.mambers_maximum;
+                    app.dat.idx.group_by_activity[activity.id] = activity_group;
                     return true; // JQuery continue each loop
                 }
+                activity_group = activity;
                 app.dat.idx.activity_groups[activity.group_name] = activity;
                 activity.name = activity.group_name;
+                app.dat.idx.group_by_activity[activity.id] = activity_group;
             }
             app.dat.activity_list.push(activity);
             app.dat.idx.activity_list[activity.id] = activity;
@@ -190,9 +194,9 @@ var app = {
         app.dat.signup_list = [];
         var html = "";
         $.each(response_signup_list.reverse(), (i, item)=>{
-            const activity = app.dat.idx.activity_list[item[1]];
+            const activity = app.dat.idx.group_by_activity[item[1]] || app.dat.idx.activity_list[item[1]];
             if (activity) {
-                app.dat.initial_signup_list.push(item[1]);
+                app.dat.initial_signup_list.push(activity.id);
                 if (!activity.mandatory) {
                     app.dat.signup_list.push(activity);
                     $(`.activity_box[activity_id='${activity.id}']`).attr("signup_state", "signed");
@@ -202,7 +206,7 @@ var app = {
         });
         
         $.each(app.dat.mandatory_activity_list, (i, activity_id)=>{
-            const activity = app.dat.idx.activity_list[activity_id];
+            const activity = app.dat.idx.group_by_activity[activity_id] || app.dat.idx.activity_list[activity_id];
             if (activity) {
                 app.dat.signup_list.push(activity);
                 const signup_state  = (app.dat.initial_signup_list.indexOf(activity_id) == -1) ? "not_signed" : "signed"; 
@@ -261,6 +265,7 @@ var app = {
         app.dat.activity_list = [];
         app.dat.idx.activity_list = {};
         app.dat.idx.activity_groups = {};
+        app.dat.idx.group_by_activity = {};
         app.dat.user = {};
         app.dat.signup_list = [];
         app.dat.initial_signup_list = [];
