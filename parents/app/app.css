@@ -741,6 +741,13 @@ body{
     display: none;
 }
 
+.mode_admin .activity_box[already_full="true"] .bt_activity_add, .mode_admin .activity_box[locked="true"] .bt_activity_add {
+    display: block;
+    left: 4em;
+    bottom: 0;
+    background-color: red;
+}
+
 .activity_box[already_full="true"] .activity_box_toolbox{
     background-image: url(../img/ico_full.png);
     background-size: 70px;
@@ -764,4 +771,19 @@ body{
 .activity_box[locked="true"] .activity_box_toolbox{
     background-image: url(../img/lock.png);
     background-size: 40px;
+}
+
+#ttl_mode {
+    font-weight: bold;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 0.5em;
+    box-shadow: 10px 10px 10px gray;
+    border: 5px white solid;
+    position: absolute;
+    top: 10px;
+    left: 100px;
+    font-size: 2em;
+    display: none;
 }
