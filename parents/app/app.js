@@ -390,20 +390,18 @@ var app = {
         });
     },
     filter:()=>{
-        $cat = $("#filter_box_cat input[type='checkbox']");
-        $circle = $("#filter_box_circle input[type='checkbox']");
-        $timing = $("#filter_box_timing input[type='checkbox']");
         $cat_checked = $("#filter_box_cat input[type='checkbox']:checked");
         $circle_checked = $("#filter_box_circle input[type='checkbox']:checked");
         $timing_checked = $("#filter_box_timing input[type='checkbox']:checked");
-        $cat_unchecked = $("#filter_box_cat input[type='checkbox']:not(:checked)");
-        $circle_unchecked = $("#filter_box_circle input[type='checkbox']:not(:checked)");
-        $timing_unchecked = $("#filter_box_timing input[type='checkbox']:not(:checked)");
         $("#activity_boxes_wrapper").hide();
-        $(".activity_box").show();
-        if ($cat_checked.length > 0) $cat_unchecked.each((i, item)=>{$(`.activity_box[category='${$(item).attr("filter_name")}']`).hide();});
-        if ($circle_checked.length > 0) $circle_unchecked.each((i, item)=>{$(`.activity_box[circle='${$(item).attr("filter_name")}']`).hide();});
-        if ($timing_checked.length > 0) $timing_unchecked.each((i, item)=>{$(`.activity_box[timing='${$(item).attr("filter_name")}']`).hide();});
+        $(".activity_box").hide();
+        const cat_selector_arr = [];  $cat_checked.each((i, item)=>{cat_selector_arr.push(`[category='${$(item).attr("filter_name")}']`)});
+        const circle_selector_arr = [];  $circle_checked.each((i, item)=>{circle_selector_arr.push(`[circle='${$(item).attr("filter_name")}']`)});
+        const timing_selector_arr = [];  $timing_checked.each((i, item)=>{timing_selector_arr.push(`[timing='${$(item).attr("filter_name")}']`)});
+        const cat_selector = (cat_selector_arr.length == 0) ? "[category]" : cat_selector_arr.join();
+        const circle_selector = (circle_selector_arr.length == 0) ? "[circle]" : circle_selector_arr.join();
+        const timing_selector = (timing_selector_arr.length == 0) ? "[timing]" : timing_selector_arr.join();
+        $(".activity_box").filter(cat_selector).filter(circle_selector).filter(timing_selector).show();
         $("#activity_boxes_wrapper").fadeIn();
     },
     progress_bar:($container, percent)=>{
