@@ -111,6 +111,9 @@ app = $.extend(app, {
             $("#bt_apply_filter").click();
         });
         $(window).scroll(app.on_scroll);
+        $(window).on("orientationchange", event => {
+            app.change_tab(app.nav.current_page);
+        });
     },
     on_scroll:()=>{
         const st = $(window).scrollTop();
