@@ -115,7 +115,7 @@ var app = {
                 parent: item[2],
                 description: item[3],
                 hours: item[4],
-                category: item[5],
+                category: js.r(item[5],'"',''), // סעפש"ים bad with jquery attribute selectors
                 circle: item[6],
                 timing: item[7],
                 members_goal: item[8] || 0,
