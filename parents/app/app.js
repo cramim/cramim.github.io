@@ -296,7 +296,7 @@ var app = {
             swal.ok = true;
         });
     },
-    login:(uid, on_connect_error)=>{
+    login:(uid, on_connect_error, on_user_not_found)=>{
         app.clear();
         uid = uid || $("#eb_login").val().trim();
         if (uid == "") return;
@@ -312,6 +312,7 @@ var app = {
             on_error_response: (error)=>{
                 if (error.code == 4) {
                     app.pop_err("לא מצאנו משפחה לפי המידע שהוקלד");
+                    if (on_user_not_found) on_user_not_found();
                 } else app.pop_srv_err(error);
             },
             on_connect_error: on_connect_error
@@ -493,7 +494,7 @@ var app = {
         app.init_user();
         app.init_mode();
         if (app.dat.user) {
-            app.login(app.dat.user.uid, ()=>{app.show_screen_message("אין תקשורת עם השרת :(")});
+            app.login(app.dat.user.uid, ()=>{app.show_screen_message("אין תקשורת עם השרת :(")}, ()=>{$("#dv_login").fadeIn();});
         } else {
             $("#dv_login").fadeIn();
         }
