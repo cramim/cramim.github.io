@@ -395,12 +395,12 @@ var app = {
         $timing_checked = $("#filter_box_timing input[type='checkbox']:checked");
         $("#activity_boxes_wrapper").hide();
         $(".activity_box").hide();
-        const cat_selector_arr = [];  $cat_checked.each((i, item)=>{cat_selector_arr.push(`[category='${$(item).attr("filter_name")}']`)});
-        const circle_selector_arr = [];  $circle_checked.each((i, item)=>{circle_selector_arr.push(`[circle='${$(item).attr("filter_name")}']`)});
-        const timing_selector_arr = [];  $timing_checked.each((i, item)=>{timing_selector_arr.push(`[timing='${$(item).attr("filter_name")}']`)});
-        const cat_selector = (cat_selector_arr.length == 0) ? "[category]" : cat_selector_arr.join();
-        const circle_selector = (circle_selector_arr.length == 0) ? "[circle]" : circle_selector_arr.join();
-        const timing_selector = (timing_selector_arr.length == 0) ? "[timing]" : timing_selector_arr.join();
+        const cat_arr = [];  $cat_checked.each((i, item)=>{cat_arr.push(`[category='${$(item).attr("filter_name")}']`)});
+        const circle_arr = [];  $circle_checked.each((i, item)=>{circle_arr.push(`[circle='${$(item).attr("filter_name")}']`)});
+        const timing_arr = [];  $timing_checked.each((i, item)=>{timing_arr.push(`[timing='${$(item).attr("filter_name")}']`)});
+        const cat_selector = (cat_arr.length == 0) ? "[category]" : cat_arr.join();
+        const circle_selector = (circle_arr.length == 0) ? "[circle]" : circle_arr.join();
+        const timing_selector = (timing_arr.length == 0) ? "[timing]" : timing_arr.join();
         $(".activity_box").filter(cat_selector).filter(circle_selector).filter(timing_selector).show();
         $("#activity_boxes_wrapper").fadeIn();
     },

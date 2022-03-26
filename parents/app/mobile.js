@@ -102,6 +102,7 @@ app = $.extend(app, {
             app.filter();
             app.change_page("activity");
             app.change_tab("activity");
+            $("#ico_filter").toggleClass("filter_is_on", $(".filter_box_item input[type='checkbox']:checked").length>0);
             app.nav.scroll_inf["activuty"] = {};
             $("#dv_header").removeClass("head_shrink");
             $(window)[0].scrollTo({top:0});
@@ -112,7 +113,7 @@ app = $.extend(app, {
         });
         $(window).scroll(app.on_scroll);
         $(window).on("orientationchange", event => {
-            app.change_tab(app.nav.current_page);
+            setTimeout(()=>{app.change_tab(app.nav.current_page)}, 100);
         });
     },
     on_scroll:()=>{

@@ -64,6 +64,11 @@ input[type="button"]{
     background-image: url(../img/search.png);
 }
 
+#ico_filter.filter_is_on {
+    background-color: #528787;
+}
+
+
 #dv_header_title {
     padding: 10px 80px 10px 50px;
     font-size: 1.5em;
@@ -411,13 +416,17 @@ input[type="button"]{
     font-size: 1.5em;
 }
 
+.progress_box {
+    position: absolute;
+    inset: 0;
+    direction: ltr;
+}
 
 .dv_activity_progress{
     height:2em;
     display: inline-block;
     width: 50%;
     position: relative;
-    direction: ltr;
 }
 
 #activity_boxes_wrapper .dv_activity_progress .pb_div1>div  { top: 72%; }
