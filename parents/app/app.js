@@ -252,6 +252,7 @@ var app = {
         app.refresh_user_progress();
         app.filter();
         app.scroll_home();
+        app.on_after_rebuild?.call();
     },
     scroll_home:()=>{
         $("#main_box")[0].scrollTo({top: 0, behavior: 'smooth'});

@@ -108,7 +108,7 @@ app = $.extend(app, {
             $(window)[0].scrollTo({top:0});
         });
         $("#bt_clear_filter").click(()=>{
-            $("#filter_box_wrapper input[type='checkbox']").prop("checked", false);
+            app.set_filter_button_mode();
             $("#bt_apply_filter").click();
         });
         $(window).scroll(app.on_scroll);
@@ -116,6 +116,8 @@ app = $.extend(app, {
             setTimeout(()=>{app.change_tab(app.nav.current_page)}, 100);
         });
     },
+    set_filter_button_mode: ()=> $("#ico_filter").toggleClass("filter_is_on", $(".filter_box_item input[type='checkbox']:checked").length>0),
+    on_after_rebuild: ()=> app.set_filter_button_mode(),
     on_scroll:()=>{
         const st = $(window).scrollTop();
         app.head_shrink(st);
