@@ -108,6 +108,7 @@ app = $.extend(app, {
             $(window)[0].scrollTo({top:0});
         });
         $("#bt_clear_filter").click(()=>{
+            $("#filter_box_wrapper input[type='checkbox']").prop("checked", false);
             app.set_filter_button_mode();
             $("#bt_apply_filter").click();
         });
