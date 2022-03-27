@@ -36,7 +36,7 @@ body{
 
   /* Chrome, Edge, and Safari */
   *::-webkit-scrollbar {
-    width: 2px;
+    width: 8px;
     height: 4px;
   }
 
@@ -63,7 +63,15 @@ body{
     background-image: url(../img/bg.jpg);
     background-attachment: fixed;
 }
-.parent>div{ overflow-y: auto; }
+
+.parent>div{ 
+    overflow-y: auto; 
+    direction: ltr;
+}
+
+.parent>div>div{ 
+    direction: rtl;
+}
 
 .div2 { grid-area: 1 / 1 / 2 / 2; }
 .div3 { grid-area: 1 / 2 / 2 / 3; }
@@ -78,6 +86,9 @@ body{
     background-color: #f6f6f6;
 } */
 
+#user_box{
+    direction: rtl;
+}
 
 #user_box_head_wrapper{
     top: 0;
@@ -786,4 +797,14 @@ body{
     left: 100px;
     font-size: 2em;
     display: none;
+}
+
+.help_paragraph, .help_nagging {
+    text-align: right;
+    padding-top: 1em;
+}
+
+.help_nagging input[type="checkbox"]{
+    transform: scale(1.5);
+    margin-left: 1em;
 }
