@@ -271,8 +271,6 @@ var app = {
         app.dat.signup_list = [];
         app.dat.initial_signup_list = [];
         app.dat.mandatory_activity_list = [];
-        app.help_message.nag_status.welcome = true;
-        app.help_message.nag_status.signup = true;
     },
     clear_storage:()=>{
         window.localStorage.setObj("cramim-parents-user", null);
@@ -300,40 +298,38 @@ var app = {
         });
     },
     help_message:{
-        nag_status:{
-            welcome:true,
-            signup:true
-        },
         welcome: 
             '<div id="help_welcome">' + 
                 '<div class="help_paragraph">ברוכים הבאים לממשק ההרשמה למעורבות ההורים בכרמים. מוזמנים להירשם לפעילויות בהן תרצו להשתלב. שימו לב, ההרשמה הינה לרבעון הקרוב והיא משותפת לזוג ההורים.</div>' +
                 '<div class="help_paragraph">מצאו פעילויות ולחצו על הכפתור "הצטרפ/י".<br>הפעילויות אליהן הצטרפתם נאספות ומופיעות בצדו השמאלי של המסך.</div>' +
                 '<div class="help_paragraph">העזרו באפשרויות הסינון שבראש הדף כדי למצוא פעילויות לרוחכם.</div>' +
-                '<div class="help_nagging"><input type="checkbox" checked="true"/>הבנתי, אין צורך להציג הודעה זו שוב.</div>' + 
+                '<div class="help_nagging"><input type="checkbox"/>הבנתי, אין צורך להציג הודעה זו שוב.</div>' + 
             '</div>',
         signup:'<div id="help_signup">' + 
             '<div class="help_paragraph">המשיכו לחפש ולהצטרף לפעילויות נוספות ולסיום לחצו "שמירה".</div>' +
                 '<div class="help_paragraph">בכל שלב (גם לאחר השמירה) ניתן להסיר ההצטרפות ע"י לחיצה על צלמית הפח, המופיעה במעבר העכבר, מעל כל פעילות ברשימה שלכם בצד שמאל.</div>' + 
-                '<div class="help_nagging"><input type="checkbox" checked="true"/>הבנתי, אין צורך להציג הודעה זו שוב.</div>' +
+                '<div class="help_nagging"><input type="checkbox"/>הבנתי, אין צורך להציג הודעה זו שוב.</div>' +
             '</div',
         show_welcome: ()=>{
-            if (app.help_message.nag_status.welcome) swal({
+            const nag_status = window.localStorage.getObj('cramim-parents-help_message-nag_status') || {};
+            if (!nag_status.welcome) swal({
                 title: `${app.dat.user.name}, ברוכים הבאים :)`,
                 html: app.help_message.welcome,
-                showCancelButton: false, confirmButtonColor: '#3085d6', cancelButtonColor: '#d33', confirmButtonText: 'סגור'
+                showCancelButton: false, confirmButtonColor: '#3085d6', cancelButtonColor: '#d33', confirmButtonText: 'סגור',
             }).then(function(result){
-                app.help_message.nag_status.welcome = $('#help_welcome help_nagging>input[type="checkbox"]').is(":checked");
-                window.localStorage.setObj("cramim-parents-help_message-nag_status", app.help_message.nag_status);
+                nag_status.welcome = $('#help_welcome .help_nagging>input[type="checkbox"]').is(":checked");
+                window.localStorage.setObj("cramim-parents-help_message-nag_status", nag_status);
             });
         },
         show_signup: ()=>{
-            if (app.help_message.nag_status.signup) swal({
+            const nag_status = window.localStorage.getObj('cramim-parents-help_message-nag_status') || {};
+            if (!nag_status?.signup) swal({
                 title: 'אחלה :)',
                 html: app.help_message.signup,
                 showCancelButton: false, confirmButtonColor: '#3085d6', cancelButtonColor: '#d33', confirmButtonText: 'סגור',
             }).then(function(result){
-                app.help_message.nag_status.signup = $('#help_signup help_nagging>input[type="checkbox"]').is(":checked");
-                window.localStorage.setObj("cramim-parents-help_message-nag_status", app.help_message.nag_status);
+                nag_status.signup = $('#help_signup .help_nagging>input[type="checkbox"]').is(":checked");
+                window.localStorage.setObj("cramim-parents-help_message-nag_status", nag_status);
             });
         },
     },
