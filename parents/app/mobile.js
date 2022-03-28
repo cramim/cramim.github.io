@@ -136,12 +136,12 @@ app = $.extend(app, {
                 '<div class="help_paragraph">ברוכים הבאים לממשק ההרשמה למעורבות ההורים בכרמים. מוזמנים להירשם לפעילויות בהן תרצו להשתלב. שימו לב, ההרשמה הינה לרבעון הקרוב והיא משותפת לזוג ההורים.</div>' +
                 '<div class="help_paragraph">תחת הלשונית השמאלית: <span class="help_tab">"הוספת פעילויות"</span>, מצאו פעילויות ולחצו על הכפתור "הצטרפ/י".<br>הפעילויות אליהן הצטרפתם נאספות ומופיעות תחת הלשונית הימנית: <span class="help_tab">"הרשימה שלנו"</span>.</div>' +
                 '<div class="help_paragraph">העזרו באפשרויות הסינון בלחיצה על צלמית זכוכית המגדלת <img class="help_filter_ico" src="img/search.png"> כדי למצוא פעילויות לרוחכם.</div>' +
-                '<div class="help_nagging"><input id="cb_help_welcome_nagging" type="checkbox" checked /><label for="cb_help_welcome_nagging">הבנתי, אין צורך להציג הודעה זו שוב.</label></div>' +
+                '<div class="help_nagging"><input id="cb_help_welcome_nagging" type="checkbox" checked="true" /><label for="cb_help_welcome_nagging">הבנתי, אין צורך להציג הודעה זו שוב.</label></div>' +
             '</div>',
         signup:'<div id="help_signup">' + 
             '<div class="help_paragraph">המשיכו לחפש ולהצטרף לפעילויות נוספות, ולסיום לחצו "שמירה" בכפתור הירוק שלמטה.</div>' +
                 '<div class="help_paragraph">בכל שלב (גם לאחר השמירה) ניתן להסיר ההצטרפות ע"י לחיצה על צלמית הפח, המופיעה בצד כל פעילות תחת הלשונית <span class="help_tab">"הרשימה שלנו"</span>.</div>' + 
-                '<div class="help_nagging"><input id="cb_help_signup_nagging" type="checkbox" checked /><label for="cb_help_signup_nagging">הבנתי, אין צורך להציג הודעה זו שוב.</label></div>' +
+                '<div class="help_nagging"><input id="cb_help_signup_nagging" type="checkbox" checked="true" /><label for="cb_help_signup_nagging">הבנתי, אין צורך להציג הודעה זו שוב.</label></div>' +
             '</div'
     },
     login:(uid, on_connect_error, on_user_not_found)=>{
