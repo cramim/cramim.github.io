@@ -808,3 +808,7 @@ body{
     transform: scale(1.5);
     margin-left: 1em;
 }
+
+.help_nagging *{
+    cursor: pointer;
+}

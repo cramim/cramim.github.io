@@ -803,3 +803,29 @@ input[type="button"]{
     border: none;
     border-bottom: 1px black solid;
 }
+
+.help_paragraph, .help_nagging {
+    text-align: right;
+    padding-top: 1em;
+}
+
+.help_nagging input[type="checkbox"]{
+    transform: scale(1.5);
+    margin-left: 1em;
+}
+
+.help_nagging *{
+    cursor: pointer;
+}
+
+.help_tab{
+    text-decoration: underline;
+    font-weight: 500;
+}
+.help_filter_ico{
+    background-color: #528787;
+    border-radius: 100%;
+    vertical-align: middle;
+    width: 2em;
+    margin: 0 0.2em;
+}
