@@ -506,7 +506,7 @@ var app = {
             e.preventDefault(e);
             app.login();
         });
-        $("#bt_user_exit").click(()=>{
+        $("#head_bt_exit").click(()=>{
             app.logout();
         });
         $("#filter_box_wrapper input[type='checkbox']").change(app.filter);

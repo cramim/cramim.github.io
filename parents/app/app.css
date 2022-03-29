@@ -669,23 +669,6 @@ body{
     background-color:darkgreen;
 }
 
-#bt_user_exit {
-    width: 32px;
-    height: 32px;
-    background-image: url(../img/exit.png);
-    background-repeat: no-repeat;
-    background-position: center;
-    cursor: pointer;
-    display: inline-block;
-    margin: 0;
-    vertical-align: middle;
-    border-radius: 32px;
-}
-
-#bt_user_exit:hover{
-    box-shadow: 0 0 8px gray;
-}
-
 #dv_screen_message{
     position: absolute;
     inset: 0;
@@ -822,6 +805,10 @@ body{
 #head_bt_feedback{
     /* background-image: url(../img/feedback.png); */
     background-image: url(../img/feedback.svg);
+}
+
+#head_bt_exit{
+    background-image: url(../img/exit.svg);
 }
 
 #head_toolbox {
