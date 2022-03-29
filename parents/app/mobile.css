@@ -790,7 +790,6 @@ input[type="button"]{
     top: 1em;
     left: 1em;
     z-index: 2;
-    width: 40vw;
     flex-direction: column;
     border: 1px gray solid;
     border-radius: 5px;
