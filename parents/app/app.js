@@ -512,6 +512,12 @@ var app = {
         window.onbeforeunload = function(){
             if (app.changed() && $("#dv_login").is(":hidden"))  return 'אזהרה! השינויים לא נשמרו.';
         };
+        $("#head_bt_contact").click(()=>{
+            window.open("https://chat.whatsapp.com/Bq5DjkU7uBL9ntJuuDcuCp");
+        });
+        $("#head_bt_feedback").click(()=>{
+            window.open("https://forms.gle/GsKDPFPszqFMJjsHA");
+        });
     },
     init_user: ()=>{
         app.dat.user = window.localStorage.getObj("cramim-parents-user");

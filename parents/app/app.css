@@ -482,19 +482,20 @@ body{
     padding-left: 2em;
 }
 
-#bt_home{
-    position: absolute;
-    left: 2em;
-    top: 1.2em;
+#bt_home {
+    position: fixed;
+    right: 2em;
+    bottom: 2em;
     width: 40px;
     height: 40px;
-    background-image: url(../img/blue_re-pict-house-base.png_32.png);
+    background-image: url(../img/mobile_up.png);
     background-repeat: no-repeat;
     cursor: pointer;
     background-position: center;
     border-radius: 32px;
-    background-size: 64%;
     display: none;
+    background-color: #ffffff;
+    border: 1px silver solid;
 }
 
 #bt_home:hover{
@@ -811,4 +812,53 @@ body{
 
 .help_nagging *{
     cursor: pointer;
+}
+
+#head_bt_contact{
+    background-image: url(../img/contact.png);
+}
+
+#head_bt_feedback{
+    background-image: url(../img/feedback.png);
+}
+
+#head_toolbox {
+    inset: 0 auto 0 0;
+    position: absolute;
+    direction: ltr;
+    /* height: 100%; */
+    background-color: azure;
+    border-radius: 0 0 2em 0;
+    border: 1px #d4e1e1 solid;
+    box-shadow: none;
+    border: 0;
+}
+
+#head_toolbox td {
+    padding: 1em;
+    background-repeat: no-repeat;
+    background-repeat: no-repeat;
+    background-position: center 10px;
+    background-size: 55%;
+    min-width: 5em;
+    text-align: center;
+    cursor: pointer;
+}
+
+.head_bt {
+    padding-top: 78%;
+    font-weight: 500;
+    color: darkslategrey;
+}
+
+#head_toolbox td:hover {
+    background-size: 60%;
+}
+
+.head_bt:hover{
+    text-decoration: underline;
+}
+
+#main_box.head_shrink #head_toolbox{
+    border-bottom: 1px #d4e1e1 solid;
 }
