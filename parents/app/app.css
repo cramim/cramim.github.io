@@ -435,16 +435,17 @@ body{
     inset: 0.1em;
 }
 
-#filter_box_wrapper{
-    padding: 15px;
+#filter_box_wrapper {
+    padding: 15px 0;
     /* border-bottom: 1px silver solid; */
-    background-color: #1b74e46b;
+    background-color: #ffffff90;
     overflow: auto;
 }
 
-.filter_box{
+.filter_box {
     padding: 0.5em 15em 0.5em 0.5em;
     white-space: nowrap;
+    border-bottom: 1px dotted silver;
 }
 
 .filter_box>div{
