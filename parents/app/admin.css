@@ -78,6 +78,7 @@ div[report_type]{display: none;}
     font-size: 2em;
     font-weight: 600;
     text-align: left;
+    text-decoration: underline;
 }
 
 .bt_download_table,.bt_download_activity_table {
@@ -96,6 +97,23 @@ div[report_type]{display: none;}
 .bt_download_table:hover,.bt_download_activity_table:hover {
     transform: scale(1.2);
 }
+
+.bt_print_table,.bt_print_activity_table {
+    position: absolute;
+    width: 3em;
+    top: 0;
+    left: 3em;
+    bottom: 0;
+    /* cursor: pointer; */
+    background-image: url(../img/print.svg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 1.5rem;
+}
+
+/* .bt_download_table:hover,.bt_download_activity_table:hover {
+    transform: scale(1.2);
+} */
 
 .dv_activity_progress{
     width:12em;

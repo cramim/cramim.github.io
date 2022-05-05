@@ -233,6 +233,7 @@ var app = {
         build_grade_contacts(reponse_ex_contacts.grade_A, (item)=>{
             const grade_contact = {
                 kid_name: item[1],
+                last_name: item[0],
                 grade: "א",
                 class: (item[4] == "א'2") ? 2 : 1,
                 phone_1: item[6],
@@ -245,6 +246,7 @@ var app = {
         build_grade_contacts(reponse_ex_contacts.grade_B, (item)=>{
             const grade_contact = {
                 kid_name: item[0],
+                last_name: item[1],
                 grade: "ב",
                 class: (item[2] == "2") ? 2 : 1,
                 phone_1: item[7],
@@ -257,6 +259,7 @@ var app = {
         build_grade_contacts(reponse_ex_contacts.grade_C, (item)=>{
             const grade_contact = {
                 kid_name: item[0],
+                last_name: item[1],
                 grade: "ג",
                 class: (item[2] == "פינגווין") ? 2 : 1,
                 phone_1: item[6],
@@ -269,6 +272,7 @@ var app = {
         build_grade_contacts(reponse_ex_contacts.grade_D, (item)=>{
             const grade_contact = {
                 kid_name: item[0],
+                last_name: item[1],
                 grade: "ד",
                 class: 1, //?
                 phone_1: item[6],
@@ -281,6 +285,7 @@ var app = {
         build_grade_contacts(reponse_ex_contacts.grade_E, (item)=>{
             const grade_contact = {
                 kid_name: item[0],
+                last_name: item[1],
                 grade: "ה",
                 class: 1, //?
                 phone_1: item[6],
@@ -326,7 +331,7 @@ var app = {
                     `</tr>`
             });
             html += `<div class="class_head">כיתת ${class_name}</div>`;
-            html += `<table class="tb_class" class_name="${class_name}"><thead><tr><th>משפחה</th><th>שעות</th><th>פעילויות<div class="bt_download_table" title="שמור לקובץ אקסל"></div></th></tr></thead>${class_html}</table>`;
+            html += `<table class="tb_class" class_name="${class_name}"><thead><tr><th>משפחה</th><th>שעות</th><th>פעילויות<div class="bt_download_table" title="שמור לקובץ אקסל"></div><div class="bt_print_table" title="הדפס"></div></th></tr></thead>${class_html}</table>`;
         }
         build_class(app.dat.idx.contact_grade_class["א1"], "דורבנים");
         build_class(app.dat.idx.contact_grade_class["א2"], "איילים");
