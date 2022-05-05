@@ -827,7 +827,6 @@ body{
 #head_toolbox td {
     padding: 1em;
     background-repeat: no-repeat;
-    background-repeat: no-repeat;
     background-position: center 10px;
     background-size: 55%;
     min-width: 5em;
@@ -856,31 +855,3 @@ body{
     transition: 200ms;
     box-shadow: 0px 15px 10px -15px #111; 
 }
-
-/* .heart {
-    width: 100px;
-    height: 100px;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    background: url(../img/heart.png) no-repeat;
-    background-position: 0 0;
-    cursor: pointer;
-    animation: fave-heart 1s steps(28);
-}
-
-.heart:hover {
-    background-position: -2800px 0;
-    transition: background 1s steps(28);
-}
-
-@keyframes fave-heart {
-    0% {
-        background-position: 0 0;
-    }
-    100% {
-        background-position: -2800px 0;
-    }
-}
-   */

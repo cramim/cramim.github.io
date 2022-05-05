@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>מעורבות הורים למען כרמים</title>
+    <script src="lib/sweetalert2/sweetalert2.all.js"></script>
+    <link rel="icon" type="image/png" href="img/cramim96.png" />
+    <script src="lib/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="app/app.css">
+    <link rel="stylesheet" href="app/admin.css">
+    <link rel="stylesheet" href="app/tooltip.css">
+    <script src="app/admin.js"></script>
+</head>
+<body>
+    <div id="dv_screen_message"><div>
+        <div><div id="dv_screen_message_logo"></div></div>
+        <div id="dv_screen_message_txt"></div>
+    </div></div>
+    <div id="dv_login">
+        <form id="frm_login"><table>
+            <tr><td>
+                <div id="dv_login_logo"></div>
+            </td></tr>
+            <tr><td id="dv_login_title">מעורבות הורים למען כרמים</td></tr>
+            <tr><td>
+                <input id="eb_login" type="text" placeholder="כתובת אימייל או מס' טלפון">
+            </td></tr>
+            <tr><td id="td_login_bottom">
+                <input id="bt_login" type="submit" value="כניסה">
+            </td></tr>
+        </table></form>
+    </div>
+	<div id="mask_div"></div>
+    <div id="parent" class="parent">
+        <div class="div2" id="main_box">
+            <div id="header">
+                <div id="header_logo"></div>
+                <div id="header_title_1">מעורבות הורים למען כרמים</div>
+                <div id="header_title_2">לוח פעילויות - רישום לרבעון 4 של שנת תשפ"ב</div>
+                <div id="ttl_mode"></div>
+                <!-- <div id="head_toolbox">
+                    <div id="head_bt_contact"><div>צור קשר</div></div>
+                    <div id="head_bt_feedback"><div>שלח משוב</div></div>
+                </div> -->
+                <table id="head_toolbox">
+                    <tr>
+                        <td id="head_bt_exit"><div class="head_bt"><span>יציאה</span></div></td>
+                        <td id="head_bt_feedback"><div  class="head_bt"><span>שלח משוב</span></div></td>
+                        <td id="head_bt_contact"><div class="head_bt"><span>צור קשר</span></div></td>
+                    </tr>
+                </table>
+            </div>
+            <div report_type="BY_ACTIVITY">
+                <div id="filter_box_wrapper">
+                    <div class="filter_box" id="filter_box_cat">
+                        <div class="filter_box_title">קטגוריה:</div>
+                        <div class="filter_box_item">
+                            <input type="checkbox" name="cb_filter_cat_1" id="cb_filter_cat_1" filter_name="וועדות">
+                            <span>וועדות</span>
+                        </div>
+                        <div class="filter_box_item">
+                            <input type="checkbox" name="cb_filter_cat_2" id="cb_filter_cat_2" filter_name="העברת פעילות">
+                            <span>העברת פעילות</span>
+                        </div>
+                        <div class="filter_box_item">
+                            <input type="checkbox" name="cb_filter_cat_3" id="cb_filter_cat_3" filter_name="ארגון">
+                            <span>ארגון</span>
+                        </div>
+                        <div class="filter_box_item">
+                            <input type="checkbox" name="cb_filter_cat_4" id="cb_filter_cat_4" filter_name='סעפשים'>
+                            <span>סעפש"ים</span>
+                        </div>
+                        <div class="filter_box_item">
+                            <input type="checkbox" name="cb_filter_cat_5" id="cb_filter_cat_5" filter_name="ליווי פעילות">
+                            <span>ליווי פעילות</span>
+                        </div>
+                    </div>
+                    <div class="filter_box" id="filter_box_circle">
+                        <div class="filter_box_title">מעגל השפעה:</div>
+                        <div class="filter_box_item">
+                            <input type="checkbox" name="cb_filter_circle_1" id="cb_filter_circle_1" filter_name="כיתה">
+                            <span>כיתה</span>
+                        </div>
+                        <div class="filter_box_item">
+                            <input type="checkbox" name="cb_filter_circle_2" id="cb_filter_circle_2" filter_name="שכבה">
+                            <span>שכבה</span>
+                        </div>
+                        <div class="filter_box_item">
+                            <input type="checkbox" name="cb_filter_circle_3" id="cb_filter_circle_3" filter_name="בית ספר">
+                            <span>בית ספר</span>
+                        </div>
+                    </div>
+                    <div class="filter_box" id="filter_box_timing">
+                        <div class="filter_box_title">תזמון:</div>
+                        <div class="filter_box_item">
+                            <input type="checkbox" name="cb_filter_timing_1" id="cb_filter_timing_1" filter_name="פעם בחודש">
+                            <span>פעם בחודש</span>
+                        </div>
+                        <div class="filter_box_item">
+                            <input type="checkbox" name="cb_filter_timing_2" id="cb_filter_timing_2" filter_name="חד פעמי אינטנסיבי">
+                            <span>חד פעמי אינטנסיבי</span>
+                        </div>
+                        <div class="filter_box_item">
+                            <input type="checkbox" name="cb_filter_timing_3" id="cb_filter_timing_3" filter_name="משימות קצרות בהתראה קצרה">
+                            <span>משימות קצרות בהתראה קצרה</span>
+                        </div>
+                        <div class="filter_box_item">
+                            <input type="checkbox" name="cb_filter_timing_4" id="cb_filter_timing_4" filter_name="משתנה לפי הצורך">
+                            <span>משתנה לפי הצורך</span>
+                        </div>
+                        <div class="filter_box_item">
+                            <input type="checkbox" name="cb_filter_timing_5" id="cb_filter_timing_5" filter_name="מאמץ ממוקד">
+                            <span>מאמץ ממוקד</span>
+                        </div>
+                        <div class="filter_box_item">
+                            <input type="checkbox" name="cb_filter_timing_6" id="cb_filter_timing_6" filter_name="כמעט מתי שבא לך">
+                            <span>כמעט מתי שבא לך</span>
+                        </div>
+                    </div>
+                </div>
+                <div id="activity_boxes_wrapper"></div>
+                <div id="bt_home"></div>
+            </div>
+            <div report_type="BY_CLASS">
+                <div id="filter_box_class_wrapper">
+                    <!-- <div class="filter_box" id="filter_box_grade">
+                        <div class="filter_box_title">כיתה:</div>
+                        <div class="filter_box_item">
+                            <input type="checkbox" name="cb_filter_class_A1" id="cb_filter_class_A1" filter_name="grade_A_1">
+                            <span>פינגווינים</span>
+                        </div>
+                        <div class="filter_box_item">
+                            <input type="checkbox" name="cb_filter_class_A2" id="cb_filter_class_A2" filter_name="grade_A_2">
+                            <span>דולפינים</span>
+                        </div>
+                    </div> -->
+                </div>
+                <div id="class_boxes_wrapper"></div>
+            </div>
+        </div>
+        <div id="option_box" class="div3">
+            <div id="option_box_head">דו"חות</div>
+            <div id="option_box_pick_report">
+                <select id="sl_report_type">
+                    <option value="BY_ACTIVITY">השתתפות לפי פעילות</option>
+                    <option value="BY_CLASS">השתתפות לפי כיתות</option>
+                </select>
+            </div>
+            <div id="dv_report_options">
+                <div report_type="BY_ACTIVITY">
+                    <div><input type="radio" id="rb_sort_by_signup_percent" name="rb_BY_ACTIVITY" value="sort_by_signup_percent"><label for="rb_sort_by_signup_percent">מיין לפי אחוז השתתפות</label></div>
+                    <div><input type="radio" id="rb_sort_by_signup_count" name="rb_BY_ACTIVITY" value="sort_by_signup_count"><label for="rb_sort_by_signup_count">מיין לפי כמות משתתפים</label></div>
+                    <div><input type="radio" id="rb_sort_by_alphabet" name="rb_BY_ACTIVITY" value="sort_by_alphabet"><label for="sort_by_alphabet">מיין לפי האלף בית</label></div>
+                </div>
+                <div report_type="BY_CLASS">
+                    <!-- <div>BY CLASS</div> -->
+                </div>
+            </div>
+        </div>
+    </div>    
+</body>
+</html>

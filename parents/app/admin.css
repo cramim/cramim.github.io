@@ -1,0 +1,116 @@
+.activity_box_desc{
+    height: initial;
+    padding: 0.5em;
+    overflow-y: auto;
+}
+.tb_activity_members tr:nth-child(even) {background: #f8f8f8}
+.tb_activity_members tr:nth-child(odd) {background: #f0f0f0}
+.tb_activity_members td {
+    padding: 6px;
+    white-space: nowrap;
+}
+.tb_activity_members td:first-child {font-weight: 600}
+.tb_activity_members tr:hover {background-color: #e5e5e5;}
+
+/* #head_bt_feedback{display: none;} */
+
+#option_box_head{
+    background-color: #2f4f4f;
+    padding: 15px;
+    color: white;
+    text-align: center;
+    font-size: 2em;
+}
+
+#option_box_pick_report{
+    padding: 1em;
+}
+
+#sl_report_type{
+    width: 100%;
+    font-size: 1.5em;
+    padding: 0.5em;
+}
+
+#dv_report_options>div{
+    padding: 1em;
+    font-size: 1.2em;
+}
+
+#dv_report_options>div>div{
+    padding: 1em;
+}
+
+#dv_report_options>div>div label{
+    padding-right : 0.5em;
+}
+
+div[report_type]{display: none;}
+
+#filter_box_class_wrapper {
+    padding: 15px 0;
+    background-color: #ffffff90;
+    overflow: auto;
+}
+
+#class_boxes_wrapper{
+    padding: 0 2em 2em 2em;
+}
+.tb_class{
+    background-color: white;
+    width: 100%;
+}
+.tb_class tbody tr:nth-child(even) {background: #f8f8f8}
+.tb_class tbody tr:nth-child(odd) {background: #f0f0f0}
+.tb_class td, .tb_class th {
+    padding: 6px;
+    /* white-space: nowrap; */
+}
+.tb_class td:first-child {font-weight: 600}
+.tb_class thead {position: relative;}
+.tb_class tbody tr:hover {background-color: #e5e5e5;}
+
+.tb_class thead tr {background-color: aliceblue;}
+
+.class_head{
+    padding: 1em 0.5em;
+    color: darkslategrey;
+    font-size: 2em;
+    font-weight: 600;
+    text-align: left;
+}
+
+.bt_download_table,.bt_download_activity_table {
+    position: absolute;
+    width: 3em;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    cursor: pointer;
+    background-image: url(../img/download.svg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 1.5rem;
+}
+
+.bt_download_table:hover,.bt_download_activity_table:hover {
+    transform: scale(1.2);
+}
+
+.dv_activity_progress{
+    width:12em;
+}
+
+.activity_box{
+    width: 80%;
+}
+
+.activity_box:hover{
+    transform: initial;
+    transition: initial;
+}
+
+.activity_box_title{
+    position: relative;
+}
+.activity_box_status>table{width: initial;}
