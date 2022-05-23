@@ -14,16 +14,27 @@ var js = {
         return is_mobile;
     },
     urlParam:name=>{
-        var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+        if (!name) return null;
+        var results = new RegExp('[\?&]' + name.toLowerCase() + '=([^&#]*)').exec(window.location.href.toLocaleLowerCase());
         if (!results) return null;
         return decodeURI(results[1]) || 0;
-    }}
+    },
+    hebYear:year=>{
+        const d = Math.trunc(year /10) % 10;
+        const y = Math.trunc(year) % 10;
+        const hd = 'סעפצקרשת'[d];
+        const hy = (y==0) ? '' : 'אבגדהוזחטי'[y-1];
+        return (y==0) ? `תש"${hd}` : `תש${hd}"${hy}`;
+    }
+}
 
 var app = {
     dat:{
         srv_url: 'https://script.google.com/macros/s/AKfycbw9iVdg5gGV0OzF_KOMDVjFZkL-HrIMd9vjiF7vsO-1dNcs0eRx_L5-g9D4rMEMGDjMTQ/exec',
         server_load_response: null,
+        campaign_id: null,
         user:null,
+        campaign_list:null,
         activity_list:[],
         signup_list:[],
         user_goal:0,
@@ -33,7 +44,8 @@ var app = {
         idx:{
             activity_list:{},
             activity_groups:{},
-            group_by_activity:{}
+            group_by_activity:{},
+            campaign_by_id:{}
         }
     },
     is_mobile: false,
@@ -243,12 +255,39 @@ var app = {
         $("#user_box_head_id").html(app.dat.user.uid);
         app.dat.user_goal = response.user_goal;
     },
+    build_campaign_list:(response)=>{
+        app.dat.campaign_list = response.campaign_list;
+        $.each(response.campaign_list, (i, campaign)=>{
+            app.dat.idx.campaign_by_id[campaign.id] = campaign;
+        });
+    },
+    build_campaign_menu:()=>{
+        var html = ''
+        $.each(app.dat.campaign_list, (i, campaign)=>{
+            html += `<div id="bt_campaign_${campaign.id}" class="bt_campaign"><div></div>${campaign.title}</div>`;
+        });
+        $("#dv_campaign_menu_mask>div").html(html);
+        $.each(app.dat.campaign_list, (i, campaign)=>{
+            $("#bt_campaign_" + campaign.id + ">div").css("background-color", campaign.color);
+            $("#bt_campaign_" + campaign.id).click(()=>{app.change_campaign(campaign.id)});
+        });
+    },
+    build_title:()=>{
+        $('#campaign_title').html(app.dat.idx.campaign_by_id[app.dat.campaign_id].title);
+    },
+    build_theme:()=>{
+        document.documentElement.style.setProperty('--campaign-color', app.dat.idx.campaign_by_id[app.dat.campaign_id].color);
+    },
     rebuild:(response)=>{
         app.dat.server_load_response = JSON.parse(JSON.stringify(response));
         app.clean_google_sheet_array(response.activity_list, false, true);
         app.build_activity_list(response.activity_list);
         app.build_signup_list(response.signup_list);
         app.build_user_info(response);
+        app.build_campaign_list(response);
+        app.build_campaign_menu();
+        app.build_title();
+        app.build_theme();
         app.enable_user_toolbox();
         app.refresh_user_progress();
         app.filter();
@@ -342,7 +381,8 @@ var app = {
         if (uid == "") return;
         app.post({
             act_id: "load",
-            uid: uid
+            uid: uid,
+            campaign_id: app.dat.campaign_id
         },{
             on_success :(response)=>{
                 app.rebuild(response);
@@ -397,6 +437,7 @@ var app = {
         const post_data = {
             act_id: "save",
             uid: app.dat.user.uid,
+            campaign_id: app.dat.campaign_id,
             signup_list: [],
             unsign_list: []
         }
@@ -519,6 +560,15 @@ var app = {
         $("#head_bt_feedback").click(()=>{
             window.open("https://forms.gle/GsKDPFPszqFMJjsHA");
         });
+        $("#head_bt_campaign").click(()=>{
+            $("#dv_campaign_menu_mask").css("display", "flex");
+        });
+        $("#dv_campaign_menu_mask").click(()=>{
+            $("#dv_campaign_menu_mask").fadeOut();
+        });
+    },
+    init_campaign:()=>{
+        app.dat.campaign_id = js.urlParam("campaign") || 1;
     },
     init_user: ()=>{
         app.dat.user = window.localStorage.getObj("cramim-parents-user");
@@ -539,6 +589,7 @@ var app = {
         $("#parent").hide();
         $("#dv_login").hide();
         $("#dv_screen_message").hide();
+        app.init_campaign();
         app.init_scroll();
         app.init_buttons();
         app.init_user();
@@ -550,10 +601,16 @@ var app = {
         }
         $("body").show();
     },
+    change_campaign:(id)=>{
+        window.location.href = "index.html?campaign=" + id;
+    },
     start: ()=>{
         if (js.is_mobile()) {
             // app.show_screen_message("הדף עדיין לא מתאים למכשירים ניידים");
-            if (window.location.href.toLowerCase().indexOf("mobile.html")<0) window.location.href = "mobile.html";
+            if (window.location.href.toLowerCase().indexOf("mobile.html")<0) {
+                const query = window.location.href.split('?')[1]||'';
+                window.location.href = "mobile.html" + ((query == '') ? '' : "?" + query);
+            }
         } else {
             app.init();
         }

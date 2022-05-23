@@ -62,6 +62,7 @@ app = $.extend(app, {
             app.abort();
         });
         $("#bt_user_save").click(()=>{
+            app.change_tab("user");
             app.change_page("user");
             app.save();
         });
@@ -79,6 +80,12 @@ app = $.extend(app, {
         });
         $("#bt_user_feedback").click(()=>{
             window.open("https://forms.gle/GsKDPFPszqFMJjsHA");
+        });
+        $("#bt_change_campaign").click(()=>{
+            $("#dv_campaign_menu_mask").show();
+        });
+        $("#dv_campaign_menu_mask").click(()=>{
+            $("#dv_campaign_menu_mask").fadeOut();
         });
         $("#tab_activity, #tab_user").click((el)=>{
             const id = $(el.target).attr("page_id");
@@ -144,13 +151,17 @@ app = $.extend(app, {
                 '<div class="help_nagging"><input id="cb_help_signup_nagging" type="checkbox" checked="true" /><label for="cb_help_signup_nagging">הבנתי, אין צורך להציג הודעה זו שוב.</label></div>' +
             '</div'
     },
+    change_campaign:(id)=>{
+        window.location.href = "mobile.html?campaign=" + id;
+    },
     login:(uid, on_connect_error, on_user_not_found)=>{
         app.clear();
         uid = uid || $("#eb_login").val().trim();
         if (uid == "") return;
         app.post({
             act_id: "load",
-            uid: uid
+            uid: uid,
+            campaign_id: app.dat.campaign_id
         },{
             on_success :(response)=>{
                 $("#dv_header").show();
@@ -180,6 +191,7 @@ app = $.extend(app, {
         $("#dv_screen_message").hide();
         $("#user_box_head_wrapper").hide();
         $("#dv_filter_toolbox").hide();
+        app.init_campaign();
         app.init_buttons();
         app.init_user();
         if (app.dat.user) {
@@ -193,7 +205,10 @@ app = $.extend(app, {
     start_mobile: ()=>{
         if (!js.is_mobile()) {
             // app.show_screen_message("דף זה מיועד למכשירים ניידים");
-            if (window.location.href.toLowerCase().indexOf("index.html")<0) window.location.href = "index.html";
+            if (window.location.href.toLowerCase().indexOf("index.html")<0) {
+                const query = window.location.href.split('?')[1]||'';
+                window.location.href = "index.html" + ((query == '') ? '' : "?" + query);
+            }
         } else {
             app.init();
         }
