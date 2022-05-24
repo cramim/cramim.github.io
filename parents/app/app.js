@@ -517,6 +517,13 @@ var app = {
     on_user_toolbox_enabled:(enabled)=>{
         $("#user_toolbox").toggleClass("user_toolbox_enabled", Boolean(enabled));
     },
+    toggle_menu:()=>{
+        const ratio = $("#header").width() / $("#header_title_1>span").width();
+        // const ratio = entries[0].contentRect.width / $("#header_title_1>span").width();
+        const shrink = Boolean(ratio>2.15);
+        $("#head_toolbox").toggle(shrink);
+        $("#head_toolbox_ico").toggle(!shrink);
+    },
     init_scroll:()=>{
         $("#user_box").on("scroll", ()=>{
             var st = $("#user_box")[0].scrollTop;
@@ -566,6 +573,9 @@ var app = {
         $("#dv_campaign_menu_mask").click(()=>{
             $("#dv_campaign_menu_mask").fadeOut();
         });
+        $("#head_toolbox_ico").click(()=>{
+            $("#head_toolbox").show();
+        });
     },
     init_campaign:()=>{
         app.dat.campaign_id = js.urlParam("campaign") || 1;
@@ -584,6 +594,10 @@ var app = {
         $("body").addClass("mode_" + app.dat.mode);
         if (app.dat.mode) $("#ttl_mode").html(app.dat.mode).show();
     },
+    init_resize: ()=>{
+        new ResizeObserver(app.toggle_menu).observe($("#header")[0]);
+        $("#head_toolbox").mouseleave(app.toggle_menu);
+    },
     init: ()=>{
         console.log("app.init")
         $("#parent").hide();
@@ -592,6 +606,7 @@ var app = {
         app.init_campaign();
         app.init_scroll();
         app.init_buttons();
+        app.init_resize();
         app.init_user();
         app.init_mode();
         if (app.dat.user) {

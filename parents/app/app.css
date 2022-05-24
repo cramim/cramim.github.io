@@ -820,6 +820,22 @@ body{
     background-image: url(../img/exit.svg);
 }
 
+#head_toolbox_ico {
+    inset: 0 auto 0 0;
+    position: absolute;
+    width: 4em;
+    background-image: url(../img/ico_menu.svg);
+    background-repeat: no-repeat;
+    background-size: 80%;
+    background-position: center;
+    cursor: pointer;
+    background-color: inherit;
+}
+
+#head_toolbox_ico:hover {
+    background-size: 90%;
+}
+
 #head_toolbox {
     inset: 0 auto 0 0;
     position: absolute;
