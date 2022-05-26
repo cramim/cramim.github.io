@@ -554,7 +554,37 @@ body{
     position: relative;
 }
 
+#eb_register_family_name{
+    text-align: right;
+    direction: rtl;
+    font-size: 1.5rem;
+    padding: 0.3rem;
+    border-radius: 8px;
+    border: 2px gray solid;
+    box-shadow: 2px 2px 2px white;
+    margin-top: 1em;
+    display: none;
+}
+
+.dv_login_error_msg {
+    color: red;
+    font-size: 1.3em;
+    font-weight: 500;
+    margin-top: 5px;
+    display: none;
+}
+
 #eb_login {
+    font-size: 1.5rem;
+    direction: ltr;
+    text-align: left;
+    padding: 0.3rem;
+    border-radius: 8px;
+    border: 2px gray solid;
+    box-shadow: 2px 2px 2px white;
+}
+
+/* #eb_login {
     font-size: 1rem;
     direction: ltr;
     text-align: left;
@@ -562,7 +592,7 @@ body{
     border-radius: 1rem;
     border: 2px gray solid;
     box-shadow: 2px 2px 2px white;
-}
+} */
 
 #dv_login_logo {
     background-image: url(../img/logo.png);
@@ -594,21 +624,15 @@ body{
     margin: 2rem 0 1rem 0;
 }
 
+#bt_login:hover{
+    color: #fbfbd0;
+}
+
 #dv_login_title {
     font-size: 2.5rem;
     padding: 3rem 1rem 2rem;
     color: #2f4f4f;
     text-shadow: 2px 2px 2px white;
-}
-
-#eb_login {
-    font-size: 1.5rem;
-    direction: ltr;
-    text-align: left;
-    padding: 0.3rem;
-    border-radius: 8px;
-    border: 2px gray solid;
-    box-shadow: 2px 2px 2px white;
 }
 
 ::-webkit-input-placeholder { /* Edge */
@@ -922,4 +946,19 @@ body{
     height: 1.5em;
     right: 1em;
     border-radius: 50%;
+}
+
+#login_register_link {
+    font-size: 1.3em;
+    font-weight: 500;
+    color: darkslategrey;
+    cursor: pointer;
+    text-decoration: underline;
+    display: inline-block;
+}
+
+#login_register_link:hover {
+    text-decoration: initial;
+    /* transform: scale(1.1); */
+    text-shadow: 0 0 1px #fbfbd0;
 }

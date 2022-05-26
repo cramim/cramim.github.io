@@ -25,7 +25,36 @@ var js = {
         const hd = 'סעפצקרשת'[d];
         const hy = (y==0) ? '' : 'אבגדהוזחטי'[y-1];
         return (y==0) ? `תש"${hd}` : `תש${hd}"${hy}`;
+    },
+    is_valid_email : s=> {
+        if (!s) return false;
+        var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,6})?$/;
+        return emailReg.test(s);
+    },
+    is_valid_phone : (s, is_cel) =>{
+        if (!s) return false;
+        if (s.startsWith('972')) {s = s.substring(3); if ('0123456789'.indexOf(s[0])==-1) s=s.substring(1);}
+        if (s.startsWith('+972')) {s = s.substring(4); if ('0123456789'.indexOf(s[0])==-1) s=s.substring(1);}
+        if (!s.startsWith('0')) s = '0' + s;
+        if (s.length < 9) return false;
+        if (s[0] != '0') return false;
+        if (is_cel && s[1] != '5') return false;
+        var number = '';
+        if ('23489'.indexOf(s[1]) >-1) number = s.substring(2); 
+        if ('57'.indexOf(s[1]) >-1) number = s.substring(3);
+        var idx = 0;
+        for(var i=0; i <number.length; i++) {
+            if ('0123456789'.indexOf(number[i])>-1) break;
+            idx ++;
+        }
+        var n = number.substring(idx);
+        for(var i=0; i <n.length; i++) {    
+            if ('0123456789'.indexOf(n[i])==-1) return false;
+        }
+        if (n.length != 7) return false;
+        return true;
     }
+
 }
 
 var app = {
@@ -41,6 +70,7 @@ var app = {
         initial_signup_list:[],
         mandatory_activity_list:[],
         mode:null,
+        login_mode:"LOGIN",
         idx:{
             activity_list:{},
             activity_groups:{},
@@ -322,6 +352,7 @@ var app = {
         const do_logout = ()=>{
             app.clear();
             app.clear_storage();
+            app.set_login_mode("LOGIN");
             $("#eb_login").val("");
             $("#dv_login").fadeIn();
         };
@@ -376,14 +407,29 @@ var app = {
         },
     },
     login:(uid, on_connect_error, on_user_not_found)=>{
+        $(".dv_login_error_msg").hide();
         app.clear();
         uid = uid || $("#eb_login").val().trim();
-        if (uid == "") return;
-        app.post({
+        var post_data = {
             act_id: "load",
             uid: uid,
+            register_user: app.dat.login_mode == "REGISTER",
             campaign_id: app.dat.campaign_id
-        },{
+        };
+        if (app.dat.login_mode == "REGISTER") {
+            const register_family_name = $("#eb_register_family_name").val().trim();
+            const valid_email = js.is_valid_email(uid);
+            const valid_phone = js.is_valid_phone(uid);
+            if (!valid_email && !valid_phone) $("#dv_login_uid_error_msg").show();
+            const valid_name = register_family_name != '';
+            if (!valid_name) $("#dv_login_name_error_msg").show();
+            if (!(valid_email || valid_phone) || !valid_name) return;
+            if (valid_email) post_data.register_email = uid;
+            if (valid_phone) post_data.register_phone = uid;
+            post_data.register_family_name = register_family_name;
+        }
+        if (uid == "") return;
+        app.post(post_data,{
             on_success :(response)=>{
                 app.rebuild(response);
                 $("#dv_login").fadeOut();
@@ -538,6 +584,13 @@ var app = {
             if (st<50 && hc) $("#main_box").removeClass("head_shrink");
         });
     },
+    set_login_mode:(mode)=>{
+        $("#eb_register_family_name").toggle(mode=="REGISTER");
+        $("#bt_login").val((mode=="LOGIN")?"כניסה":"הרשמה");
+        $("#login_register_link").html((mode=="LOGIN")?"הרשמה למשפחות חדשות":"כניסה למשפחות רשומות");
+        $(".dv_login_error_msg").hide();
+        app.dat.login_mode = mode;
+    },
     init_buttons: ()=>{
         $("#bt_home").click(app.scroll_home);
         $(".filter_box_item").click((ev)=>{
@@ -575,6 +628,9 @@ var app = {
         });
         $("#head_toolbox_ico").click(()=>{
             $("#head_toolbox").show();
+        });
+        $("#login_register_link").click(()=>{
+            app.set_login_mode((app.dat.login_mode == "LOGIN")?"REGISTER":"LOGIN");
         });
     },
     init_campaign:()=>{
