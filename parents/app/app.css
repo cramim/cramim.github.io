@@ -948,6 +948,7 @@ body{
     border-radius: 50%;
 }
 
+/*
 #login_register_link {
     font-size: 1.3em;
     font-weight: 500;
@@ -959,6 +960,14 @@ body{
 
 #login_register_link:hover {
     text-decoration: initial;
-    /* transform: scale(1.1); */
     text-shadow: 0 0 1px #fbfbd0;
+}
+*/
+
+#login_register_link {
+    font-size: 1.3em;
+    font-weight: 500;
+    color: gray;
+    cursor: not-allowed;
+    display: inline-block;
 }

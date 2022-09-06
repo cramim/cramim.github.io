@@ -287,9 +287,12 @@ var app = {
     },
     build_campaign_list:(response)=>{
         app.dat.campaign_list = response.campaign_list;
+        app.dat.active_campaign_count = 0;
         $.each(response.campaign_list, (i, campaign)=>{
             app.dat.idx.campaign_by_id[campaign.id] = campaign;
+            if (campaign.status != 'סגור') app.dat.active_campaign_count++;
         });
+        if (app.dat.active_campaign_count == 1) $("#head_bt_campaign").hide();
     },
     build_campaign_menu:()=>{
         var html = ''
@@ -629,12 +632,14 @@ var app = {
         $("#head_toolbox_ico").click(()=>{
             $("#head_toolbox").show();
         });
+        /* disabled sep 1 2022
         $("#login_register_link").click(()=>{
             app.set_login_mode((app.dat.login_mode == "LOGIN")?"REGISTER":"LOGIN");
         });
+        */
     },
     init_campaign:()=>{
-        app.dat.campaign_id = js.urlParam("campaign") || 1;
+        app.dat.campaign_id = js.urlParam("campaign") || 2;
     },
     init_user: ()=>{
         app.dat.user = window.localStorage.getObj("cramim-parents-user");

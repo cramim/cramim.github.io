@@ -42,6 +42,9 @@ var js = {
         document.body.appendChild(temp_link);
         temp_link.click();
         document.body.removeChild(temp_link);
+    },
+    AB2Num:(letter)=>{
+        return letter?.toLowerCase().charCodeAt(0) - 97
     }
 }
 
@@ -186,11 +189,11 @@ var app = {
         });
         $.each(reponse_ex_contacts.families, (i, item)=>{
             const family = {
-                family_name: item[0],
-                phone_1: item[6],
-                email_1: item[7],
-                phone_2: item[9],
-                email_2: item[10]
+                family_name: item[js.AB2Num('A')],
+                phone_1: item[js.AB2Num('R')],
+                email_1: item[js.AB2Num('P')],
+                phone_2: item[js.AB2Num('O')],
+                email_2: item[js.AB2Num('S')]
             }
             var contact = 
                 app.dat.idx.contacts_strip[app.contact_tools.strip(family.phone_1)] ||
@@ -232,66 +235,79 @@ var app = {
         }
         build_grade_contacts(reponse_ex_contacts.grade_A, (item)=>{
             const grade_contact = {
-                kid_name: item[1],
-                last_name: item[0],
+                kid_name: item[js.AB2Num("A")],
+                last_name: item[js.AB2Num("B")],
                 grade: "א",
-                class: (item[4] == "א'2") ? 2 : 1,
-                phone_1: item[6],
-                email_1: item[8],
-                phone_2: item[11],
-                email_2: item[13]
+                class: (item[js.AB2Num("C")]?.includes('2')) ? "2" : 1,
+                phone_1: item[js.AB2Num("I")],
+                email_1: item[js.AB2Num("K")],
+                phone_2: item[js.AB2Num("N")],
+                email_2: item[js.AB2Num("P")]
             }
             return grade_contact;
         });
         build_grade_contacts(reponse_ex_contacts.grade_B, (item)=>{
             const grade_contact = {
-                kid_name: item[0],
-                last_name: item[1],
+                kid_name: item[js.AB2Num("A")],
+                last_name: item[js.AB2Num("B")],
                 grade: "ב",
-                class: (item[2] == "2") ? 2 : 1,
-                phone_1: item[7],
-                email_1: item[9],
-                phone_2: item[12],
-                email_2: item[14]
+                class: (item[js.AB2Num("C")]?.includes('2')) ? "2" : 1,
+                phone_1: item[js.AB2Num("I")],
+                email_1: item[js.AB2Num("K")],
+                phone_2: item[js.AB2Num("N")],
+                email_2: item[js.AB2Num("P")]
             }
             return grade_contact;
         });
         build_grade_contacts(reponse_ex_contacts.grade_C, (item)=>{
             const grade_contact = {
-                kid_name: item[0],
-                last_name: item[1],
+                kid_name: item[js.AB2Num("A")],
+                last_name: item[js.AB2Num("B")],
                 grade: "ג",
-                class: (item[2] == "פינגווין") ? 2 : 1,
-                phone_1: item[6],
-                email_1: item[8],
-                phone_2: item[11],
-                email_2: item[13]
+                class: (item[js.AB2Num("C")]?.includes('2')) ? "2" : 1,
+                phone_1: item[js.AB2Num("I")],
+                email_1: item[js.AB2Num("K")],
+                phone_2: item[js.AB2Num("N")],
+                email_2: item[js.AB2Num("P")]
             }
             return grade_contact;
         });
         build_grade_contacts(reponse_ex_contacts.grade_D, (item)=>{
             const grade_contact = {
-                kid_name: item[0],
-                last_name: item[1],
+                kid_name: item[js.AB2Num("A")],
+                last_name: item[js.AB2Num("B")],
                 grade: "ד",
-                class: 1, //?
-                phone_1: item[6],
-                email_1: item[8],
-                phone_2: item[11],
-                email_2: item[13]
+                class: (item[js.AB2Num("C")] == "פינגווין") ? 2 : 1,
+                phone_1: item[js.AB2Num("I")],
+                email_1: item[js.AB2Num("K")],
+                phone_2: item[js.AB2Num("N")],
+                email_2: item[js.AB2Num("P")]
             }
             return grade_contact;
         });
         build_grade_contacts(reponse_ex_contacts.grade_E, (item)=>{
             const grade_contact = {
-                kid_name: item[0],
-                last_name: item[1],
+                kid_name: item[js.AB2Num("A")],
+                last_name: item[js.AB2Num("B")],
                 grade: "ה",
                 class: 1, //?
-                phone_1: item[6],
-                email_1: item[8],
-                phone_2: item[11],
-                email_2: item[13]
+                phone_1: item[js.AB2Num("I")],
+                email_1: item[js.AB2Num("K")],
+                phone_2: item[js.AB2Num("N")],
+                email_2: item[js.AB2Num("P")]
+            }
+            return grade_contact;
+        });
+        build_grade_contacts(reponse_ex_contacts.grade_F, (item)=>{
+            const grade_contact = {
+                kid_name: item[js.AB2Num("A")],
+                last_name: item[js.AB2Num("B")],
+                grade: "ו",
+                class: 1, //?
+                phone_1: item[js.AB2Num("I")],
+                email_1: item[js.AB2Num("K")],
+                phone_2: item[js.AB2Num("N")],
+                email_2: item[js.AB2Num("P")]
             }
             return grade_contact;
         });
@@ -333,14 +349,15 @@ var app = {
             html += `<div class="class_head">כיתת ${class_name}</div>`;
             html += `<table class="tb_class" class_name="${class_name}"><thead><tr><th>משפחה</th><th>שעות</th><th>פעילויות<div class="bt_download_table" title="שמור לקובץ אקסל"></div><div class="bt_print_table" title="הדפס"></div></th></tr></thead>${class_html}</table>`;
         }
-        build_class(app.dat.idx.contact_grade_class["א1"], "דורבנים");
-        build_class(app.dat.idx.contact_grade_class["א2"], "איילים");
-        build_class(app.dat.idx.contact_grade_class["ב1"], "ינשופים");
-        build_class(app.dat.idx.contact_grade_class["ב2"], "כלבלבים");
-        build_class(app.dat.idx.contact_grade_class["ג1"], "פנגווין");
-        build_class(app.dat.idx.contact_grade_class["ג2"], "דולפין");
-        build_class(app.dat.idx.contact_grade_class["ד1"], "ד'");
-        build_class(app.dat.idx.contact_grade_class["ה1"], "נשרים");
+        build_class(app.dat.idx.contact_grade_class["א1"], "א");
+        build_class(app.dat.idx.contact_grade_class["ב1"], "דורבנים");
+        build_class(app.dat.idx.contact_grade_class["ב2"], "איילים");
+        build_class(app.dat.idx.contact_grade_class["ג1"], "ינשופים");
+        build_class(app.dat.idx.contact_grade_class["ג2"], "כלבלבים");
+        build_class(app.dat.idx.contact_grade_class["ד1"], "פנגווין");
+        build_class(app.dat.idx.contact_grade_class["ד2"], "דולפין");
+        build_class(app.dat.idx.contact_grade_class["ה1"], "ה'");
+        build_class(app.dat.idx.contact_grade_class["ו1"], "נשרים");
         $("#class_boxes_wrapper").html(html);
         $(".bt_download_table").click(ev=>{
             const tb = $(ev.target).closest("table");
@@ -521,6 +538,7 @@ var app = {
         app.clean_google_sheet_array(response.contact.grade_C, true, true);
         app.clean_google_sheet_array(response.contact.grade_D, true, true);
         app.clean_google_sheet_array(response.contact.grade_E, true, true);
+        app.clean_google_sheet_array(response.contact.grade_F, true, true);
         app.clean_google_sheet_array(response.activity, false, true);
         app.build_contact_list(response.user, response.contact);
         app.build_activity_list(response.activity, response.signup);
@@ -620,6 +638,10 @@ var app = {
         app.clear();
         uid = uid || $("#eb_login").val().trim();
         if (uid == "") return;
+        if (uid != "augkhoeybho") {
+            app.pop_err("אין גישה");
+            return;
+        }
         app.post({
             act_id: "load_for_reports",
             uid: uid

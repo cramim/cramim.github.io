@@ -874,12 +874,22 @@ input[type="button"]{
     margin: 0 0.2em;
 }
 
+/*
 #login_register_link {
     font-size: 1.8em;
     font-weight: bold;
     color: darkslategrey;
     cursor: pointer;
     text-decoration: underline;
+    display: inline-block;
+    text-shadow: 0 0 5px white;
+}
+*/
+
+#login_register_link {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: gray;
     display: inline-block;
     text-shadow: 0 0 5px white;
 }
