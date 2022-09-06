@@ -478,41 +478,6 @@ var app = {
             `</div>`;
         return tmpl;
     },
-    build_signup_list:(response_signup_list)=>{
-        app.dat.signup_list = [];
-        var html = "";
-        $.each(response_signup_list.reverse(), (i, item)=>{
-            const activity = app.dat.idx.group_by_activity[item[1]] || app.dat.idx.activity_list[item[1]];
-            if (activity) {
-                app.dat.initial_signup_list.push(activity.id);
-                if (!activity.mandatory) {
-                    app.dat.signup_list.push(activity);
-                    $(`.activity_box[activity_id='${activity.id}']`).attr("signup_state", "signed");
-                    html += app.signup_tmpl(activity, "signed");
-                }
-            }
-        });
-        
-        $.each(app.dat.mandatory_activity_list, (i, activity_id)=>{
-            const activity = app.dat.idx.group_by_activity[activity_id] || app.dat.idx.activity_list[activity_id];
-            if (activity) {
-                app.dat.signup_list.push(activity);
-                const signup_state  = (app.dat.initial_signup_list.indexOf(activity_id) == -1) ? "not_signed" : "signed"; 
-                $(`.activity_box[activity_id='${activity.id}']`).attr("signup_state", signup_state);
-                if (signup_state == "not_signed") {
-                    app.dat.initial_signup_list.push(activity_id);
-                    activity.save_anyway = true;
-                }
-                html += app.signup_tmpl(activity, "not_signed");
-            }
-        });
-
-        $("#user_box_items").html(html);
-        $(".bt_item_delete").click((ev)=>{
-            app.unsign($(ev.target).closest(".user_box_item"));
-        });
-        $(".user_box_item").slideDown();
-    },
     refresh_user_progress:()=>{
         var hours = 0;
         $.each(app.dat.signup_list, (i, item)=>{hours += item.hours;});
@@ -525,7 +490,7 @@ var app = {
             name: "משפחת " + response.user[0],
             uid: response.user[1]
         }
-        window.localStorage.setObj("cramim-parents-user", app.dat.user);
+        window.localStorage.setObj("cramim-parents-admin-user", app.dat.user);
         $("#user_box_head_name").html(app.dat.user.name);
         $("#user_box_head_id").html(app.dat.user.uid);
         app.dat.user_goal = response.user_goal;
@@ -572,7 +537,7 @@ var app = {
         app.dat.mandatory_activity_list = [];
     },
     clear_storage:()=>{
-        window.localStorage.setObj("cramim-parents-user", null);
+        window.localStorage.setObj("cramim-parents-admin-user", null);
     },
     changed:()=>{
         return $(".user_toolbox_enabled").length > 0;
@@ -640,8 +605,11 @@ var app = {
         if (uid == "") return;
         if (uid != "augkhoeybho") {
             app.pop_err("אין גישה");
+            $("#dv_login").fadeIn();
             return;
         }
+        app.dat.user = {uid:uid};
+        window.localStorage.setObj("cramim-parents-admin-user", app.dat.user);
         app.post({
             act_id: "load_for_reports",
             uid: uid
@@ -828,7 +796,7 @@ var app = {
         });
     },
     init_user: ()=>{
-        app.dat.user = window.localStorage.getObj("cramim-parents-user");
+        app.dat.user = window.localStorage.getObj("cramim-parents-admin-user");
         console.log("app.init_user", app.dat.user);
     },
     show_screen_message: msg=>{
