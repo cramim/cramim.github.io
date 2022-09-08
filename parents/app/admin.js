@@ -170,6 +170,7 @@ var app = {
         app.dat.idx.contacts = [];
         app.dat.idx.contacts_strip = [];
         const push_contact = (contact)=>{
+            if (!contact?.uid) return;
             app.dat.contacts.push(contact);
             app.dat.idx.contacts[contact.uid] = contact;
             app.dat.idx.contacts_strip[app.contact_tools.strip(contact.uid)] = contact;
@@ -542,13 +543,17 @@ var app = {
     changed:()=>{
         return $(".user_toolbox_enabled").length > 0;
     },
-    logout:()=>{
+    logout:(force)=>{
         const do_logout = ()=>{
             app.clear();
             app.clear_storage();
             $("#eb_login").val("");
             $("#dv_login").fadeIn();
         };
+        if (force) {
+            do_logout();
+            return;
+        }
         swal.ok = false;
         if (!app.changed()) do_logout();
         else swal({
