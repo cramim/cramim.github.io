@@ -166,7 +166,7 @@ var app = {
                 mambers_maximum: item[10],
                 signedup: item[11] || 0,
                 mandatory: item[12],
-                locked: item[13],
+                locked: item[13] && !app.dat.unlock,
                 group_name: item[14]
             };
             if (activity.group_name) {
@@ -194,7 +194,7 @@ var app = {
                     ` category="${item.category||''}"` + 
                     ` circle="${item.circle||''}"` +
                     ` timing="${item.timing||''}"` + 
-                    ` already_full="${(item.mambers_maximum > 0) && (item.signedup >= item.mambers_maximum)}"` + 
+                    ` already_full="${(item.mambers_maximum > 0) && (item.signedup >= item.mambers_maximum) && !app.dat.unlock}"` + 
                     ` signup_state="not_signed"` + 
                     ` mandatory="${item.mandatory}"` + 
                     ` locked="${item.locked}">` + 
@@ -651,6 +651,7 @@ var app = {
     },
     init_mode: ()=> {
         app.dat.mode = js.urlParam("mode");
+        app.dat.unlock = Boolean(js.urlParam("unlock")=="yes");
         console.log("mode=", app.dat.mode);
         $("body").addClass("mode_" + app.dat.mode);
         if (app.dat.mode) $("#ttl_mode").html(app.dat.mode).show();
