@@ -353,10 +353,10 @@ var app = {
         build_class(app.dat.idx.contact_grade_class["א1"], "א");
         build_class(app.dat.idx.contact_grade_class["ב1"], "דורבנים");
         build_class(app.dat.idx.contact_grade_class["ב2"], "איילים");
-        build_class(app.dat.idx.contact_grade_class["ג1"], "ינשופים");
-        build_class(app.dat.idx.contact_grade_class["ג2"], "כלבלבים");
-        build_class(app.dat.idx.contact_grade_class["ד1"], "פנגווין");
-        build_class(app.dat.idx.contact_grade_class["ד2"], "דולפין");
+        build_class(app.dat.idx.contact_grade_class["ג1"], "כלבלבים");
+        build_class(app.dat.idx.contact_grade_class["ג2"], "ינשופים");
+        build_class(app.dat.idx.contact_grade_class["ד1"], "דולפין");
+        build_class(app.dat.idx.contact_grade_class["ד2"], "פינגווין");
         build_class(app.dat.idx.contact_grade_class["ה1"], "ה'");
         build_class(app.dat.idx.contact_grade_class["ו1"], "נשרים");
         $("#class_boxes_wrapper").html(html);
