@@ -143,8 +143,7 @@ var app = {
         $.each(spaces, (i_space, space)=>{
             var space_html = '';
             for(var i = 0; i < space.seats; i++) {
-                // $.each(space.kids, (i_kid, kid)=>{
-                space_html += `<tr><td>${i+1}</td><td>${space.kids[i]?.name||''}</td><td>${space.kids[i]?.class||''}</td></tr>`; 
+                space_html += `<tr><td>${i+1}</td><td>${space.kids[i]?.name||''}</td><td>${space.kids[i]?.class||''}</td><td>${space.kids[i]?.val||''}</td></tr>`; 
             }
             html += `<div class="space_box"><div class="space_title">${space.name}</div><table class="tb_space">${space_html}</table></div>`;
         });
@@ -168,6 +167,7 @@ var app = {
                         const space = {
                             name:cell.split("_")[0],
                             seats:parseInt(cell.split("_")[1]),
+                            data_col:i_col,
                             kids:[]
                         }
                         for(var i = 0; i < space.seats; i++) {
@@ -182,7 +182,7 @@ var app = {
                         if (i_row == 0) return true;
                         const kid = {
                             name : row[0],
-                            class : row[1]       
+                            class : row[1]
                         }
                         kids.push(kid);
                     });
@@ -207,10 +207,11 @@ var app = {
                 set_matrix();
                 const assignments = computeMunkres(matrix, {padValue:1000});
                 $.each(assignments, (i, assignment)=>{
-                    const kid = kids[assignment[0]];
                     const space = space_idx[assignment[1]];
+                    const kid = Object.assign(kids[assignment[0]], {val:data.class_A[assignment[0]+1][space.data_col]});
                     space.kids.push(kid);
                 });
+                $.each(spaces, (i, space)=>space.kids.sort((a, b) => a.val - b.val));
                 app.show_results(spaces);
             }
         })
@@ -225,6 +226,8 @@ var app = {
         $("#dv_screen_message").hide();
     },
     start: ()=>{
+        app.init();
+        /*
         if (js.is_mobile()) {
             $("body").show();
             app.show_screen_message("הדף עדיין לא מתאים למכשירים ניידים");
@@ -235,6 +238,7 @@ var app = {
         } else {
             app.init();
         }
+        */
     }
 }
 
