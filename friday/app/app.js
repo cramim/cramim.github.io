@@ -138,7 +138,7 @@ var app = {
             if (callback?.on_js_error) callback.on_js_error({code:-2, desc:"client side error"});
         }
     },
-    show_results:(spaces)=>{
+    get_results_html:(spaces)=>{
         var html = '';
         $.each(spaces, (i_space, space)=>{
             var space_html = '';
@@ -147,77 +147,86 @@ var app = {
             }
             html += `<div class="space_box"><div class="space_title">${space.name}</div><table class="tb_space">${space_html}</table></div>`;
         });
-
-        $("#results_wrapper").html(html);
+        return html;
     },
-    assign:()=>{
+    assign:(class_data)=>{
+        const spaces = [];
+        const kids = [];
+        const matrix = [];
+        const space_idx = {};
+        const set_spaces = ()=>{
+            var idx = 0;
+            $.each(class_data[0],(i_col, cell)=> {
+                if (i_col <= 1) return true;
+                const space = {
+                    name:cell.split("_")[0],
+                    seats:parseInt(cell.split("_")[1]),
+                    data_col:i_col,
+                    kids:[]
+                }
+                for(var i = 0; i < space.seats; i++) {
+                    space_idx[idx] = space;
+                    idx++;
+                }
+                spaces.push(space);
+            });
+        }
+        const set_kids  = ()=>{
+            $.each(class_data,(i_row, row)=>{
+                if (i_row == 0) return true;
+                const kid = {
+                    name : row[0],
+                    class : row[1]
+                }
+                kids.push(kid);
+            });
+        };
+        const set_matrix  = ()=>{
+            $.each(class_data,(i_row, row)=>{
+                if (i_row == 0) return true;
+                const matrix_row = [];
+                $.each(row,(i_col, cell)=> {
+                    if (i_col <= 1) return true;
+                    const space = spaces[i_col-2];
+                    for(var i = 0; i < space.seats; i++) {
+                        const val = (cell=='')?1000:cell;
+                        matrix_row.push(val);
+                    }
+                });
+                matrix.push(matrix_row);
+            });
+        };
+        set_spaces();
+        set_kids();
+        set_matrix();
+        const assignments = computeMunkres(matrix, {padValue:1000});
+        $.each(assignments, (i, assignment)=>{
+            const space = space_idx[assignment[1]];
+            const kid = Object.assign(kids[assignment[0]], {val:class_data[assignment[0]+1][space.data_col]});
+            space.kids.push(kid);
+        });
+        $.each(spaces, (i, space)=>space.kids.sort((a, b) => a.val - b.val));
+        return spaces;
+    },
+    load:()=>{
         const post_data = {
             act_id:"load_friday"
         }
         app.post(post_data, {
-            on_success(data){
-                const spaces = [];
-                const kids = [];
-                const matrix = [];
-                const space_idx = {};
-                const set_spaces = ()=>{
-                    var idx = 0;
-                    $.each(data.class_A[0],(i_col, cell)=> {
-                        if (i_col <= 1) return true;
-                        const space = {
-                            name:cell.split("_")[0],
-                            seats:parseInt(cell.split("_")[1]),
-                            data_col:i_col,
-                            kids:[]
-                        }
-                        for(var i = 0; i < space.seats; i++) {
-                            space_idx[idx] = space;
-                            idx++;
-                        }
-                        spaces.push(space);
-                    });
-                }
-                const set_kids  = ()=>{
-                    $.each(data.class_A,(i_row, row)=>{
-                        if (i_row == 0) return true;
-                        const kid = {
-                            name : row[0],
-                            class : row[1]
-                        }
-                        kids.push(kid);
-                    });
-                };
-                const set_matrix  = ()=>{
-                    $.each(data.class_A,(i_row, row)=>{
-                        if (i_row == 0) return true;
-                        const matrix_row = [];
-                        $.each(row,(i_col, cell)=> {
-                            if (i_col <= 1) return true;
-                            const space = spaces[i_col-2];
-                            for(var i = 0; i < space.seats; i++) {
-                                const val = (cell=='')?1000:cell;
-                                matrix_row.push(val);
-                            }
-                        });
-                        matrix.push(matrix_row);
-                    });
-                };
-                set_spaces();
-                set_kids();
-                set_matrix();
-                const assignments = computeMunkres(matrix, {padValue:1000});
-                $.each(assignments, (i, assignment)=>{
-                    const space = space_idx[assignment[1]];
-                    const kid = Object.assign(kids[assignment[0]], {val:data.class_A[assignment[0]+1][space.data_col]});
-                    space.kids.push(kid);
-                });
-                $.each(spaces, (i, space)=>space.kids.sort((a, b) => a.val - b.val));
-                app.show_results(spaces);
+            on_success:(data)=>{
+                var html = '';
+                html += "<div class='class_header'>כיתות א'</div>";
+                html += app.get_results_html(app.assign(data.class_First));
+                html += "<div class='class_header'>כיתות ב'-ג'</div>";
+                html += app.get_results_html(app.assign(data.class_SecondThird));
+                html += "<div class='class_header'>כיתות ד'-ה'</div>";
+                html += app.get_results_html(app.assign(data.class_FourthFifth));
+                $("#results_wrapper").html(html);
             }
-        })
+        });
     },
     init_buttons:()=>{
-        $("#bt_assign").click(app.assign);
+        $("#bt_assign").click(app.load);
     },
     init: ()=>{
         console.log("app.init")

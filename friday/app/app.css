@@ -84,10 +84,10 @@ body{
     display: inline-block;
 }
 
-#top_toolbox_wrapper{
+#top_toolbox_wrapper {
   display: flex;
   justify-content: center;
-  padding: 4em;
+  padding: 4em 4em 0;
 }
 
 input[type='button'] {
@@ -144,3 +144,9 @@ input[type='button']:hover{
 #results_wrapper{text-align: center;}
 
 
+.class_header {
+  font-size: 2em;
+  font-weight: bold;
+  text-decoration: underline;
+  padding: 2em;
+}
