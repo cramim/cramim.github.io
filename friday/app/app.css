@@ -1,0 +1,146 @@
+:root{
+    --campaign-color: darkslategray;
+}
+
+html{
+    font-size: clamp(0.85em, 0.85vw, 4em);
+}
+
+body{
+    text-align: right;
+    direction: rtl;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-family: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
+    display: none;
+    background-image: url(../img/bg.jpg);
+    background-attachment: fixed;
+}
+
+#mask_div{
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display:none;
+    background-image: url(../img/loading.gif); 
+    background-repeat: no-repeat; 
+    background-position: center;
+    opacity: 0.5;
+    background-color: white;
+}
+
+/* ===== Scrollbar CSS ===== */
+  /* Firefox */
+  * {
+    scrollbar-width: auto;
+    scrollbar-color: #8f54a0 #ffffff;
+  }
+
+  /* Chrome, Edge, and Safari */
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 4px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: #ffffff;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    /* background-color: #2f4f4f; */
+    background-color: gray;
+    border-radius: 2px;
+    /* border: 1px solid #ffffff; */
+  }
+
+#dv_screen_message{
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background-color: #efefef;
+}
+
+#dv_screen_message>div{
+    padding-bottom: 10vh;
+}
+
+#dv_screen_message_txt{
+    font-size: 5vw;
+    font-weight: 200;
+    color: #606060;
+}
+
+#dv_screen_message_logo{
+    background-image: url(../img/logo.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    height: 20vw;
+    width: 20vw;
+    border-radius: 20vw;
+    border: 1px gray solid;
+    display: inline-block;
+}
+
+#top_toolbox_wrapper{
+  display: flex;
+  justify-content: center;
+  padding: 4em;
+}
+
+input[type='button'] {
+  font-size: 1.5em;
+  cursor: pointer;
+  border-radius: 0.5em;
+  border: 1px silver solid;
+  box-shadow: 0 0 5px 0px #0000ff80;
+  color: darkslategray;
+}
+
+input[type='button']:hover{
+  box-shadow: 0 0 5px 0px #0000ff;
+}
+
+#bt_assign{
+  background-image: url(../img/gear.svg);
+  background-repeat: no-repeat;
+  background-position: center left 1em;
+  padding: 1em 1em 1em 5em;
+}
+
+.space_box {
+  background-color: white;
+  box-shadow: 0 0 10px grey;
+  margin: 1em;
+  display: inline-block;
+  padding: 10px;
+  text-align: right;
+  border-radius: 10px;
+  min-width: 16em;
+}
+
+.space_box:hover{
+  box-shadow: 0 0 15px grey;
+}
+
+.space_title {
+  font-weight: 500;
+  text-align: center;
+  padding: 0.5em 1em 1em 1em;
+  font-size: 1.3em;
+}
+
+.tb_space {width: 100%;}
+.tb_space tr:nth-child(even) {background: #f8f8f8}
+.tb_space tr:nth-child(odd) {background: #f0f0f0}
+.tb_space td {
+    padding: 6px;
+    white-space: nowrap;
+}
+/* .tb_space td:nth-child(2) {font-weight: 600} */
+.tb_space tr:hover {background-color: #e5e5e5;}
+#results_wrapper{text-align: center;}
+
+
