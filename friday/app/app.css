@@ -85,13 +85,32 @@ body{
 }
 
 #top_toolbox_wrapper {
-  display: flex;
-  justify-content: center;
-  padding: 4em 4em 0;
+  text-align: center;
+  padding: 4em 1em 0;
+}
+
+#eb_input_sheet_address{
+    font-size: 1.5em;
+    padding: 0.5em;
+    border-radius: 0.5em;
+    direction: ltr;
+    margin-bottom: 1em;
+    border: 1px gray solid;
+    width: 34em;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+#eb_input_sheet_address::placeholder{
+    text-align: center;
+}
+
+#top_toolbox_wrapper>input[type='button'] {
+  margin: 1em;
 }
 
 input[type='button'] {
-  font-size: 1.5em;
+  font-size: 1.3em;
   cursor: pointer;
   border-radius: 0.5em;
   border: 1px silver solid;
@@ -109,6 +128,7 @@ input[type='button']:hover{
   background-position: center left 1em;
   padding: 1em 1em 1em 5em;
 }
+
 
 .space_box {
   background-color: white;
@@ -149,4 +169,30 @@ input[type='button']:hover{
   font-weight: bold;
   text-decoration: underline;
   padding: 2em;
+}
+
+#toolbox_error {
+  color: red;
+  display: none;
+  font-size: 1.3em;
+  font-weight: 500;
+  padding: 0 0px 1em 0;
+}
+
+#save_wrapper {
+  padding: 1em;
+  margin-bottom: 1em;
+}
+
+#save_wrapper *{
+  cursor: pointer;
+}
+
+#save_wrapper label {
+  font-size: 1.5em;
+  margin-right: 1em;
+}
+
+#cb_save{
+  transform: scale(2);
 }

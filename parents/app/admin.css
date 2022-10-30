@@ -132,3 +132,11 @@ div[report_type]{display: none;}
     position: relative;
 }
 .activity_box_status>table{width: initial;}
+
+#classes_filter.filter_box{
+    white-space: initial;
+}
+
+#classes_filter.filter_box .filter_box_item{
+    display: block;
+}

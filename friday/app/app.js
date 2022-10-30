@@ -53,8 +53,19 @@ var js = {
         }
         if (n.length != 7) return false;
         return true;
+    },
+    downloadCSVFile:(s_data, fname)=>{
+        var BOM = new Uint8Array([0xEF,0xBB,0xBF]);
+        file = new Blob([BOM, s_data], {type: "text/csv;charset=utf8"});
+        var temp_link = document.createElement('a');
+        temp_link.download = fname + ".csv";
+        var url = window.URL.createObjectURL(file);
+        temp_link.href = url;
+        temp_link.style.display = "none";
+        document.body.appendChild(temp_link);
+        temp_link.click();
+        document.body.removeChild(temp_link);
     }
-
 }
 
 var app = {
@@ -209,24 +220,61 @@ var app = {
         return spaces;
     },
     load:()=>{
+        $("#toolbox_error").hide();
+        const input_sheet_address = $("#eb_input_sheet_address").val().trim();
+        if (input_sheet_address == '') {
+            $("#toolbox_error").html("⚠ נא למלא כתובת גיליון");
+            $("#toolbox_error").slideDown();
+            return;
+        }
         const post_data = {
-            act_id:"load_friday"
+            act_id:"load_friday",
+            input_sheet_address: input_sheet_address
         }
         app.post(post_data, {
             on_success:(data)=>{
+                app.dat.spaces = {
+                    class_First:app.assign(data.class_First),
+                    class_SecondThird:app.assign(data.class_SecondThird),
+                    class_FourthFifth:app.assign(data.class_FourthFifth),
+                };
                 var html = '';
                 html += "<div class='class_header'>כיתות א'</div>";
-                html += app.get_results_html(app.assign(data.class_First));
+                html += app.get_results_html(app.dat.spaces.class_First);
                 html += "<div class='class_header'>כיתות ב'-ג'</div>";
-                html += app.get_results_html(app.assign(data.class_SecondThird));
+                html += app.get_results_html(app.dat.spaces.class_SecondThird);
                 html += "<div class='class_header'>כיתות ד'-ה'</div>";
-                html += app.get_results_html(app.assign(data.class_FourthFifth));
+                html += app.get_results_html(app.dat.spaces.class_FourthFifth);
                 $("#results_wrapper").html(html);
             }
         });
     },
+    assign_request:()=>{
+        $("#toolbox_error").hide();
+        const input_sheet_address = $("#eb_input_sheet_address").val().trim();
+        if (input_sheet_address == '') {
+            $("#toolbox_error").html("⚠ נא למלא כתובת גיליון");
+            $("#toolbox_error").slideDown();
+            return;
+        }
+        const post_data = {
+            act_id:"friday_assign",
+            input_sheet_address: input_sheet_address,
+            save:$('#cb_save').is(":checked")
+        }
+        app.post(post_data, {
+            on_success:(data)=>{
+                var html = '';
+                html += `<div class='class_header'>${data.name}</div>`;
+                html += app.get_results_html(data.spaces);
+                $("#results_wrapper").html(html);
+            },
+            on_error_response:error=>app.pop_err("תקלה בביצוע הפעולה")
+        });
+    },
     init_buttons:()=>{
-        $("#bt_assign").click(app.load);
+        // $("#bt_assign").click(app.load);
+        $("#bt_assign").click(app.assign_request);
     },
     init: ()=>{
         console.log("app.init")

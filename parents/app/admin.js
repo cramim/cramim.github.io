@@ -313,29 +313,52 @@ var app = {
             return grade_contact;
         });
         var uniqe_grade_class = {};
+        // $.each(app.dat.contacts, (i, item)=>{
+        //     $.each(item.kids, (i_kid, kid)=>{
+        //         const grade_class =  kid.grade + kid.class;
+        //         var grade_class_list = app.dat.idx.contact_grade_class[grade_class];
+        //         if (!grade_class_list) {
+        //             app.dat.idx.contact_grade_class[grade_class] = [];
+        //             grade_class_list = app.dat.idx.contact_grade_class[grade_class];
+        //         }
+        //         const uniqe = grade_class + '-' + item.uid;
+        //         if (!uniqe_grade_class[uniqe]) grade_class_list.push(item);
+        //         uniqe_grade_class[uniqe] = 'exists';
+        //     });
+        // });
         $.each(app.dat.contacts, (i, item)=>{
             $.each(item.kids, (i_kid, kid)=>{
-                const grade_class =  kid.grade + kid.class;
-                var grade_class_list = app.dat.idx.contact_grade_class[grade_class];
-                if (!grade_class_list) {
-                    app.dat.idx.contact_grade_class[grade_class] = [];
-                    grade_class_list = app.dat.idx.contact_grade_class[grade_class];
+                const grade_class_name =  kid.grade + kid.class;
+                var grade_class = app.dat.idx.contact_grade_class[grade_class_name];
+                if (!grade_class) {
+                    const nickname = 
+                        (grade_class_name == "א1") ? "כיתות א" :
+                        (grade_class_name == "ב1") ? "דורבנים" :
+                        (grade_class_name == "ב2") ? "איילים" :
+                        (grade_class_name == "ג1") ? "כלבלבים" :
+                        (grade_class_name == "ג2") ? "ינשופים" :
+                        (grade_class_name == "ד1") ? "דולפין" :
+                        (grade_class_name == "ד2") ? "פינגווין" :
+                        (grade_class_name == "ה1") ? "כיתות ה" :
+                        (grade_class_name == "ו1") ? "נשרים" : "";
+                    app.dat.idx.contact_grade_class[grade_class_name] = {name:grade_class_name, nickname:nickname, list: []};
+                    grade_class = app.dat.idx.contact_grade_class[grade_class_name];
                 }
-                const uniqe = grade_class + '-' + item.uid;
-                if (!uniqe_grade_class[uniqe]) grade_class_list.push(item);
+                const uniqe = grade_class_name + '-' + item.uid;
+                if (!uniqe_grade_class[uniqe]) grade_class.list.push(item);
                 uniqe_grade_class[uniqe] = 'exists';
             });
         });
     },
     sort_contact_grade_class:()=>{
         const sort = (list)=>{list.sort((a,b) => (a.hours < b.hours) ? 1 : ((b.hours < a.hours) ? -1 : 0));}
-        $.each(app.dat.idx.contact_grade_class, (i, list)=>{sort(list)});
+        $.each(app.dat.idx.contact_grade_class, (i, grade_class)=>{sort(grade_class.list)});
     },
     build_contact_list_html:()=>{
         var html = "";
-        const build_class = (class_list, class_name)=>{
+        const build_class = (grade_class)=>{
             var class_html = '';
-            $.each(class_list, (i_class, contact)=>{
+            $.each(grade_class.list, (i_class, contact)=>{
                 class_html += 
                     `<tr>` + 
                         `<td>${contact.name}</td>` + 
@@ -347,18 +370,18 @@ var app = {
                         `<td>${contact.s_activity_list}</td>` + 
                     `</tr>`
             });
-            html += `<div class="class_head">כיתת ${class_name}</div>`;
-            html += `<table class="tb_class" class_name="${class_name}"><thead><tr><th>משפחה</th><th>שעות</th><th>פעילויות<div class="bt_download_table" title="שמור לקובץ אקסל"></div><div class="bt_print_table" title="הדפס"></div></th></tr></thead>${class_html}</table>`;
+            html += `<div class="class_head">כיתת ${grade_class.nickname}</div>`;
+            html += `<table class="tb_class" class_name="${grade_class.nickname}"><thead><tr><th>משפחה</th><th>שעות</th><th>פעילויות<div class="bt_download_table" title="שמור לקובץ אקסל"></div><div class="bt_print_table" title="הדפס"></div></th></tr></thead>${class_html}</table>`;
         }
-        build_class(app.dat.idx.contact_grade_class["א1"], "א");
-        build_class(app.dat.idx.contact_grade_class["ב1"], "דורבנים");
-        build_class(app.dat.idx.contact_grade_class["ב2"], "איילים");
-        build_class(app.dat.idx.contact_grade_class["ג1"], "כלבלבים");
-        build_class(app.dat.idx.contact_grade_class["ג2"], "ינשופים");
-        build_class(app.dat.idx.contact_grade_class["ד1"], "דולפין");
-        build_class(app.dat.idx.contact_grade_class["ד2"], "פינגווין");
-        build_class(app.dat.idx.contact_grade_class["ה1"], "ה'");
-        build_class(app.dat.idx.contact_grade_class["ו1"], "נשרים");
+        build_class(app.dat.idx.contact_grade_class["א1"]);
+        build_class(app.dat.idx.contact_grade_class["ב1"]);
+        build_class(app.dat.idx.contact_grade_class["ב2"]);
+        build_class(app.dat.idx.contact_grade_class["ג1"]);
+        build_class(app.dat.idx.contact_grade_class["ג2"]);
+        build_class(app.dat.idx.contact_grade_class["ד1"]);
+        build_class(app.dat.idx.contact_grade_class["ד2"]);
+        build_class(app.dat.idx.contact_grade_class["ה1"]);
+        build_class(app.dat.idx.contact_grade_class["ו1"]);
         $("#class_boxes_wrapper").html(html);
         $(".bt_download_table").click(ev=>{
             const tb = $(ev.target).closest("table");
@@ -421,11 +444,13 @@ var app = {
             contact_html = "";
             $.each(item.memebers, (contact_i, contact_item)=>{
                 var arr_kids = [];
+                var arr_kids2 = [];
                 $.each(contact_item.kids, (kid_i, kid)=>{
-                    arr_kids.push(`${kid.name} (${kid.grade}')`);
+                    arr_kids.push(`${kid.name} (${kid.grade}${kid.class})`);
+                    arr_kids2.push(`grade_class_${kid.grade}${kid.class}`);
                 });
                 contact_html += 
-                    `<tr>` + 
+                    `<tr class="activity_row ${arr_kids2.join(' ')}">` + 
                         `<td>${contact_item.name}</td>` + 
                         `<td>${contact_item.hours}</td>` + 
                         `<td>${arr_kids.join(', ')}</td>` + 
@@ -496,6 +521,21 @@ var app = {
         $("#user_box_head_id").html(app.dat.user.uid);
         app.dat.user_goal = response.user_goal;
     },
+    init_filters:()=>{
+        var html = '';
+        const grade_class_list = [];
+        $.each(app.dat.idx.contact_grade_class, (i, grade_class)=> grade_class_list.push(grade_class));
+        grade_class_list.sort((a,b) => a.name === b.name ? 0 : a.name < b.name ? -1 : 1);
+        $.each(grade_class_list, (i, grade_class)=>html += 
+            `<div class="filter_box_item"><input type="checkbox" grade_class=${grade_class.name} id="cb_class_filter_${grade_class.name}" name="cb_class_filter_${grade_class.name}"><span>${grade_class.nickname} (${grade_class.name})</span></div>`
+        )
+        $("#classes_filter").html(html);
+        $(".filter_box_item").off("click").click((ev)=>{
+            if (ev.target.tagName.toLowerCase() == "input") return;
+            $(ev.target).closest(".filter_box_item").find("input").click();
+        });
+        $(".filter_box_item input[type='checkbox']").off("change").change(app.filter);
+    },
     rebuild:(response)=>{
         app.dat.server_load_response = JSON.parse(JSON.stringify(response));
         app.clean_google_sheet_array(response.user, true, true);
@@ -511,6 +551,7 @@ var app = {
         app.sort_contact_grade_class();
         app.build_contact_list_html();
         app.build_activity_list_html();
+        app.init_filters();
         // app.build_signup_list(response.signup_list);
         // app.build_user_info(response);
         // app.enable_user_toolbox();
@@ -722,6 +763,15 @@ var app = {
         const circle_selector = (circle_arr.length == 0) ? "[circle]" : circle_arr.join();
         const timing_selector = (timing_arr.length == 0) ? "[timing]" : timing_arr.join();
         $(".activity_box").filter(cat_selector).filter(circle_selector).filter(timing_selector).show();
+        $(".activity_row").hide();
+        $(".activity_row").attr("include", false);
+        $grade_class_checked = $("#classes_filter input[type='checkbox']:checked");
+        const grade_class_arr = [];  $grade_class_checked.each((i, item)=>{grade_class_arr.push(`.grade_class_${$(item).attr("grade_class")}`)});
+        const grade_class_selector = (grade_class_arr.length == 0) ? "*" : grade_class_arr.join();
+        const included_rows = $(".activity_row").filter(grade_class_selector);
+        included_rows.show();
+        included_rows.attr("include", true);
+        $(".activity_box").each((i,box)=>{if ($(box).find("tr[include=true]").length == 0) $(box).hide()});
         $("#activity_boxes_wrapper").fadeIn();
     },
     progress_bar:($container, percent)=>{
@@ -767,10 +817,6 @@ var app = {
     },
     init_buttons: ()=>{
         $("#bt_home").click(app.scroll_home);
-        $(".filter_box_item").click((ev)=>{
-            if (ev.target.tagName.toLowerCase() == "input") return;
-            $(ev.target).closest(".filter_box_item").find("input").click();
-        });
         $("#bt_user_abort").click(()=>{
             app.abort();
         });
@@ -784,7 +830,6 @@ var app = {
         $("#head_bt_exit").click(()=>{
             app.logout();
         });
-        $("#filter_box_wrapper input[type='checkbox']").change(app.filter);
         window.onbeforeunload = function(){
             if (app.changed() && $("#dv_login").is(":hidden"))  return 'אזהרה! השינויים לא נשמרו.';
         };
