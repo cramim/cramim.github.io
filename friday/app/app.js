@@ -221,15 +221,8 @@ var app = {
     },
     load:()=>{
         $("#toolbox_error").hide();
-        const input_sheet_address = $("#eb_input_sheet_address").val().trim();
-        if (input_sheet_address == '') {
-            $("#toolbox_error").html("⚠ נא למלא כתובת גיליון");
-            $("#toolbox_error").slideDown();
-            return;
-        }
         const post_data = {
-            act_id:"load_friday",
-            input_sheet_address: input_sheet_address
+            act_id:"load_friday"
         }
         app.post(post_data, {
             on_success:(data)=>{
@@ -273,8 +266,8 @@ var app = {
         });
     },
     init_buttons:()=>{
-        // $("#bt_assign").click(app.load);
-        $("#bt_assign").click(app.assign_request);
+        $("#bt_assign").click(app.load);
+        //$("#bt_assign").click(app.assign_request);
     },
     init: ()=>{
         console.log("app.init")
