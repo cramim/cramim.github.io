@@ -665,6 +665,7 @@ var app = {
                 $("#dv_login").fadeOut();
                 $("#parent").fadeIn();
                 app.help_message.show_welcome();
+                app.update_stat();
              }, 
             on_error_response: (error)=>{
                 if (error.code == 4) {
@@ -750,6 +751,10 @@ var app = {
             swal.ok = true;
         });
     },
+    update_stat:()=>{
+        $("#stat_activity_count").html($(".activity_box:visible").length);
+        $("#stat_family_count").html($(".activity_row:visible").length);
+    },
     filter:()=>{
         $cat_checked = $("#filter_box_cat input[type='checkbox']:checked");
         $circle_checked = $("#filter_box_circle input[type='checkbox']:checked");
@@ -772,7 +777,7 @@ var app = {
         included_rows.show();
         included_rows.attr("include", true);
         $(".activity_box").each((i,box)=>{if ($(box).find("tr[include=true]").length == 0) $(box).hide()});
-        $("#activity_boxes_wrapper").fadeIn();
+        $("#activity_boxes_wrapper").fadeIn(app.update_stat);
     },
     progress_bar:($container, percent)=>{
         $container.html('<div class="progress_box"><div class="pb_parent"><div class="pb_div1"> <div></div></div><div class="pb_div2"> <div></div></div><div class="pb_div3"> <div></div></div><div class="pb_div4"> <div></div></div><div class="pb_div5"> <div></div></div><div class="pb_div6"> <div></div></div><div class="pb_div7"> <div></div></div><div class="pb_div8"> <div></div></div><div class="pb_div9"> <div></div></div><div class="pb_div10"><div></div> </div></div></div>');

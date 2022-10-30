@@ -140,3 +140,29 @@ div[report_type]{display: none;}
 #classes_filter.filter_box .filter_box_item{
     display: block;
 }
+
+#dv_report_options{
+    position: relative;
+}
+
+#dv_report_options>#filter_stat {
+    position: fixed;
+    /* inset: 0px 1px 100% 0px; */
+    background-color: azure;
+    width: 100%;
+    box-sizing: border-box;
+    bottom: 0;
+    border-top: 1px gray solid;
+    display: inline-block;
+    padding: 1em;
+}
+#dv_report_options>#filter_stat>div{
+    padding: 0;
+}
+
+#dv_report_options>#filter_stat>div>span {
+    font-weight: 600;
+    font-size: 1.3em;
+    color: darkslategrey;
+    margin-right: 0.5em;
+}
