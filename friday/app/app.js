@@ -265,8 +265,27 @@ var app = {
             on_error_response:error=>app.pop_err("תקלה בביצוע הפעולה")
         });
     },
+    assign_all_and_save:()=>{
+        const post_data = {
+            act_id:"friday_assign_all",
+            save:true
+        }
+        app.post(post_data, {
+            on_success:(data)=>{
+                var html = '';
+                $.each(data, (i, class_data)=>{
+                    html += `<div class='class_header'>${class_data.name}</div>`;
+                    html += app.get_results_html(class_data.spaces);
+                });
+                $("#results_wrapper").html(html);
+                window.location.href="https://docs.google.com/spreadsheets/d/1838apmdb85OS1kpzgbf68vp2k-RklUzqacOMgjGFWB0/edit#gid=0";
+            },
+            on_error_response:error=>app.pop_err("תקלה בביצוע הפעולה")
+        });
+    },
     init_buttons:()=>{
         $("#bt_assign").click(app.load);
+        $("#bt_assign_all").click(app.assign_all_and_save);
         //$("#bt_assign").click(app.assign_request);
     },
     init: ()=>{

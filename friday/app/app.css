@@ -127,8 +127,17 @@ input[type='button']:hover{
   background-repeat: no-repeat;
   background-position: center left 1em;
   padding: 1em 1em 1em 5em;
+  margin: 0.8em;
 }
 
+#bt_assign_all {
+  background-image: url(../img/sheet.svg);
+  background-repeat: no-repeat;
+  background-position: center left 1em;
+  padding: 1em 1em 1em 4em;
+  margin: 0.8em;
+  background-size: 2.2em;
+}
 
 .space_box {
   background-color: white;
