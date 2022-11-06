@@ -224,4 +224,7 @@ page[size="A4"] {
       background: initial;
       background-image: url(../img/bg.jpg);
     }
+    #top_toolbox_wrapper{
+      display: none;
+    }
 }
