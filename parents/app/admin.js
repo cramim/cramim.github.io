@@ -18,9 +18,9 @@ var js = {
         if (!results) return null;
         return decodeURI(results[1]) || 0;
     },
-    tableToCSV:tb=> {
+    tableToCSV:(tb, only_visible)=> {
         var arr_rows=[];
-        var rows = $(tb).find("tbody tr");
+        var rows = $(tb).find(`tbody tr${(only_visible)?':visible':''}`);
         $.each(rows, (i, row)=>{
             var cells = $(row).find("td");
             var arr_cells=[];
@@ -92,6 +92,18 @@ var app = {
         const mtml_msg = js.r(msg, "\n", "<br>");
         var mail = `https://mail.google.com/mail/?view=cm&fs=1&body=${encodeURIComponent("An error has occurred at " + new Date() + "\n" + msg)}&to=cramim.community@gmail.com`;
         app.pop_err(`תקלה בביצוע הפעולה<div class="error_code">${mtml_msg}<div><a href="${mail}" target="_blank">Send</a></div></div>`, true);
+    },
+    context_menu:(el, items, title)=>{
+        var html = '';
+        if (title) html += `<div class="context_menu_title">${title}</div>`;
+        $.each(items, (i, item)=>html += `<div class="context_menu_item" id="context_menu_item_${i}">${item.txt}</div>`);
+        $("#context_menu").html(html);
+        $.each(items, (i, item)=> $(`#context_menu_item_${i}`).off('click').click(item.click));
+        $('#context_menu_wrapper').show();
+        const rect = el.getBoundingClientRect();
+        $("#context_menu").css("top", rect.bottom + "px");
+        $("#context_menu").css("left", rect.left + "px");
+        $('#context_menu_wrapper').off("click").click(()=>$('#context_menu_wrapper').hide());
     },
     clean_google_sheet_array:(array, remove_header_row, null_empty_strings)=>{
         if (remove_header_row) array.shift();
@@ -487,7 +499,15 @@ var app = {
         });
         $(".bt_download_activity_table").click(ev=>{
             const tb = $(ev.target).closest(".activity_box").find(".tb_activity_members");
-            js.downloadCSVFile(js.tableToCSV(tb), tb.attr("activity_name"));
+            const download_visible_only = ()=>{js.downloadCSVFile(js.tableToCSV(tb, true), tb.attr("activity_name"), true)} 
+            const download_all = ()=>{js.downloadCSVFile(js.tableToCSV(tb), tb.attr("activity_name"), false)} 
+            const is_hidden_rows = $(tb).find("tr:not(:visible)").length > 0;
+            if (!is_hidden_rows) download_all();
+            else app.context_menu(ev.target,[
+                {txt:'שמור רק מה שמוצג', click:download_visible_only},
+                {txt:'שמור גם מה שמוסתר', click:download_all}
+            ],
+            "חלק מהשורות מוסתרות");
         });
     },
     signup_tmpl:(item, signup_state)=>{ 

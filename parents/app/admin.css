@@ -1,4 +1,4 @@
-.activity_box_desc{
+activity_box_desc{
     height: initial;
     padding: 0.5em;
     overflow-y: auto;
@@ -165,4 +165,47 @@ div[report_type]{display: none;}
     font-size: 1.3em;
     color: darkslategrey;
     margin-right: 0.5em;
+}
+
+#context_menu {
+    position: absolute;
+    display: flex;
+    flex-flow: column;
+    z-index: 901;
+    border: 1px silver solid;
+    border-radius: 0.5em;
+    overflow: hidden;
+}
+
+.context_menu_item {
+    cursor: pointer;
+    background-color: #f0ffff;
+    font-weight: 500;
+    padding: 0.5em;
+    font-size: 1.1em;
+}
+
+.context_menu_title {
+    background-color: #2f4f4f;
+    text-align: center;
+    padding: 0.5em;
+    border-bottom: 1px black dotted;
+    color: white;
+}
+
+.context_menu_item:not(:last-child){
+    border-bottom: 1px silver solid;
+}
+
+
+.context_menu_item:hover{
+    background-color: #f0f0f0;
+}
+
+#context_menu_wrapper{
+    position: fixed;
+    inset: 0;
+    z-index: 900;
+    display:none;
+    background-color: #ffffff80;
 }
