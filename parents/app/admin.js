@@ -264,7 +264,7 @@ var app = {
                 kid_name: item[js.AB2Num("A")],
                 last_name: item[js.AB2Num("B")],
                 grade: "ב",
-                class: (item[js.AB2Num("C")]?.includes('2')) ? "2" : 1,
+                class: (item[js.AB2Num("C")] == "דרקונים") ? 2 : 1,
                 phone_1: item[js.AB2Num("I")],
                 email_1: item[js.AB2Num("K")],
                 phone_2: item[js.AB2Num("N")],
@@ -290,7 +290,7 @@ var app = {
                 kid_name: item[js.AB2Num("A")],
                 last_name: item[js.AB2Num("B")],
                 grade: "ד",
-                class: (item[js.AB2Num("C")] == "פינגווין") ? 2 : 1,
+                class: (item[js.AB2Num("C")]?.includes('2')) ? "2" : 1,
                 phone_1: item[js.AB2Num("I")],
                 email_1: item[js.AB2Num("K")],
                 phone_2: item[js.AB2Num("N")],
@@ -303,7 +303,7 @@ var app = {
                 kid_name: item[js.AB2Num("A")],
                 last_name: item[js.AB2Num("B")],
                 grade: "ה",
-                class: 1, //?
+                class: (item[js.AB2Num("C")] == "פינגווין") ? 2 : 1,
                 phone_1: item[js.AB2Num("I")],
                 email_1: item[js.AB2Num("K")],
                 phone_2: item[js.AB2Num("N")],
@@ -324,6 +324,21 @@ var app = {
             }
             return grade_contact;
         });
+        /*
+        build_grade_contacts(reponse_ex_contacts.grade_F_2023, (item)=>{
+            const grade_contact = {
+                kid_name: item[js.AB2Num("A")],
+                last_name: item[js.AB2Num("B")],
+                grade: "ו",
+                class: 1, //?
+                phone_1: item[js.AB2Num("I")],
+                email_1: item[js.AB2Num("K")],
+                phone_2: item[js.AB2Num("N")],
+                email_2: item[js.AB2Num("P")]
+            }
+            return grade_contact;
+        });
+        */
         var uniqe_grade_class = {};
         // $.each(app.dat.contacts, (i, item)=>{
         //     $.each(item.kids, (i_kid, kid)=>{
@@ -345,14 +360,15 @@ var app = {
                 if (!grade_class) {
                     const nickname = 
                         (grade_class_name == "א1") ? "כיתות א" :
-                        (grade_class_name == "ב1") ? "דורבנים" :
-                        (grade_class_name == "ב2") ? "איילים" :
-                        (grade_class_name == "ג1") ? "כלבלבים" :
-                        (grade_class_name == "ג2") ? "ינשופים" :
-                        (grade_class_name == "ד1") ? "דולפין" :
-                        (grade_class_name == "ד2") ? "פינגווין" :
-                        (grade_class_name == "ה1") ? "כיתות ה" :
-                        (grade_class_name == "ו1") ? "נשרים" : "";
+                        (grade_class_name == "ב1") ? "קואלות" :
+                        (grade_class_name == "ב2") ? "דרקונים" :
+                        (grade_class_name == "ג1") ? "דורבנים" :
+                        (grade_class_name == "ג2") ? "איילים" :
+                        (grade_class_name == "ד1") ? "כלבלבים" :
+                        (grade_class_name == "ד2") ? "ינשופים" :
+                        (grade_class_name == "ה1") ? "דולפין" :
+                        (grade_class_name == "ה2") ? "פינגווין" :
+                        (grade_class_name == "ו1") ? "כיתות ו" : "";
                     app.dat.idx.contact_grade_class[grade_class_name] = {name:grade_class_name, nickname:nickname, list: []};
                     grade_class = app.dat.idx.contact_grade_class[grade_class_name];
                 }
@@ -370,6 +386,7 @@ var app = {
         var html = "";
         const build_class = (grade_class)=>{
             var class_html = '';
+            if (!grade_class?.list) return;
             $.each(grade_class.list, (i_class, contact)=>{
                 class_html += 
                     `<tr>` + 
