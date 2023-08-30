@@ -639,7 +639,7 @@ var app = {
         */
     },
     init_campaign:()=>{
-        app.dat.campaign_id = js.urlParam("campaign") || 2;
+        app.dat.campaign_id = js.urlParam("campaign") || 3;
     },
     init_user: ()=>{
         app.dat.user = window.localStorage.getObj("cramim-parents-user");
