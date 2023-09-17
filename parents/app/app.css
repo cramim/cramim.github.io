@@ -987,22 +987,26 @@ body{
 
 #bt_private_activity {
     cursor: pointer;
-    background-image: url(../img/idea.svg);
+    background-image: url("../img/idea.svg");
     line-height: 1.8em;
     border-bottom: navajowhite;
     color: white;
     background-size: 55px;
     position: sticky;
-    bottom: 0;
-    background-color: #1b74e4;
+    bottom: 0px;
+    background-color: rgb(27, 116, 228);
     font-weight: 500;
     font-size: 1.1em;
     background-position: right 4px top 50%;
+    margin: 0.7em;
+    border-radius: 10px;
+    padding: 10px 56px 10px 6px;
 }
 
 #bt_private_activity:hover{
-    color: yellow;
-    text-decoration: underline;
+    /* color: yellow;
+    text-decoration: underline; */
+    background-color: darkblue;
 }
 
 .dlg_form {
