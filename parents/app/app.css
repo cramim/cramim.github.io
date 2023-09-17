@@ -990,15 +990,18 @@ body{
     background-image: url(../img/idea.svg);
     line-height: 1.8em;
     border-bottom: navajowhite;
-    color: #1b74e4;
-    background-size: 40px;
+    color: white;
+    background-size: 55px;
     position: sticky;
     bottom: 0;
-    background-color: azure;
+    background-color: #1b74e4;
+    font-weight: 500;
+    font-size: 1.1em;
+    background-position: right 4px top 50%;
 }
 
 #bt_private_activity:hover{
-    color: darkblue;
+    color: yellow;
     text-decoration: underline;
 }
 
