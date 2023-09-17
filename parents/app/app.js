@@ -53,8 +53,22 @@ var js = {
         }
         if (n.length != 7) return false;
         return true;
+    },
+    animate:function($el, class_name){
+        $el.addClass(class_name);
+        $el.one('webkitAnimationEnd oanimationend msAnimationEnd animationend', function(e) {
+            $el.removeClass(class_name);
+        });
+    },
+    arraysContainSameObjects:function(arrA, arrB, key) {
+        if (arrA.length !== arrB.length) return false;
+        const keyValuesA = arrA.map(obj => obj[key]||obj).sort();
+        const keyValuesB = arrB.map(obj => obj[key]||obj).sort();
+        for (let i = 0; i < keyValuesA.length; i++) {
+            if (keyValuesA[i] !== keyValuesB[i]) return false; 
+        }
+        return true;
     }
-
 }
 
 var app = {
@@ -66,8 +80,10 @@ var app = {
         campaign_list:null,
         activity_list:[],
         signup_list:[],
+        private_list:[],
         user_goal:0,
         initial_signup_list:[],
+        initial_private_list:[],
         mandatory_activity_list:[],
         mode:null,
         login_mode:"LOGIN",
@@ -233,6 +249,20 @@ var app = {
             `</div>`;
         return tmpl;
     },
+    private_tmpl:(private_item)=>{ 
+        tmpl =
+            `<div class="user_box_item" private_activity_id="${private_item.id}" signup_state="${private_item.state}">` +
+                `<div class="user_box_item_toolbox">` +
+                    `<div class="bt_item_delete tooltip"><span class="tooltiptext">הסר</span></div>` +
+                    `<div class="bt_item_info tooltip"><span class="tooltiptext"><span>${private_item.title}</span><br>${private_item.description}</span></div>` +
+                `</div>` +
+                `<table class="tb_user_box_item">` +
+                    `<tr><td>פעילות:</td><td class="user_box_item_title">${private_item.title}</td></tr>` +
+                    `<tr><td>שעות:</td><td class="user_box_item_value"></td></tr>` +
+                `</table>` +
+            `</div>`;
+        return tmpl;
+    },
     build_signup_list:(response_signup_list)=>{
         app.dat.signup_list = [];
         var html = "";
@@ -263,10 +293,33 @@ var app = {
         });
 
         $("#user_box_items").html(html);
-        $(".bt_item_delete").click((ev)=>{
+        $(".user_box_item[activity_id] .bt_item_delete").click((ev)=>{
             app.unsign($(ev.target).closest(".user_box_item"));
         });
-        $(".user_box_item").slideDown();
+        $(".user_box_item[activity_id]").slideDown();
+    },
+    build_private_list:(response_private_list)=>{
+        app.dat.private_list = [];
+        var html = '';
+        $.each(response_private_list, (i, item)=>{
+            const private_activity = {
+                uid : item[0],
+                id: parseInt(item[1]),
+                title: item[2],
+                description: item[3],
+                state: 'private'
+            };
+            app.dat.private_list.push(private_activity);
+            app.dat.initial_private_list.push(private_activity.id);
+            html += app.private_tmpl(private_activity);
+        });
+
+        $("#user_box_items").append(html);
+        $(".user_box_item[private_activity_id] .bt_item_delete").click((ev)=>{
+            app.unsign_private($(ev.target).closest(".user_box_item"));
+        });
+        $(".user_box_item[private_activity_id]").slideDown();
+        $("#bt_private_activity").slideDown();
     },
     refresh_user_progress:()=>{
         var hours = 0;
@@ -316,6 +369,7 @@ var app = {
         app.clean_google_sheet_array(response.activity_list, false, true);
         app.build_activity_list(response.activity_list);
         app.build_signup_list(response.signup_list);
+        app.build_private_list(response.private_list);
         app.build_user_info(response);
         app.build_campaign_list(response);
         app.build_campaign_menu();
@@ -342,7 +396,9 @@ var app = {
         app.dat.idx.group_by_activity = {};
         app.dat.user = {};
         app.dat.signup_list = [];
+        app.dat.private_list = [];
         app.dat.initial_signup_list = [];
+        app.dat.initial_private_list = [];
         app.dat.mandatory_activity_list = [];
     },
     clear_storage:()=>{
@@ -482,14 +538,24 @@ var app = {
         app.enable_user_toolbox();
         app.refresh_user_progress();
     },
+    unsign_private: ($user_box_item)=>{
+        const private_activity_id = parseInt($user_box_item.attr("private_activity_id"));
+        $user_box_item.slideUp(()=>{$user_box_item.remove()});
+        app.dat.private_list = app.dat.private_list .filter((item)=>{return item.id != private_activity_id});
+        app.enable_user_toolbox();
+        app.refresh_user_progress();
+    },
     save:()=>{
         const post_data = {
             act_id: "save",
             uid: app.dat.user.uid,
             campaign_id: app.dat.campaign_id,
             signup_list: [],
-            unsign_list: []
+            unsign_list: [],
+            private_list:[],
+            unsign_private_list:[]
         }
+
         var idx_signup_list = {};
         $.each(app.dat.signup_list, (i, item)=>{
             if (item.save_anyway || app.dat.initial_signup_list.indexOf(item.id) < 0) post_data.signup_list.push(item.id);
@@ -498,6 +564,16 @@ var app = {
         $.each(app.dat.initial_signup_list, (i, item)=>{
             if (!idx_signup_list[item]) post_data.unsign_list.push(item);
         });
+
+        var idx_private_list = {};
+        $.each(app.dat.private_list, (i, item)=>{
+            if (app.dat.initial_private_list.indexOf(item.id) < 0) post_data.private_list.push(item);
+            idx_private_list[item.id]=item;
+        });
+        $.each(app.dat.initial_private_list, (i, item_id)=>{
+            if (!idx_private_list[item_id]) post_data.unsign_private_list.push(item_id);
+        });
+
         app.post(post_data, {
             on_success :(response)=>{
                 app.pop_success("הרשימה עודכנה בהצלחה :)");
@@ -506,6 +582,46 @@ var app = {
                 app.rebuild(response);
             }, 
             on_error_response: app.pop_srv_err
+        });
+    },
+    signup_private_activity: (private_activity)=>{
+        app.dat.private_list.push(private_activity);
+        const html = app.private_tmpl(private_activity);
+        $("#user_box_items").append(html);
+        $user_item_box = $(`.user_box_item[private_activity_id="${private_activity.id}"]`);
+        $user_item_box.slideDown(()=>{
+            $("#user_box")[0].scrollTo({top:$("#user_box").height(), behavior: 'smooth'})
+        });
+        $user_item_box.find(".bt_item_delete").click((ev)=>{
+            app.unsign_private($(ev.target).closest(".user_box_item"));
+        });
+        app.enable_user_toolbox();
+        app.refresh_user_progress();
+        app.on_after_signup?.call();
+    },
+    add_private_activity: ()=>{
+        swal.ok = false;
+        var private_activity = {};
+        swal({
+            title: 'רעיון לפעילות',
+            html: '<div class="dlg_form"><p><input id="eb_private_activity_title" placeholder="כותרת"></p><p><textarea placeholder="פירוט הרעיון" id=eb_private_activity_description></textarea></p></div>',
+            showCancelButton: true, confirmButtonColor: '#3085d6', cancelButtonColor: '#d33', confirmButtonText: 'אישור', cancelButtonText: 'ביטול',
+            onAfterClose:()=>{if (swal.ok) app.signup_private_activity(private_activity);},
+            preConfirm: function() {return new Promise(function(resolve) {
+                private_activity = {
+                    id: new Date().getTime(),
+                    title: $("#eb_private_activity_title").val(),
+                    description: $("#eb_private_activity_description").val(),
+                    state: "private_new"
+                }
+                if (private_activity.description.trim() == '') swal.showValidationMessage('יש למלא תוכן');
+                if (private_activity.title.trim() == '') swal.showValidationMessage('יש למלא כותרת');
+                js.animate($(".swal2-validation-message"), "ani_bounce");
+                resolve()
+            })},        
+        }).then(function(result){
+            if (result.dismiss) return;
+            swal.ok = true;
         });
     },
     abort:()=>{
@@ -545,22 +661,30 @@ var app = {
             $(el).toggleClass("in_progress", (i+1)*10<=percent);
         });
     },
+    // enable_user_toolbox:()=>{
+    //     var enabled = app.dat.signup_list.length != app.dat.initial_signup_list.length;
+    //     if (!enabled) {
+    //         var idx_signup_list = {};
+    //         $.each(app.dat.signup_list, (i, item)=>{
+    //             if (app.dat.initial_signup_list.indexOf(item.id) < 0) enabled = true;
+    //             idx_signup_list[item.id]=item;
+    //             if (enabled) return false;
+    //         });
+    //         if (!enabled) $.each(app.dat.initial_signup_list, (i, item)=>{
+    //             if (!idx_signup_list[item]) {
+    //                 enabled = true;
+    //                 return false;
+    //             }
+    //         });
+    //     };
+    //     app.on_user_toolbox_enabled(enabled);
+    // },
     enable_user_toolbox:()=>{
-        var enabled = app.dat.signup_list.length != app.dat.initial_signup_list.length;
-        if (!enabled) {
-            var idx_signup_list = {};
-            $.each(app.dat.signup_list, (i, item)=>{
-                if (app.dat.initial_signup_list.indexOf(item.id) < 0) enabled = true;
-                idx_signup_list[item.id]=item;
-                if (enabled) return false;
-            });
-            if (!enabled) $.each(app.dat.initial_signup_list, (i, item)=>{
-                if (!idx_signup_list[item]) {
-                    enabled = true;
-                    return false;
-                }
-            });
-        };
+        const enabled = !js.arraysContainSameObjects(
+            app.dat.signup_list.concat(app.dat.private_list), 
+            app.dat.initial_signup_list.concat(app.dat.initial_private_list) , 
+            'id'
+        );
         app.on_user_toolbox_enabled(enabled);
     },
     on_user_toolbox_enabled:(enabled)=>{
@@ -637,6 +761,9 @@ var app = {
             app.set_login_mode((app.dat.login_mode == "LOGIN")?"REGISTER":"LOGIN");
         });
         */
+        $("#bt_private_activity").click(()=>{
+            app.add_private_activity();
+        });
     },
     init_campaign:()=>{
         app.dat.campaign_id = js.urlParam("campaign") || 3;
