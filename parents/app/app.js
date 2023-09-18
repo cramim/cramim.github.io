@@ -203,6 +203,13 @@ var app = {
             app.dat.idx.activity_list[activity.id] = activity;
             if (activity.mandatory) app.dat.mandatory_activity_list.push(activity.id);
         });
+        var private_idea_activity = {
+            id: 'NEW_IDEA',
+            name: 'רעיון לפעילות',
+            description: 'לא מצאת משהו מתאים ברשימה, ויש לך רעיון לפעילות אחרת שבה תוכל/י לתרום?<br>ניתן לפרט פה ולהוסיף'
+        }
+        app.dat.activity_list.push(private_idea_activity);
+        app.dat.idx.activity_list[private_idea_activity.id] = private_idea_activity;
         var html = "";
         $.each(app.dat.activity_list, (i, item)=>{
             html +=
@@ -233,6 +240,11 @@ var app = {
         });
         $(".bt_activity_add").click((ev)=>{
             app.signup($(ev.target).closest(".activity_box"));
+        });
+        const $bt_private = $(".activity_box[activity_id='NEW_IDEA'] .bt_activity_add");
+        $bt_private.val("פירוט והוספה");
+        $bt_private.off("click").click((ev)=>{
+            app.add_private_activity($(ev.target).closest(".activity_box"));
         });
     },
     signup_tmpl:(item, signup_state)=>{ 
@@ -430,7 +442,7 @@ var app = {
     help_message_txt:{
         welcome: 
             '<div id="help_welcome">' + 
-                '<div class="help_paragraph">ברוכים הבאים לממשק ההרשמה למעורבות ההורים בכרמים. מוזמנים להירשם לפעילויות בהן תרצו להשתלב. שימו לב, ההרשמה הינה לשנת תשפ"ג והיא משפחתית.</div>' +
+                '<div class="help_paragraph">ברוכים הבאים לממשק ההרשמה למעורבות ההורים בכרמים. מוזמנים להירשם לפעילויות בהן תרצו להשתלב. שימו לב, ההרשמה הינה לשנת תשפ"ד והיא משפחתית.</div>' +
                 '<div class="help_paragraph">מצאו פעילויות ולחצו על הכפתור "הצטרפ/י".<br>הפעילויות אליהן הצטרפתם נאספות ומופיעות בצדו השמאלי של המסך.</div>' +
                 '<div class="help_paragraph">העזרו באפשרויות הסינון שבראש הדף כדי למצוא פעילויות לרוחכם.</div>' +
                 '<div class="help_nagging"><input id="cb_help_welcome_nagging" type="checkbox" checked="true" /><label for="cb_help_welcome_nagging">הבנתי, אין צורך להציג הודעה זו שוב.</label></div>' +
@@ -597,7 +609,7 @@ var app = {
         });
         app.enable_user_toolbox();
         app.refresh_user_progress();
-        app.on_after_signup?.call();
+        app.on_after_signup?.call(this,true);
     },
     add_private_activity: ()=>{
         swal.ok = false;
@@ -653,6 +665,7 @@ var app = {
         const circle_selector = (circle_arr.length == 0) ? "[circle]" : circle_arr.join();
         const timing_selector = (timing_arr.length == 0) ? "[timing]" : timing_arr.join();
         $(".activity_box").filter(cat_selector).filter(circle_selector).filter(timing_selector).show();
+        $(".activity_box[activity_id='NEW_IDEA']").show();
         $("#activity_boxes_wrapper").fadeIn();
     },
     progress_bar:($container, percent)=>{

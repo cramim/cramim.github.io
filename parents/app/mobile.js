@@ -26,12 +26,18 @@ app = $.extend(app, {
             app.nav.scroll_inf[new_id] = {};
         }
     },
-    on_after_signup:()=>{
+    on_after_signup:(is_private)=>{
         $("#user_hours").one("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd", ()=>{
             $("#user_hours").removeClass("ani_pulse");
         });
         $("#user_hours").addClass("ani_pulse");
+        const nag_status = window.localStorage.getObj('cramim-parents-help_message-nag_status') || {};
         app.help_message.show_signup();
+        if (nag_status?.signup && is_private) swal({
+            title: 'אחלה :)',
+            html: 'הרעיון התווסף לרשימה בלשונית "הרשימה שלנו"',
+            showCancelButton: false, confirmButtonColor: '#3085d6', cancelButtonColor: '#d33', confirmButtonText: 'סגור',
+        })
     },
     changed:()=>{
         return $("#user_toolbox").is(":visible");
@@ -145,7 +151,7 @@ app = $.extend(app, {
     help_message_txt:{
         welcome: 
             '<div id="help_welcome">' + 
-                '<div class="help_paragraph">ברוכים הבאים לממשק ההרשמה למעורבות ההורים בכרמים. מוזמנים להירשם לפעילויות בהן תרצו להשתלב. שימו לב, ההרשמה הינה לשנת תשפ"ג והיא משפחתית.</div>' +
+                '<div class="help_paragraph">ברוכים הבאים לממשק ההרשמה למעורבות ההורים בכרמים. מוזמנים להירשם לפעילויות בהן תרצו להשתלב. שימו לב, ההרשמה הינה לשנת תשפ"ד והיא משפחתית.</div>' +
                 '<div class="help_paragraph">תחת הלשונית השמאלית: <span class="help_tab">"הוספת פעילויות"</span>, מצאו פעילויות ולחצו על הכפתור "הצטרפ/י".<br>הפעילויות אליהן הצטרפתם נאספות ומופיעות תחת הלשונית הימנית: <span class="help_tab">"הרשימה שלנו"</span>.</div>' +
                 '<div class="help_paragraph">העזרו באפשרויות הסינון בלחיצה על צלמית זכוכית המגדלת <img class="help_filter_ico" src="img/search.png"> כדי למצוא פעילויות לרוחכם.</div>' +
                 '<div class="help_nagging"><input id="cb_help_welcome_nagging" type="checkbox" checked="true" /><label for="cb_help_welcome_nagging">הבנתי, אין צורך להציג הודעה זו שוב.</label></div>' +

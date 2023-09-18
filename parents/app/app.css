@@ -1044,3 +1044,26 @@ body{
 #eb_private_activity_description{
     height:5em;
 }
+
+.activity_box[activity_id="NEW_IDEA"]>.activity_box_title {
+    background-image: url(../img/idea.svg);
+    background-size: 2em;
+    background-repeat: no-repeat;
+}
+
+.activity_box[activity_id="NEW_IDEA"] .activity_box_status{
+    display: none;
+}
+
+.activity_box[activity_id="NEW_IDEA"]>.activity_box_desc{
+    height: 7em;
+}
+
+.activity_box[activity_id="NEW_IDEA"] .progress_box{display: none;}
+.activity_box[activity_id="NEW_IDEA"] .bt_activity_add{
+    background-color: #ffe082;
+    color: darkslategrey;
+}
+.activity_box[activity_id="NEW_IDEA"] .bt_activity_add:hover{
+    background-color: #f3b900;
+}
