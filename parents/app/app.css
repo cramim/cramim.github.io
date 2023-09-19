@@ -993,7 +993,7 @@ body{
     color: white;
     background-size: 55px;
     position: sticky;
-    bottom: 0px;
+    bottom: 10px;
     background-color: rgb(27, 116, 228);
     font-weight: 500;
     font-size: 1.1em;
