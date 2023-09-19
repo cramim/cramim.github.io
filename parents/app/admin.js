@@ -202,11 +202,11 @@ var app = {
         });
         $.each(reponse_ex_contacts.families, (i, item)=>{
             const family = {
-                family_name: item[js.AB2Num('A')],
-                phone_1: item[js.AB2Num('R')],
-                email_1: item[js.AB2Num('P')],
-                phone_2: item[js.AB2Num('O')],
-                email_2: item[js.AB2Num('S')]
+                family_name: item[js.AB2Num('F')],
+                phone_1: item[js.AB2Num('K')],
+                email_1: item[js.AB2Num('L')],
+                phone_2: item[js.AB2Num('N')],
+                email_2: item[js.AB2Num('O')]
             }
             var contact = 
                 app.dat.idx.contacts_strip[app.contact_tools.strip(family.phone_1)] ||
