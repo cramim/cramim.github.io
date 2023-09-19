@@ -264,7 +264,7 @@ var app = {
                 kid_name: item[js.AB2Num("B")],
                 last_name: item[js.AB2Num("C")],
                 grade: "ב",
-                class: (item[js.AB2Num("D")] == "דרקונים") ? 2 : 1,
+                class: (item[js.AB2Num("D")]?.includes('דרקונים')) ? 2 : 1,
                 phone_1: item[js.AB2Num("I")],
                 email_1: item[js.AB2Num("K")],
                 phone_2: item[js.AB2Num("N")],
@@ -399,7 +399,7 @@ var app = {
                         `<td>${contact.s_activity_list}</td>` + 
                     `</tr>`
             });
-            html += `<div class="class_head">כיתת ${grade_class.nickname}</div>`;
+            html += `<div class="class_head">${grade_class.nickname}</div>`;
             html += `<table class="tb_class" class_name="${grade_class.nickname}"><thead><tr><th>משפחה</th><th>שעות</th><th>פעילויות<div class="bt_download_table" title="שמור לקובץ אקסל"></div><div class="bt_print_table" title="הדפס"></div></th></tr></thead>${class_html}</table>`;
         }
         build_class(app.dat.idx.contact_grade_class["א1"]);
