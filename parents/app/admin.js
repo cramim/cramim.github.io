@@ -248,10 +248,10 @@ var app = {
         }
         build_grade_contacts(reponse_ex_contacts.grade_A, (item)=>{
             const grade_contact = {
-                kid_name: item[js.AB2Num("A")],
-                last_name: item[js.AB2Num("B")],
+                kid_name: item[js.AB2Num("B")],
+                last_name: item[js.AB2Num("C")],
                 grade: "א",
-                class: (item[js.AB2Num("C")]?.includes('2')) ? "2" : 1,
+                class: 1,
                 phone_1: item[js.AB2Num("I")],
                 email_1: item[js.AB2Num("K")],
                 phone_2: item[js.AB2Num("N")],
@@ -261,10 +261,10 @@ var app = {
         });
         build_grade_contacts(reponse_ex_contacts.grade_B, (item)=>{
             const grade_contact = {
-                kid_name: item[js.AB2Num("A")],
-                last_name: item[js.AB2Num("B")],
+                kid_name: item[js.AB2Num("B")],
+                last_name: item[js.AB2Num("C")],
                 grade: "ב",
-                class: (item[js.AB2Num("C")] == "דרקונים") ? 2 : 1,
+                class: (item[js.AB2Num("D")] == "דרקונים") ? 2 : 1,
                 phone_1: item[js.AB2Num("I")],
                 email_1: item[js.AB2Num("K")],
                 phone_2: item[js.AB2Num("N")],
@@ -274,10 +274,10 @@ var app = {
         });
         build_grade_contacts(reponse_ex_contacts.grade_C, (item)=>{
             const grade_contact = {
-                kid_name: item[js.AB2Num("A")],
-                last_name: item[js.AB2Num("B")],
+                kid_name: item[js.AB2Num("B")],
+                last_name: item[js.AB2Num("C")],
                 grade: "ג",
-                class: (item[js.AB2Num("C")]?.includes('2')) ? "2" : 1,
+                class: (item[js.AB2Num("D")]?.includes('2')) ? "2" : 1,
                 phone_1: item[js.AB2Num("I")],
                 email_1: item[js.AB2Num("K")],
                 phone_2: item[js.AB2Num("N")],
@@ -287,10 +287,10 @@ var app = {
         });
         build_grade_contacts(reponse_ex_contacts.grade_D, (item)=>{
             const grade_contact = {
-                kid_name: item[js.AB2Num("A")],
-                last_name: item[js.AB2Num("B")],
+                kid_name: item[js.AB2Num("B")],
+                last_name: item[js.AB2Num("C")],
                 grade: "ד",
-                class: (item[js.AB2Num("C")]?.includes('2')) ? "2" : 1,
+                class: (item[js.AB2Num("D")]?.includes('2')) ? "2" : 1,
                 phone_1: item[js.AB2Num("I")],
                 email_1: item[js.AB2Num("K")],
                 phone_2: item[js.AB2Num("N")],
@@ -300,10 +300,10 @@ var app = {
         });
         build_grade_contacts(reponse_ex_contacts.grade_E, (item)=>{
             const grade_contact = {
-                kid_name: item[js.AB2Num("A")],
-                last_name: item[js.AB2Num("B")],
+                kid_name: item[js.AB2Num("B")],
+                last_name: item[js.AB2Num("C")],
                 grade: "ה",
-                class: (item[js.AB2Num("C")] == "פינגווין") ? 2 : 1,
+                class: (item[js.AB2Num("D")] == "פינגווין") ? 2 : 1,
                 phone_1: item[js.AB2Num("I")],
                 email_1: item[js.AB2Num("K")],
                 phone_2: item[js.AB2Num("N")],
@@ -313,8 +313,8 @@ var app = {
         });
         build_grade_contacts(reponse_ex_contacts.grade_F, (item)=>{
             const grade_contact = {
-                kid_name: item[js.AB2Num("A")],
-                last_name: item[js.AB2Num("B")],
+                kid_name: item[js.AB2Num("B")],
+                last_name: item[js.AB2Num("C")],
                 grade: "ו",
                 class: 1, //?
                 phone_1: item[js.AB2Num("I")],
