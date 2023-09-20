@@ -221,7 +221,7 @@ var app = {
                     ` signup_state="not_signed"` + 
                     ` mandatory="${item.mandatory}"` + 
                     ` locked="${item.locked}">` + 
-                    `<div class="activity_box_title">${item.name||'&nbsp'}</div>` +
+                    `<div class="activity_box_title"><span>${item.name||'&nbsp'}</span></div>` +
                     `<div class="activity_box_desc">${item.description||'&nbsp'}</div>` +
                     `<div class="activity_box_status"><table><tr>` +
                         `<td class="activity_box_status_value_title">שעות:</td><td class="activity_box_status_value">${item.hours||'&nbsp'}</td>` +
@@ -246,6 +246,11 @@ var app = {
         $bt_private.off("click").click((ev)=>{
             app.add_private_activity($(ev.target).closest(".activity_box"));
         });
+        if (app.titlesResizeObserver) app.titlesResizeObserver.disconnect();
+        app.titlesResizeObserver = new ResizeObserver((entries) => {
+            $.each(entries,(i, entry)=>{$(entry.target).prop("title", (entry.target.offsetWidth < entry.target.scrollWidth) ? $(entry.target).text() : '');});
+        })
+        $(".activity_box_title").each((i,el)=>{app.titlesResizeObserver.observe(el)});
     },
     signup_tmpl:(item, signup_state)=>{ 
         tmpl =
