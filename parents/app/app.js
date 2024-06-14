@@ -784,7 +784,7 @@ var app = {
         });
     },
     init_campaign:()=>{
-        app.dat.campaign_id = js.urlParam("campaign") || 3;
+        app.dat.campaign_id = js.urlParam("campaign") || 4;
     },
     init_user: ()=>{
         app.dat.user = window.localStorage.getObj("cramim-parents-user");
