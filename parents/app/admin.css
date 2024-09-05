@@ -121,6 +121,8 @@ div[report_type]{display: none;}
 
 .activity_box{
     width: 80%;
+    min-height: initial;
+    vertical-align: initial;
 }
 
 .activity_box:hover{
@@ -128,8 +130,13 @@ div[report_type]{display: none;}
     transition: initial;
 }
 
+.activity_box:hover>.activity_box_title{
+    background: initial;
+}
+
 .activity_box_title{
     position: relative;
+    cursor: initial;
 }
 .activity_box_status>table{width: initial;}
 
