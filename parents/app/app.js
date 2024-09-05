@@ -251,6 +251,18 @@ var app = {
             $.each(entries,(i, entry)=>{$(entry.target).prop("title", (entry.target.offsetWidth < entry.target.scrollWidth) ? $(entry.target).text() : '');});
         })
         $(".activity_box_title").each((i,el)=>{app.titlesResizeObserver.observe(el)});
+        $(".activity_box_title").click((ev)=>{
+            const box = $(ev.target).closest(".activity_box");
+            const max = box.hasClass("box_maximized");
+            if (!max) $("#box_placeholder").insertAfter(box);
+            $("#box_placeholder").css("display", (max)?"none":"inline-block");
+            if (max) $("#mask_dialog").fadeOut();
+            else $("#mask_dialog").show();
+            
+            // $("#mask_dialog").toggle(!max);
+            box.toggleClass("box_maximized", !max);
+        });
+        
     },
     signup_tmpl:(item, signup_state)=>{ 
         tmpl =
@@ -810,6 +822,7 @@ var app = {
         $("#parent").hide();
         $("#dv_login").hide();
         $("#dv_screen_message").hide();
+        $("#mask_dialog").click(()=>{$(".activity_box.box_maximized>.activity_box_title").click()});
         app.init_campaign();
         app.init_scroll();
         app.init_buttons();
