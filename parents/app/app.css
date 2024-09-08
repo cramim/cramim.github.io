@@ -1129,4 +1129,8 @@ body{
     min-height: 15.5em;
     vertical-align: middle;
     opacity: 0.3;
+    background-image: url(../img/cramim96-wait.gif);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 40%;
 }
