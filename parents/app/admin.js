@@ -251,7 +251,7 @@ var app = {
                 kid_name: item[js.AB2Num("B")],
                 last_name: item[js.AB2Num("C")],
                 grade: "א",
-                class: 1,
+                class: (item[js.AB2Num("D")]?.includes('מיקול') || item[js.AB2Num("D")]?.includes('סנאי')) ? 2 : 1,
                 phone_1: item[js.AB2Num("I")],
                 email_1: item[js.AB2Num("K")],
                 phone_2: item[js.AB2Num("N")],
@@ -264,7 +264,7 @@ var app = {
                 kid_name: item[js.AB2Num("B")],
                 last_name: item[js.AB2Num("C")],
                 grade: "ב",
-                class: (item[js.AB2Num("D")]?.includes('דרקונים')) ? 2 : 1,
+                class: (item[js.AB2Num("D")]?.includes('פיצה')) ? 2 : 1,
                 phone_1: item[js.AB2Num("I")],
                 email_1: item[js.AB2Num("K")],
                 phone_2: item[js.AB2Num("N")],
@@ -277,7 +277,7 @@ var app = {
                 kid_name: item[js.AB2Num("B")],
                 last_name: item[js.AB2Num("C")],
                 grade: "ג",
-                class: (item[js.AB2Num("D")]?.includes('2')) ? "2" : 1,
+                class: (item[js.AB2Num("D")]?.includes('קיפוד')) ? 2 : 1,
                 phone_1: item[js.AB2Num("I")],
                 email_1: item[js.AB2Num("K")],
                 phone_2: item[js.AB2Num("N")],
@@ -290,7 +290,9 @@ var app = {
                 kid_name: item[js.AB2Num("B")],
                 last_name: item[js.AB2Num("C")],
                 grade: "ד",
-                class: (item[js.AB2Num("D")]?.includes('2')) ? "2" : 1,
+                class: 
+                    (item[js.AB2Num("D")]?.includes('טירקס')) ? 3 :
+                    (item[js.AB2Num("D")]?.includes('עטלף')) ? 2 : 1,
                 phone_1: item[js.AB2Num("I")],
                 email_1: item[js.AB2Num("K")],
                 phone_2: item[js.AB2Num("N")],
@@ -303,7 +305,7 @@ var app = {
                 kid_name: item[js.AB2Num("B")],
                 last_name: item[js.AB2Num("C")],
                 grade: "ה",
-                class: (item[js.AB2Num("D")] == "פינגווין") ? 2 : 1,
+                class: (item[js.AB2Num("D")]?.includes('טיגריס')) ? 2 : 1,
                 phone_1: item[js.AB2Num("I")],
                 email_1: item[js.AB2Num("K")],
                 phone_2: item[js.AB2Num("N")],
@@ -316,7 +318,7 @@ var app = {
                 kid_name: item[js.AB2Num("B")],
                 last_name: item[js.AB2Num("C")],
                 grade: "ו",
-                class: 1, //?
+                class: (item[js.AB2Num("D")]?.includes('פינגו')) ? 2 : 1,
                 phone_1: item[js.AB2Num("I")],
                 email_1: item[js.AB2Num("K")],
                 phone_2: item[js.AB2Num("N")],
@@ -358,17 +360,21 @@ var app = {
                 const grade_class_name =  kid.grade + kid.class;
                 var grade_class = app.dat.idx.contact_grade_class[grade_class_name];
                 if (!grade_class) {
+                    console.log(grade_class_name, kid);
                     const nickname = 
-                        (grade_class_name == "א1") ? "כיתות א" :
-                        (grade_class_name == "ב1") ? "קואלות" :
-                        (grade_class_name == "ב2") ? "דרקונים" :
-                        (grade_class_name == "ג1") ? "דורבנים" :
-                        (grade_class_name == "ג2") ? "איילים" :
-                        (grade_class_name == "ד1") ? "כלבלבים" :
-                        (grade_class_name == "ד2") ? "ינשופים" :
-                        (grade_class_name == "ה1") ? "דולפין" :
-                        (grade_class_name == "ה2") ? "פינגווין" :
-                        (grade_class_name == "ו1") ? "כיתות ו" : "";
+                        (grade_class_name == "א1") ? "קנגרו" :
+                        (grade_class_name == "א2") ? "סנאי" :
+                        (grade_class_name == "ב1") ? "שועלים" :
+                        (grade_class_name == "ב2") ? "פיצה" :
+                        (grade_class_name == "ג1") ? "לונדון" :
+                        (grade_class_name == "ג2") ? "קיפודים" :
+                        (grade_class_name == "ד1") ? "זאבים" :
+                        (grade_class_name == "ד2") ? "עטלף" :
+                        (grade_class_name == "ד3") ? "טירקס" :
+                        (grade_class_name == "ה1") ? "מדקסקר" :
+                        (grade_class_name == "ה2") ? "טיגריס" :
+                        (grade_class_name == "ו1") ? "דולפין" :
+                        (grade_class_name == "ו2") ? "פינגווין" : "";
                     app.dat.idx.contact_grade_class[grade_class_name] = {name:grade_class_name, nickname:nickname, list: []};
                     grade_class = app.dat.idx.contact_grade_class[grade_class_name];
                 }

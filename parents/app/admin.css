@@ -216,3 +216,7 @@ div[report_type]{display: none;}
     display:none;
     background-color: #ffffff80;
 }
+
+#class_filter{
+    margin-bottom: 5em;
+}
