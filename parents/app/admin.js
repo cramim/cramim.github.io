@@ -305,7 +305,7 @@ var app = {
                 kid_name: item[js.AB2Num("B")],
                 last_name: item[js.AB2Num("C")],
                 grade: "ה",
-                class: (item[js.AB2Num("D")]?.includes('טיגריס')) ? 2 : 1,
+                class: (item[js.AB2Num("D")]?.includes('ינשו')) ? 2 : 1,
                 phone_1: item[js.AB2Num("I")],
                 email_1: item[js.AB2Num("K")],
                 phone_2: item[js.AB2Num("N")],
