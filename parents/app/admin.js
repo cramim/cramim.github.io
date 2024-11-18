@@ -417,6 +417,7 @@ var app = {
         build_class(app.dat.idx.contact_grade_class["ד2"]);
         build_class(app.dat.idx.contact_grade_class["ה1"]);
         build_class(app.dat.idx.contact_grade_class["ו1"]);
+        build_class(app.dat.idx.contact_grade_class["ו2"]);
         $("#class_boxes_wrapper").html(html);
         $(".bt_download_table").click(ev=>{
             const tb = $(ev.target).closest("table");
