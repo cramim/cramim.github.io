@@ -277,7 +277,8 @@ var app = {
                 kid_name: item[js.AB2Num("B")],
                 last_name: item[js.AB2Num("C")],
                 grade: "ג",
-                class: (item[js.AB2Num("D")]?.includes('קואל') || item[js.AB2Num("D")]?.includes('לונד')) ? 2 : 1,
+                // class: (item[js.AB2Num("D")]?.includes('קואל') || item[js.AB2Num("D")]?.includes('לונד')) ? 2 : 1,
+                class: 1,
                 phone_1: item[js.AB2Num("I")],
                 email_1: item[js.AB2Num("K")],
                 phone_2: item[js.AB2Num("N")],
@@ -366,8 +367,8 @@ var app = {
                         (grade_class_name == "א2") ? "סנאי" :
                         (grade_class_name == "ב1") ? "שועלים" :
                         (grade_class_name == "ב2") ? "פיצה" :
-                        (grade_class_name == "ג1") ? "לונדון" :
-                        (grade_class_name == "ג2") ? "קיפודים" :
+                        (grade_class_name == "ג1") ? "שכבה ג" :
+                        // (grade_class_name == "ג2") ? "קיפודים" :
                         (grade_class_name == "ד1") ? "זאבים" :
                         (grade_class_name == "ד2") ? "עטלף" :
                         (grade_class_name == "ד3") ? "טירקס" :
@@ -413,9 +414,10 @@ var app = {
         build_class(app.dat.idx.contact_grade_class["ב1"]);
         build_class(app.dat.idx.contact_grade_class["ב2"]);
         build_class(app.dat.idx.contact_grade_class["ג1"]);
-        build_class(app.dat.idx.contact_grade_class["ג2"]);
+        // build_class(app.dat.idx.contact_grade_class["ג2"]);
         build_class(app.dat.idx.contact_grade_class["ד1"]);
         build_class(app.dat.idx.contact_grade_class["ד2"]);
+        build_class(app.dat.idx.contact_grade_class["ד3"]);
         build_class(app.dat.idx.contact_grade_class["ה1"]);
         build_class(app.dat.idx.contact_grade_class["ה2"]);
         build_class(app.dat.idx.contact_grade_class["ו1"]);
