@@ -409,6 +409,7 @@ var app = {
             html += `<table class="tb_class" class_name="${grade_class.nickname}"><thead><tr><th>משפחה</th><th>שעות</th><th>פעילויות<div class="bt_download_table" title="שמור לקובץ אקסל"></div><div class="bt_print_table" title="הדפס"></div></th></tr></thead>${class_html}</table>`;
         }
         build_class(app.dat.idx.contact_grade_class["א1"]);
+        build_class(app.dat.idx.contact_grade_class["א2"]);
         build_class(app.dat.idx.contact_grade_class["ב1"]);
         build_class(app.dat.idx.contact_grade_class["ב2"]);
         build_class(app.dat.idx.contact_grade_class["ג1"]);
@@ -416,6 +417,7 @@ var app = {
         build_class(app.dat.idx.contact_grade_class["ד1"]);
         build_class(app.dat.idx.contact_grade_class["ד2"]);
         build_class(app.dat.idx.contact_grade_class["ה1"]);
+        build_class(app.dat.idx.contact_grade_class["ה2"]);
         build_class(app.dat.idx.contact_grade_class["ו1"]);
         build_class(app.dat.idx.contact_grade_class["ו2"]);
         $("#class_boxes_wrapper").html(html);
