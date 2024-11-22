@@ -235,7 +235,7 @@ var app = {
                     app.dat.idx.contacts_strip[app.contact_tools.strip(grade_contact.phone_2)] ||
                     app.dat.idx.contacts_strip[app.contact_tools.strip(grade_contact.email_1)] ||
                     app.dat.idx.contacts_strip[app.contact_tools.strip(grade_contact.email_2)];
-                if (contact) {
+                if (contact && grade_contact.crammim_key) { // check cramnim_key to exclude families that left school
                     const kid = {
                         name: grade_contact.kid_name,
                         grade: grade_contact.grade,
@@ -248,6 +248,7 @@ var app = {
         }
         build_grade_contacts(reponse_ex_contacts.grade_A, (item)=>{
             const grade_contact = {
+                crammim_key: item[js.AB2Num("A")],
                 kid_name: item[js.AB2Num("B")],
                 last_name: item[js.AB2Num("C")],
                 grade: "א",
@@ -261,6 +262,7 @@ var app = {
         });
         build_grade_contacts(reponse_ex_contacts.grade_B, (item)=>{
             const grade_contact = {
+                crammim_key: item[js.AB2Num("A")],
                 kid_name: item[js.AB2Num("B")],
                 last_name: item[js.AB2Num("C")],
                 grade: "ב",
@@ -274,6 +276,7 @@ var app = {
         });
         build_grade_contacts(reponse_ex_contacts.grade_C, (item)=>{
             const grade_contact = {
+                crammim_key: item[js.AB2Num("A")],
                 kid_name: item[js.AB2Num("B")],
                 last_name: item[js.AB2Num("C")],
                 grade: "ג",
@@ -288,6 +291,7 @@ var app = {
         });
         build_grade_contacts(reponse_ex_contacts.grade_D, (item)=>{
             const grade_contact = {
+                crammim_key: item[js.AB2Num("A")],
                 kid_name: item[js.AB2Num("B")],
                 last_name: item[js.AB2Num("C")],
                 grade: "ד",
@@ -303,6 +307,7 @@ var app = {
         });
         build_grade_contacts(reponse_ex_contacts.grade_E, (item)=>{
             const grade_contact = {
+                crammim_key: item[js.AB2Num("A")],
                 kid_name: item[js.AB2Num("B")],
                 last_name: item[js.AB2Num("C")],
                 grade: "ה",
@@ -316,6 +321,7 @@ var app = {
         });
         build_grade_contacts(reponse_ex_contacts.grade_F, (item)=>{
             const grade_contact = {
+                crammim_key: item[js.AB2Num("A")],
                 kid_name: item[js.AB2Num("B")],
                 last_name: item[js.AB2Num("C")],
                 grade: "ו",
