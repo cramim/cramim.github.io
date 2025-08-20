@@ -1,4 +1,6 @@
-﻿//app.js
+﻿//const { act } = require("react");
+
+//app.js
 Storage.prototype.setObj = function(key, value) {this.setItem(key, JSON.stringify(value));}
 Storage.prototype.getObj = function(key) {var value = this.getItem(key); return value && JSON.parse(value); }
 
@@ -73,7 +75,8 @@ var js = {
 
 var app = {
     dat:{
-        srv_url: 'https://script.google.com/macros/s/AKfycbw9iVdg5gGV0OzF_KOMDVjFZkL-HrIMd9vjiF7vsO-1dNcs0eRx_L5-g9D4rMEMGDjMTQ/exec',
+        srv_url: 'https://script.google.com/macros/s/AKfycbzfXsMiCmshOROflAtFNdgjYwYRB-nbPNLBCIWGdFp6O9IHhvD7T4U8CYvqLFq5nvb8/exec',
+        //srv_url: 'https://script.google.com/macros/s/AKfycbw9iVdg5gGV0OzF_KOMDVjFZkL-HrIMd9vjiF7vsO-1dNcs0eRx_L5-g9D4rMEMGDjMTQ/exec',
         server_load_response: null,
         campaign_id: null,
         user:null,
@@ -183,7 +186,8 @@ var app = {
                 signedup: item[11] || 0,
                 mandatory: item[12],
                 locked: item[13] && !app.dat.unlock,
-                group_name: item[14]
+                group_name: item[14],
+                grade: item[15],
             };
             if (activity.group_name) {
                 var activity_group = app.dat.idx.activity_groups[activity.group_name];
@@ -199,9 +203,16 @@ var app = {
                 activity.name = activity.group_name;
                 app.dat.idx.group_by_activity[activity.id] = activity_group;
             }
+            if (activity.grade) {
+                activity.activity_grades = "כל השכבות"
+
+            }
             app.dat.activity_list.push(activity);
             app.dat.idx.activity_list[activity.id] = activity;
+            //if (activity.mandatory) app.dat.mandatory_activity_list.push(activity.id,"test_mandatory1");
+            //if (activity.mandatory) app.dat.mandatory_activity_list.push({id: activity.id,activity_grades: "test_mandatory_1"});
             if (activity.mandatory) app.dat.mandatory_activity_list.push(activity.id);
+            
         });
         var private_idea_activity = {
             id: 'NEW_IDEA',
@@ -224,7 +235,7 @@ var app = {
                     `<div class="activity_box_title"><span>${item.name||'&nbsp'}</span></div>` +
                     `<div class="activity_box_desc">${item.description||'&nbsp'}</div>` +
                     `<div class="activity_box_status"><table><tr>` +
-                        `<td class="activity_box_status_value_title">שעות:</td><td class="activity_box_status_value">${item.hours||'&nbsp'}</td>` +
+                        `<td class="activity_box_status_value_title">נקודות:</td><td class="activity_box_status_value">${item.hours||'&nbsp'}</td>` +
                         `<td class="activity_box_status_joined_title">הצטרפו:</td><td class="activity_box_status_joined">${item.signedup}</td>` +
                         `<td class="activity_box_status_goal_title">מתוך:</td><td class="activity_box_status_goal">${item.members_goal||'&nbsp'}</td>` +
                     `</tr></table></div>` +
@@ -238,8 +249,60 @@ var app = {
         $(".dv_activity_progress").each((i,el)=>{
             app.progress_bar($(el), $(el).attr("progress"));
         });
-        $(".bt_activity_add").click((ev)=>{
-            app.signup($(ev.target).closest(".activity_box"));
+        $(".bt_activity_add").click((ev) => {
+            const $box = $(ev.target).closest(".activity_box");
+            const activityId = $box.attr("activity_id");
+            const activity = app.dat.idx.activity_list[activityId];
+
+            if (activity.activity_grades) {
+
+                //const gradeOptions = Array.from(activity.activity_grades); // If there are no activities with grades that only fit b-c-d, we can change it to const to solve the bug of re-selection...
+                const gradeOptions = ["שכבה א׳", "שכבה ב׳", "שכבה ג׳", "שכבה ד׳", "שכבה ה׳", "שכבה ו׳"];
+                swal({
+                    title: 'בחר/י שכבת גיל',
+                    html: `
+                    <div class="dlg_form">
+                    ${gradeOptions.map(grade => `
+                        <label>
+                            <input type="checkbox" name="grade" value="${grade}" />
+                            ${grade}
+                        </label>
+                    `).join('')}
+                    </div>
+                    `,
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'אישור',
+                    cancelButtonText: 'ביטול',
+                    preConfirm: function () {
+                    return new Promise(function (resolve) {
+                    const selectedGrade = Array.from(document.querySelectorAll('input[name="grade"]:checked'))
+                        .map(cb => cb.value);
+
+                    if (selectedGrade.length === 0) {
+                        swal.showValidationMessage("יש לבחור שכבת גיל");
+                        js.animate($(".swal2-validation-message"), "ani_bounce");
+                        return;
+                    }
+
+        activity.activity_grades = selectedGrade;
+        resolve();
+    });
+}
+                }).then((result) => {
+                    if (result.value) {
+
+                        app.signup($box);
+                    }
+                });
+            
+            } else {
+                activity.activity_grades = "כל השכבות";
+                app.signup($box);
+            }
+
+          
         });
         const $bt_private = $(".activity_box[activity_id='NEW_IDEA'] .bt_activity_add");
         $bt_private.val("פירוט והוספה");
@@ -298,7 +361,8 @@ var app = {
         $.each(response_signup_list.reverse(), (i, item)=>{
             const activity = app.dat.idx.group_by_activity[item[1]] || app.dat.idx.activity_list[item[1]];
             if (activity) {
-                app.dat.initial_signup_list.push(activity.id);
+                app.dat.initial_signup_list.push({id: activity.id,activity_grades: activity.activity_grades});
+
                 if (!activity.mandatory) {
                     app.dat.signup_list.push(activity);
                     $(`.activity_box[activity_id='${activity.id}']`).attr("signup_state", "signed");
@@ -306,20 +370,31 @@ var app = {
                 }
             }
         });
-        
+
         $.each(app.dat.mandatory_activity_list, (i, activity_id)=>{
-            const activity = app.dat.idx.group_by_activity[activity_id] || app.dat.idx.activity_list[activity_id];
-            if (activity) {
-                app.dat.signup_list.push(activity);
-                const signup_state  = (app.dat.initial_signup_list.indexOf(activity_id) == -1) ? "not_signed" : "signed"; 
-                $(`.activity_box[activity_id='${activity.id}']`).attr("signup_state", signup_state);
-                if (signup_state == "not_signed") {
-                    app.dat.initial_signup_list.push(activity_id);
-                    activity.save_anyway = true;
-                }
-                html += app.signup_tmpl(activity, "not_signed");
+        const activity = app.dat.idx.group_by_activity[activity_id] || app.dat.idx.activity_list[activity_id];
+        if (activity) {
+            app.dat.signup_list.push(activity);
+            
+            // Check if this mandatory activity was already signed up from the server response
+            const alreadySignedUp = app.dat.initial_signup_list.some(init => String(init.id) === String(activity_id));
+            const signup_state = alreadySignedUp ? "signed" : "not_signed";
+            
+            $(`.activity_box[activity_id='${activity.id}']`).attr("signup_state", signup_state);
+            
+            if (!alreadySignedUp) {
+                activity.activity_grades = "כל השכבות";
+                // Only add to initial_signup_list if not already there
+                app.dat.initial_signup_list.push({
+                    id: activity.id,
+                    activity_grades: activity.activity_grades
+                });
+                activity.save_anyway = true;
             }
+            html += app.signup_tmpl(activity, signup_state);
+        }
         });
+
 
         $("#user_box_items").html(html);
         $(".user_box_item[activity_id] .bt_item_delete").click((ev)=>{
@@ -583,17 +658,30 @@ var app = {
             unsign_list: [],
             private_list:[],
             unsign_private_list:[]
-        }
-
+        };
+        
         var idx_signup_list = {};
+        
         $.each(app.dat.signup_list, (i, item)=>{
-            if (item.save_anyway || app.dat.initial_signup_list.indexOf(item.id) < 0) post_data.signup_list.push(item.id);
-            idx_signup_list[item.id]=item;
+            if (item.save_anyway ||!app.dat.initial_signup_list.some(init => String(init.id) === String(item.id)))
+            {
+                post_data.signup_list.push({item_id: item.id,grade: Array.isArray(item.activity_grades) ? item.activity_grades.join(", ") : item.activity_grades});
+            }
+           idx_signup_list[item.id]=item;
+           
         });
-        $.each(app.dat.initial_signup_list, (i, item)=>{
-            if (!idx_signup_list[item]) post_data.unsign_list.push(item);
-        });
-
+        
+       
+        
+        $.each(app.dat.initial_signup_list, (i, item) => {
+             if (!idx_signup_list[item.id]) {
+                post_data.unsign_list.push({
+                    item_id: item.id,
+                    grade: Array.isArray(item.activity_grades) ? item.activity_grades.join(", ") : item.activity_grades || ""
+            });
+        }
+        }); 
+        
         var idx_private_list = {};
         $.each(app.dat.private_list, (i, item)=>{
             if (app.dat.initial_private_list.indexOf(item.id) < 0) post_data.private_list.push(item);
@@ -796,7 +884,9 @@ var app = {
         });
     },
     init_campaign:()=>{
-        app.dat.campaign_id = js.urlParam("campaign") || 4;
+        // campaign change...
+        //app.dat.campaign_id = js.urlParam("campaign") || 4;
+        app.dat.campaign_id = js.urlParam("campaign") || 5;
     },
     init_user: ()=>{
         app.dat.user = window.localStorage.getObj("cramim-parents-user");

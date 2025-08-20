@@ -159,7 +159,42 @@ body{
     position: absolute;
     inset: 0;
 }
-    
+                    
+.dlg_form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    direction: rtl;
+    box-sizing: border-box;
+    max-width: 100%;
+}
+
+.dlg_form label {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    font-size: 24px;
+    white-space: nowrap;
+    text-align: left;
+
+}
+
+.dlg_form input[type="checkbox"] {
+    flex-shrink: 0; /* Prevent checkbox from shrinking */
+    transform: scale(1.5); /* Make checkbox 1.5x bigger */
+    margin-left: 6px;  /*Add spacing (adjust for RTL layout) */
+    vertical-align: center;
+    cursor: pointer;
+}
+
+.dlg_form label span {
+    flex: 1; /* Allows text to use remaining space */
+    white-space: nowrap;
+    word-break: break-word;
+}
+
+
 .pb_div1 { grid-area: 1 / 1 / 2 / 2; }
 .pb_div2 { grid-area: 1 / 2 / 2 / 3; }
 .pb_div3 { grid-area: 1 / 3 / 2 / 4; }

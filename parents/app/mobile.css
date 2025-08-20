@@ -905,7 +905,16 @@ input[type="button"]{
     display: inline-block;
     text-shadow: 0 0 5px white;
 }
-
+/*
+.dlg_form input, s.dlg_form textarea {
+    font-size: 18px;
+    font-family: inherit;
+    padding: 7px;
+    border: 1px gray solid;
+    box-sizing: border-box;
+    width: 100%;
+}
+*/
 .dlg_form input, .dlg_form textarea {
     font-size: 18px;
     font-family: inherit;
@@ -915,6 +924,91 @@ input[type="button"]{
     width: 100%;
 }
 
+.dlg_form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    direction: rtl;
+    box-sizing: border-box;
+    max-width: 100%;
+}
+
+.dlg_form label {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    font-size: 24px;
+    white-space: nowrap;
+    text-align: left;
+}
+
+.dlg_form input[type="checkbox"] {
+    flex-shrink: 0; /* Prevent checkbox from shrinking */
+    transform: scale(1.5); /* Make checkbox 1.5x bigger */
+    margin-left: 6px;  /* Add spacing (adjust for RTL layout) */
+    vertical-align: center;
+    cursor: pointer;
+}
+
+.dlg_form label span {
+    flex: 1; /* Allows text to use remaining space */
+    white-space: nowrap;
+    word-break: break-word;
+}
+
+/* SweetAlert2 mobile checkbox fix - target the actual structure */
+@media screen and (max-width: 768px) {
+    /* Target SweetAlert2 popup specifically */
+    .swal2-popup .dlg_form label {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        width: 100% !important;
+        min-height: 44px !important;
+        margin-bottom: 8px !important;
+        flex-wrap: nowrap !important;
+        text-align: right !important;
+    }
+    
+    .swal2-popup .dlg_form input[type="checkbox"] {
+        display: inline-block !important;
+        order: 2 !important;
+        flex-shrink: 0 !important;
+        transform: scale(1.8) !important; /* Slightly bigger for mobile */
+        margin: 0 12px 0 8px !important;
+        width: auto !important;
+        height: auto !important;
+        vertical-align: middle !important;
+        position: relative !important;
+    }
+    
+    /* Target text nodes directly since there's no span wrapper */
+    .swal2-popup .dlg_form label {
+        font-size: 18px !important;
+        line-height: 1.4 !important;
+        padding: 8px 4px !important;
+    }
+    
+    /* Override SweetAlert2's content flex direction */
+    .swal2-popup .swal2-content {
+        text-align: right !important;
+    }
+    
+    .swal2-popup .dlg_form {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        width: 100% !important;
+        direction: rtl !important;
+    }
+    
+    /* Force SweetAlert2 to not interfere with our layout */
+    .swal2-popup .dlg_form label * {
+        box-sizing: border-box !important;
+    }
+}
 #eb_private_activity_content{
     height: 4em;
 }
