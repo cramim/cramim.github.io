@@ -336,7 +336,7 @@ var app = {
                 `</div>` +
                 `<table class="tb_user_box_item">` +
                     `<tr><td>פעילות:</td><td class="user_box_item_title">${item.name}</td></tr>` +
-                    `<tr><td>שעות:</td><td class="user_box_item_value">${item.hours||''}</td></tr>` +
+                    `<tr><td>נקודות:</td><td class="user_box_item_value">${item.hours||''}</td></tr>` +
                 `</table>` +
             `</div>`;
         return tmpl;
@@ -350,7 +350,7 @@ var app = {
                 `</div>` +
                 `<table class="tb_user_box_item">` +
                     `<tr><td>פעילות:</td><td class="user_box_item_title">${private_item.title}</td></tr>` +
-                    `<tr><td>שעות:</td><td class="user_box_item_value"></td></tr>` +
+                    `<tr><td>נקודות:</td><td class="user_box_item_value"></td></tr>` +
                 `</table>` +
             `</div>`;
         return tmpl;
@@ -534,13 +534,14 @@ var app = {
     help_message_txt:{
         welcome: 
             '<div id="help_welcome">' + 
-                '<div class="help_paragraph">ברוכים הבאים לממשק ההרשמה למעורבות ההורים בכרמים. מוזמנים להירשם לפעילויות בהן תרצו להשתלב. שימו לב, ההרשמה הינה לשנת תשפ"ה והיא משפחתית.</div>' +
+                '<div class="help_paragraph">ברוכים הבאים לממשק ההרשמה למעורבות ההורים בכרמים. מוזמנים להירשם לפעילויות בהן תרצו להשתלב. שימו לב, ההרשמה הינה לשנת תשפ"ו והיא משפחתית.</div>' +
                 '<div class="help_paragraph">מצאו פעילויות ולחצו על הכפתור "הצטרפ/י".<br>הפעילויות אליהן הצטרפתם נאספות ומופיעות בצדו השמאלי של המסך.</div>' +
+                '<div class="help_paragraph">חלק מהפעילויות יציגו בחירה של הרשמה שכבתית. אנא בחרו לאיזה שכבה/ות להרשם</div>' +
                 '<div class="help_paragraph">העזרו באפשרויות הסינון שבראש הדף כדי למצוא פעילויות לרוחכם.</div>' +
                 '<div class="help_nagging"><input id="cb_help_welcome_nagging" type="checkbox" checked="true" /><label for="cb_help_welcome_nagging">הבנתי, אין צורך להציג הודעה זו שוב.</label></div>' +
             '</div>',
         signup:'<div id="help_signup">' + 
-            '<div class="help_paragraph">המשיכו לחפש ולהצטרף לפעילויות נוספות, עד שתמלאו את מכסת השעות שלכם (מותר לעבור אותה) ולסיום לחצו "שמירה".</div>' +
+            '<div class="help_paragraph">המשיכו לחפש ולהצטרף לפעילויות נוספות, עד שתמלאו את מכסת נקודות שלכם (מותר לעבור אותה) ולסיום לחצו "שמירה".</div>' +
                 '<div class="help_paragraph">בכל שלב (גם לאחר השמירה) ניתן להסיר ההצטרפות ע"י לחיצה על צלמית הפח, המופיעה במעבר העכבר, מעל כל פעילות ברשימה שלכם בצד שמאל.</div>' + 
                 '<div class="help_nagging"><input id="cb_help_signup_nagging" type="checkbox" checked="true" /><label for="cb_help_signup_nagging">הבנתי, אין צורך להציג הודעה זו שוב.</label></div>' +
             '</div'
