@@ -75,8 +75,8 @@ var js = {
 
 var app = {
     dat:{
-        srv_url: 'https://script.google.com/macros/s/AKfycbzfXsMiCmshOROflAtFNdgjYwYRB-nbPNLBCIWGdFp6O9IHhvD7T4U8CYvqLFq5nvb8/exec',
-        //srv_url: 'https://script.google.com/macros/s/AKfycbw9iVdg5gGV0OzF_KOMDVjFZkL-HrIMd9vjiF7vsO-1dNcs0eRx_L5-g9D4rMEMGDjMTQ/exec',
+        // Test deployment srv_url: 'https://script.google.com/macros/s/AKfycbzfXsMiCmshOROflAtFNdgjYwYRB-nbPNLBCIWGdFp6O9IHhvD7T4U8CYvqLFq5nvb8/exec',
+        srv_url: 'https://script.google.com/macros/s/AKfycbw9iVdg5gGV0OzF_KOMDVjFZkL-HrIMd9vjiF7vsO-1dNcs0eRx_L5-g9D4rMEMGDjMTQ/exec',
         server_load_response: null,
         campaign_id: null,
         user:null,
