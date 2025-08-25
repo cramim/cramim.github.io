@@ -337,6 +337,7 @@ var app = {
                 `<table class="tb_user_box_item">` +
                     `<tr><td>פעילות:</td><td class="user_box_item_title">${item.name}</td></tr>` +
                     `<tr><td>נקודות:</td><td class="user_box_item_value">${item.hours||''}</td></tr>` +
+                    `<tr><td>שכבות:</td><td class="user_box_item_value">${item.activity_grades||''}</td></tr>` +
                 `</table>` +
             `</div>`;
         return tmpl;
@@ -361,6 +362,7 @@ var app = {
         $.each(response_signup_list.reverse(), (i, item)=>{
             const activity = app.dat.idx.group_by_activity[item[1]] || app.dat.idx.activity_list[item[1]];
             if (activity) {
+                if (item[2] && item[2].trim() !== '') {activity.activity_grades = item[2];}
                 app.dat.initial_signup_list.push({id: activity.id,activity_grades: activity.activity_grades});
 
                 if (!activity.mandatory) {
@@ -383,7 +385,7 @@ var app = {
             $(`.activity_box[activity_id='${activity.id}']`).attr("signup_state", signup_state);
             
             if (!alreadySignedUp) {
-                activity.activity_grades = "כל השכבות";
+                //activity.activity_grades = "כל השכבות";
                 // Only add to initial_signup_list if not already there
                 app.dat.initial_signup_list.push({
                     id: activity.id,
