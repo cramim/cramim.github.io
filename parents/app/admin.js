@@ -266,7 +266,7 @@ var app = {
                 kid_name: item[js.AB2Num("B")],
                 last_name: item[js.AB2Num("C")],
                 grade: "ב",
-                class: (item[js.AB2Num("D")]?.includes('פיצה')) ? 2 : 1,
+                class: (item[js.AB2Num("D")]?.includes('ב2')) ? 2 : 1,
                 phone_1: item[js.AB2Num("I")],
                 email_1: item[js.AB2Num("K")],
                 phone_2: item[js.AB2Num("N")],
@@ -369,19 +369,19 @@ var app = {
                 if (!grade_class) {
                     console.log(grade_class_name, kid);
                     const nickname = 
-                        (grade_class_name == "א1") ? "קנגרו" :
-                        (grade_class_name == "א2") ? "סנאי" :
-                        (grade_class_name == "ב1") ? "שועלים" :
-                        (grade_class_name == "ב2") ? "פיצה" :
+                        (grade_class_name == "א1") ? "שכבה א" :
+                        (grade_class_name == "א2") ? "א2" :
+                        (grade_class_name == "ב1") ? "שכבה ב" :
+                        (grade_class_name == "ב2") ? "ב2" :
                         (grade_class_name == "ג1") ? "שכבה ג" :
-                        // (grade_class_name == "ג2") ? "קיפודים" :
-                        (grade_class_name == "ד1") ? "זאבים" :
-                        (grade_class_name == "ד2") ? "עטלף" :
-                        (grade_class_name == "ד3") ? "טירקס" :
-                        (grade_class_name == "ה1") ? "כלבלבים" :
-                        (grade_class_name == "ה2") ? "ינשופים" :
-                        (grade_class_name == "ו1") ? "דולפין" :
-                        (grade_class_name == "ו2") ? "פינגווין" : "";
+                        (grade_class_name == "ג2") ? "ג2" :
+                        (grade_class_name == "ד1") ? "שכבה ד" :
+                        (grade_class_name == "ד2") ? "ד2" :
+                        (grade_class_name == "ד3") ? "ד3" :
+                        (grade_class_name == "ה1") ? "שכבה ה" :
+                        (grade_class_name == "ה2") ? "ה2" :
+                        (grade_class_name == "ו1") ? "שכבה ו" :
+                        (grade_class_name == "ו2") ? "ו2" : "";
                     app.dat.idx.contact_grade_class[grade_class_name] = {name:grade_class_name, nickname:nickname, list: []};
                     grade_class = app.dat.idx.contact_grade_class[grade_class_name];
                 }
@@ -413,7 +413,7 @@ var app = {
                     `</tr>`
             });
             html += `<div class="class_head">${grade_class.nickname}</div>`;
-            html += `<table class="tb_class" class_name="${grade_class.nickname}"><thead><tr><th>משפחה</th><th>שעות</th><th>פעילויות<div class="bt_download_table" title="שמור לקובץ אקסל"></div><div class="bt_print_table" title="הדפס"></div></th></tr></thead>${class_html}</table>`;
+            html += `<table class="tb_class" class_name="${grade_class.nickname}"><thead><tr><th>משפחה</th><th>נקודות</th><th>פעילויות<div class="bt_download_table" title="שמור לקובץ אקסל"></div><div class="bt_print_table" title="הדפס"></div></th></tr></thead>${class_html}</table>`;
         }
         build_class(app.dat.idx.contact_grade_class["א1"]);
         build_class(app.dat.idx.contact_grade_class["א2"]);
@@ -518,7 +518,7 @@ var app = {
                     `<div class="activity_box_title">${item.name||'&nbsp'}<div class="bt_download_activity_table" title="שמור לקובץ אקסל"></div></div>` +
                     `<div class="activity_box_desc"><table class="tb_activity_members" activity_name="${item.name}">${contact_html}</table></div>` +
                     `<div class="activity_box_status"><table><tr>` +
-                        `<td class="activity_box_status_value_title">שעות:</td><td class="activity_box_status_value">${item.hours||'&nbsp'}</td>` +
+                        `<td class="activity_box_status_value_title">נקודות:</td><td class="activity_box_status_value">${item.hours||'&nbsp'}</td>` +
                         `<td class="activity_box_status_joined_title">הצטרפו:</td><td class="activity_box_status_joined">${item.signedup}</td>` +
                         `<td class="activity_box_status_goal_title">מתוך:</td><td class="activity_box_status_goal">${item.members_goal||'&nbsp'}</td>` +
                     `</tr></table></div>` +
