@@ -181,8 +181,12 @@ var app = {
         app.dat.contacts = [];
         app.dat.idx.contacts = [];
         app.dat.idx.contacts_strip = [];
+        //console.log("Full response_ex_contacts:", reponse_ex_contacts);
+
         const push_contact = (contact)=>{
+            //console.log(contact);
             if (!contact?.uid) return;
+            //if (!contact?.name) return;
             app.dat.contacts.push(contact);
             app.dat.idx.contacts[contact.uid] = contact;
             app.dat.idx.contacts_strip[app.contact_tools.strip(contact.uid)] = contact;
@@ -203,11 +207,12 @@ var app = {
         $.each(reponse_ex_contacts.families, (i, item)=>{
             const family = {
                 family_name: item[js.AB2Num('F')],
-                phone_1: item[js.AB2Num('K')],
-                email_1: item[js.AB2Num('L')],
-                phone_2: item[js.AB2Num('N')],
-                email_2: item[js.AB2Num('O')]
+                phone_1: item[js.AB2Num('R')],
+                email_1: item[js.AB2Num('S')],
+                phone_2: item[js.AB2Num('U')],
+                email_2: item[js.AB2Num('V')]
             }
+            
             var contact = 
                 app.dat.idx.contacts_strip[app.contact_tools.strip(family.phone_1)] ||
                 app.dat.idx.contacts_strip[app.contact_tools.strip(family.phone_2)] ||
@@ -224,6 +229,7 @@ var app = {
                     activity_list: [],
                     kids: []
                 }
+                //console.log(family);
                 push_contact(contact);
             }
         });
@@ -235,6 +241,8 @@ var app = {
                     app.dat.idx.contacts_strip[app.contact_tools.strip(grade_contact.phone_2)] ||
                     app.dat.idx.contacts_strip[app.contact_tools.strip(grade_contact.email_1)] ||
                     app.dat.idx.contacts_strip[app.contact_tools.strip(grade_contact.email_2)];
+                //console.log(grade_contact)
+                
                 if (contact && grade_contact.cramim_key) { // check cramnim_key to exclude families that left school
                     const kid = {
                         name: grade_contact.kid_name,
@@ -243,7 +251,7 @@ var app = {
                     }
                     contact.kids.push(kid);
                 }
-                if (!contact) console.warn("family not found", grade_contact);
+                //if (!contact) console.warn("family not found", grade_contact);
             });
         }
         build_grade_contacts(reponse_ex_contacts.grade_A, (item)=>{
@@ -252,7 +260,8 @@ var app = {
                 kid_name: item[js.AB2Num("B")],
                 last_name: item[js.AB2Num("C")],
                 grade: "א",
-                class: (item[js.AB2Num("D")]?.includes('מיקול') || item[js.AB2Num("D")]?.includes('סנאי')) ? 2 : 1,
+                //class: (item[js.AB2Num("D")]?.includes('מיקול') || item[js.AB2Num("D")]?.includes('סנאי')) ? 2 : 1,
+                class: 1,
                 phone_1: item[js.AB2Num("I")],
                 email_1: item[js.AB2Num("K")],
                 phone_2: item[js.AB2Num("N")],
@@ -266,7 +275,8 @@ var app = {
                 kid_name: item[js.AB2Num("B")],
                 last_name: item[js.AB2Num("C")],
                 grade: "ב",
-                class: (item[js.AB2Num("D")]?.includes('ב2')) ? 2 : 1,
+                //class: (item[js.AB2Num("D")]?.includes('ב2')) ? 2 : 1,
+                class: 1,
                 phone_1: item[js.AB2Num("I")],
                 email_1: item[js.AB2Num("K")],
                 phone_2: item[js.AB2Num("N")],
@@ -367,7 +377,7 @@ var app = {
                 const grade_class_name =  kid.grade + kid.class;
                 var grade_class = app.dat.idx.contact_grade_class[grade_class_name];
                 if (!grade_class) {
-                    console.log(grade_class_name, kid);
+                    //console.log(grade_class_name, kid,"err");
                     const nickname = 
                         (grade_class_name == "א1") ? "שכבה א" :
                         (grade_class_name == "א2") ? "א2" :
@@ -404,7 +414,7 @@ var app = {
                 class_html += 
                     `<tr>` + 
                         `<td>${contact.name}</td>` + 
-                        // `<td>${contact.phone1 || ''}</td>` + 
+                        //`<td>${contact.phone1 || ''}</td>` + 
                         // `<td><a href="mailto:${contact.email1 || ''}">${contact.email1 || ''}</a></td>` + 
                         // `<td>${contact.phone2 || ''}</td>` + 
                         // `<td><a href="mailto:${contact.email2 || ''}">${contact.email2 || ''}</a></td>` + 
@@ -416,18 +426,18 @@ var app = {
             html += `<table class="tb_class" class_name="${grade_class.nickname}"><thead><tr><th>משפחה</th><th>נקודות</th><th>פעילויות<div class="bt_download_table" title="שמור לקובץ אקסל"></div><div class="bt_print_table" title="הדפס"></div></th></tr></thead>${class_html}</table>`;
         }
         build_class(app.dat.idx.contact_grade_class["א1"]);
-        build_class(app.dat.idx.contact_grade_class["א2"]);
+        //build_class(app.dat.idx.contact_grade_class["א2"]);
         build_class(app.dat.idx.contact_grade_class["ב1"]);
-        build_class(app.dat.idx.contact_grade_class["ב2"]);
+        //build_class(app.dat.idx.contact_grade_class["ב2"]);
         build_class(app.dat.idx.contact_grade_class["ג1"]);
-        // build_class(app.dat.idx.contact_grade_class["ג2"]);
+        //build_class(app.dat.idx.contact_grade_class["ג2"]);
         build_class(app.dat.idx.contact_grade_class["ד1"]);
-        build_class(app.dat.idx.contact_grade_class["ד2"]);
+        //build_class(app.dat.idx.contact_grade_class["ד2"]);
         build_class(app.dat.idx.contact_grade_class["ד3"]);
         build_class(app.dat.idx.contact_grade_class["ה1"]);
-        build_class(app.dat.idx.contact_grade_class["ה2"]);
+        //build_class(app.dat.idx.contact_grade_class["ה2"]);
         build_class(app.dat.idx.contact_grade_class["ו1"]);
-        build_class(app.dat.idx.contact_grade_class["ו2"]);
+        //build_class(app.dat.idx.contact_grade_class["ו2"]);
         $("#class_boxes_wrapper").html(html);
         $(".bt_download_table").click(ev=>{
             const tb = $(ev.target).closest("table");
