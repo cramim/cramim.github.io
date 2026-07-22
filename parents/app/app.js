@@ -889,7 +889,7 @@ var app = {
     init_campaign:()=>{
         // campaign change...
         //app.dat.campaign_id = js.urlParam("campaign") || 4;
-        app.dat.campaign_id = js.urlParam("campaign") || 5;
+        app.dat.campaign_id = js.urlParam("campaign") || 6;
     },
     init_user: ()=>{
         app.dat.user = window.localStorage.getObj("cramim-parents-user");
