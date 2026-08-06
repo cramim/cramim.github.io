@@ -778,6 +778,67 @@ v2.add({
     });
 }());
 
+/*  דסקטופ: להוציא את התיאור מקופסת הגלילה בת שלוש השורות.
+ *
+ *  התיאורים ברובם ארוכים מהקופסה, כך שכל כרטיס מציג שבריר טקסט עם פס גלילה
+ *  ובכל זאת תופס 4.1em. הרמז היחיד שיש שם עוד תוכן הוא אייקון שמופיע רק
+ *  בריחוף (app.css:440), ולכן קל מאוד לפספס אותו.
+ *
+ *  כאן דווקא כן נשענים על box_maximized הקיים — בדסקטופ הוא מעוצב ועובד
+ *  (מודאל, התיאור גדל), ו-#box_placeholder ו-#mask_dialog קיימים ב-index.html.
+ *  הכפתור פשוט מפעיל את הלחיצה על הכותרת, במקום לשכפל מנגנון.
+ */
+(function () {
+    var wired = false;
+
+    function has_text($d) {
+        return $d.length > 0 && $d.text().replace(/ /g, " ").trim() !== "";
+    }
+
+    v2.add({
+        id:    "desktop-desc-popup",
+        title: "הסתרת קופסת התיאור בדסקטופ, עם כפתור ברור לתיאור המלא",
+        on:    true,
+        pages: ["desktop"],
+
+        apply: function () {
+            $("body").addClass("v2_descd_on");
+            if (wired) return;
+            wired = true;
+            $("#activity_boxes_wrapper").on("click", ".v2_descd_bt", function (ev) {
+                ev.stopPropagation();
+                $(this).closest(".activity_box").find(".activity_box_title").trigger("click");
+            });
+        },
+
+        render: function () {
+            $("#activity_boxes_wrapper .activity_box").each(function () {
+                var $b = $(this);
+                if ($b.attr("activity_id") === "NEW_IDEA") return;
+                if ($b.find(".v2_descd_bt").length) return;
+                var $d = $b.find(".activity_box_desc");
+                if (!has_text($d)) return;
+                $("<div>").addClass("v2_descd_bt").text("לתיאור הפעילות").insertBefore($d);
+            });
+        }
+    });
+}());
+
+
+/*  יישור הדיאלוג של בחירת השכבות.
+ *
+ *  ב-app.css הוא מוגדר עם justify-content: right יחד עם text-align: left —
+ *  שני כללים שמושכים לכיוונים הפוכים — ועם font-size: 24px שגורם לגלישה.
+ *  התוצאה היא צ'קבוקסים לא מיושרים. כאן רק פריסה; אין שינוי התנהגות.
+ */
+v2.add({
+    id:    "grade-dialog-layout",
+    title: "יישור ועימוד של דיאלוג בחירת השכבות",
+    on:    true,
+    /* ה-CSS תלוי ב-class הזה, אחרת הוא היה חל תמיד ו-?off= לא היה מכבה אותו */
+    apply: function () { $("body").addClass("v2_gradedlg_on"); }
+});
+
 /*  Template for a change to rendered content — copy, rename, fill in:
 
 v2.add({

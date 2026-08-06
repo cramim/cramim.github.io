@@ -370,6 +370,93 @@
     color: #2b3038;
 }
 
+/*  --- desktop-desc-popup ---------------------------------------------
+ *  The collapsed card no longer shows a 4.1em scrolling sliver of text;
+ *  the full description lives in the existing maximized view, reached by
+ *  an always-visible button instead of a hover-only icon.
+ * ------------------------------------------------------------------- */
+
+.v2_desktop.v2_descd_on .activity_box_desc { display: none; }
+
+/* in the maximized modal the description is the point — show it, and drop
+   the button, which would only lead back to where the reader already is */
+.v2_desktop.v2_descd_on .activity_box.box_maximized .activity_box_desc { display: block; }
+.v2_desktop.v2_descd_on .activity_box.box_maximized .v2_descd_bt { display: none; }
+
+.v2_descd_bt {
+    display: block;
+    margin: 0.5em;
+    padding: 6px 12px;
+    border: 1px solid #d6dbe2;
+    border-radius: 6px;
+    background: #f6f8fa;
+    color: #3f4852;
+    font-size: 0.95em;
+    text-align: center;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+    transition: background .13s ease, border-color .13s ease;
+}
+
+.v2_descd_bt::before {
+    content: "";
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    margin-left: 7px;
+    vertical-align: -2px;
+    background: url(../img/maximize.svg) no-repeat center / contain;
+    opacity: .65;
+}
+
+.v2_descd_bt:hover {
+    background: #eef1f5;
+    border-color: #c3cad3;
+    color: #1f262e;
+}
+
+
+/*  --- grade-dialog-layout ---------------------------------------------
+ *  app.css sets justify-content:right together with text-align:left on the
+ *  same label, and a 24px font that overflows — hence the ragged checkboxes.
+ *  A two-column grid puts every box on one axis and every label on another.
+ * ------------------------------------------------------------------- */
+
+.v2_gradedlg_on .dlg_form {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: 100%;
+    direction: rtl;
+}
+
+.v2_gradedlg_on .dlg_form label {
+    display: grid;
+    grid-template-columns: 1.15em 1fr;   /* checkbox column, then text */
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    margin: 0;
+    padding: 9px 10px;
+    border-radius: 7px;
+    font-size: 17px;
+    line-height: 1.4;
+    text-align: right;
+    white-space: normal;                 /* long grade names may wrap */
+    cursor: pointer;
+}
+
+.v2_gradedlg_on .dlg_form label:hover { background: #f2f5f8; }
+
+.v2_gradedlg_on .dlg_form input[type="checkbox"] {
+    width: 1.15em;
+    height: 1.15em;
+    margin: 0;
+    cursor: pointer;
+}
+
+
 /*  --- mobile-desc-collapse -------------------------------------------
  *  Descriptions are long; with every one expanded the list becomes
  *  unscannable. Hidden by default, opened per card by its own button.
