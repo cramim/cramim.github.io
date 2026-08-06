@@ -93,10 +93,84 @@ var v2 = (function () {
 
     var config = {
         show_badge:   true,
-        badge_text:   "גרסת ניסיון",
+        badge_text:   "דף בדיקות",
         feedback_url: "https://forms.gle/GsKDPFPszqFMJjsHA",
-        debug:        js.urlParam("v2debug") === "1"
+        debug:        js.urlParam("v2debug") === "1",
+
+        /* Entry key: the page is only usable with ?key=<access_key>.
+         * Lowercase only — js.urlParam lowercases its result.
+         * Set to null to open the page to anyone with the link.
+         *
+         * IMPORTANT — this is a doorbell, not a lock. The value sits in a
+         * public repo and the check runs in the browser, so anyone who reads
+         * the source gets in. It exists to keep a parent who was forwarded
+         * the link from wandering in by accident, nothing more. The control
+         * that actually protects anything is read_only below. */
+        access_key:   "bdika2027",
+
+        /* Read-only mode. Blocks every write to the Apps Script backend, so
+         * testing cannot pollute the live signup sheet. Set to false when you
+         * want the test group to perform their real signups through the
+         * variant. */
+        read_only:    true
     };
+
+    /* ------------------------------------------------------------------
+     *  2b.  Entry key
+     *
+     *  Kept in sessionStorage once accepted, so internal navigation
+     *  (campaign switching, desktop <-> mobile) does not need the key in
+     *  every URL. Cleared when the tab closes.
+     * ------------------------------------------------------------------ */
+
+    var STORE_KEY = "cramim-parents-v2-key";
+
+    function has_access() {
+        if (!config.access_key) return true;
+        var given = String(js.urlParam("key") || "");
+        if (given === config.access_key) {
+            try { window.sessionStorage.setItem(STORE_KEY, given); } catch (e) {}
+            return true;
+        }
+        try {
+            return window.sessionStorage.getItem(STORE_KEY) === config.access_key;
+        } catch (e) {
+            return false;                /* private mode / storage blocked */
+        }
+    }
+
+    var gated = !redirecting && !has_access();
+
+    if (gated) {
+        app.init = function () {};       /* never boot, never hit the server */
+    }
+
+    /* ------------------------------------------------------------------
+     *  2c.  Read-only guard
+     *
+     *  app.post is the single transport for the whole app, so one wrapper
+     *  covers every write path from this page — desktop, mobile, and any
+     *  future one. Allow-list rather than block-list: only 'load' reads.
+     *
+     *  Intercepting here, before the original runs, means please_wait()
+     *  never fires and the UI stays exactly where it was.
+     * ------------------------------------------------------------------ */
+
+    var READ_ACTIONS = ["load"];
+
+    if (!redirecting) {
+        var _post = app.post;
+        app.post = function (postdata, callback) {
+            if (config.read_only && postdata &&
+                READ_ACTIONS.indexOf(postdata.act_id) < 0) {
+                log("blocked write", postdata.act_id);
+                app.pop_err("זהו דף בדיקות — השינויים לא נשמרים.<br><br>" +
+                            "כדי להירשם בפועל יש לעבור לאתר הרגיל.", true);
+                return;
+            }
+            return _post.apply(this, arguments);
+        };
+    }
 
     /* ------------------------------------------------------------------
      *  3.  Experiment selection
@@ -199,10 +273,12 @@ var v2 = (function () {
     function build_badge() {
         var clean = strip(query(), ["v2", "only", "off", "v2debug"]);
         var names = active().map(function (c) { return c.id; });
+        var label = config.badge_text +
+                    (config.read_only ? " · לקריאה בלבד" : "") +
+                    (baseline ? " · כבוי" : "");
 
         var $b = $("<div>").attr("id", "v2_badge");
-        var $t = $("<span>").addClass("v2_badge_text")
-                            .text(config.badge_text + (baseline ? " · כבוי" : ""));
+        var $t = $("<span>").addClass("v2_badge_text").text(label);
         var $f = $("<a>").addClass("v2_badge_link").text("משוב")
                          .attr({ href: config.feedback_url, target: "_blank", rel: "noopener" });
         var $o = $("<a>").addClass("v2_badge_link").text("לגרסה הרגילה")
@@ -215,10 +291,36 @@ var v2 = (function () {
     }
 
     /* ------------------------------------------------------------------
+     *  6b.  Gate screen
+     * ------------------------------------------------------------------ */
+
+    function build_gate() {
+        var $g = $("<div>").attr("id", "v2_gate");
+        var $c = $("<div>").addClass("v2_gate_card");
+
+        $c.append($("<div>").addClass("v2_gate_title").text("דף בדיקות"));
+        $c.append($("<div>").addClass("v2_gate_text")
+            .text("הדף הזה מיועד לצוות הבדיקה בלבד ואינו הרשמה אמיתית."));
+        $c.append($("<a>").addClass("v2_gate_link")
+            .attr("href", url(ORIGIN, strip(query(), ["key", "v2", "only", "off", "v2debug"])))
+            .text("מעבר לאתר הרגיל"));
+
+        $("body").empty().append($g.append($c)).show();
+        document.title = "דף בדיקות";
+    }
+
+    /* ------------------------------------------------------------------
      *  7.  Boot
      * ------------------------------------------------------------------ */
 
-    if (!redirecting) {
+    if (gated) {
+        $(function () {
+            log("access denied — gate shown");
+            safe(build_gate, null, [], "gate");
+        });
+    }
+
+    if (!redirecting && !gated) {
 
         /* app.rebuild runs on every load and on every save response — this is
          * the hook for anything that touches rendered activity/user content. */

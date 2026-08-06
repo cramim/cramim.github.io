@@ -136,6 +136,62 @@
 
 
 /* ====================================================================
+ *  Gate screen  —  shown instead of the app when the entry key is missing.
+ * ==================================================================== */
+
+#v2_gate {
+    position: fixed;
+    inset: 0;
+    z-index: 10001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: #f2f4f7;
+    direction: rtl;
+    font-family: inherit;
+}
+
+.v2_gate_card {
+    max-width: 380px;
+    width: 100%;
+    padding: 32px 28px;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 6px 28px rgba(0, 0, 0, .12);
+    text-align: center;
+}
+
+.v2_gate_title {
+    margin-bottom: 12px;
+    font-size: 22px;
+    font-weight: 700;
+    color: #2b3038;
+}
+
+.v2_gate_text {
+    margin-bottom: 22px;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #6b7480;
+}
+
+.v2_gate_link {
+    display: inline-block;
+    padding: 10px 22px;
+    border-radius: 999px;
+    background: #3085d6;
+    color: #fff;
+    font-size: 15px;
+    text-decoration: none;
+}
+
+.v2_gate_link:hover {
+    background: #2874bd;
+}
+
+
+/* ====================================================================
  *  EXPERIMENTS
  *
  *  One block per experiment, keyed by the same id used in app/v2.js.
