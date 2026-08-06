@@ -449,6 +449,34 @@
 
 .v2_gradedlg_on .dlg_form label:hover { background: #f2f5f8; }
 
+/*  --- grade-quota ------------------------------------------------------
+ *  Remaining places per grade, and a locked look for a full one.
+ * ------------------------------------------------------------------- */
+
+.v2_grade_left {
+    justify-self: end;
+    padding: 2px 9px;
+    border-radius: 999px;
+    background: #eef1f5;
+    color: #6b7480;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.v2_grade_left_full { background: #fdeaea; color: #b3453a; font-weight: 600; }
+
+.v2_gradedlg_on .dlg_form label.v2_grade_full {
+    color: #a7aeb6;
+    cursor: not-allowed;
+}
+
+.v2_gradedlg_on .dlg_form label.v2_grade_full:hover { background: none; }
+
+/* the note sits in a third column so the labels stay aligned */
+.v2_gradedlg_on .dlg_form label { grid-template-columns: 1.15em 1fr auto; }
+
+.v2_gradedlg_on .dlg_form input[type="checkbox"]:disabled { cursor: not-allowed; }
+
 .v2_gradedlg_on .dlg_form input[type="checkbox"] {
     width: 1.15em;
     height: 1.15em;

@@ -839,6 +839,132 @@ v2.add({
     apply: function () { $("body").addClass("v2_gradedlg_on"); }
 });
 
+/*  מכסה שכבתית בדיאלוג בחירת השכבות.
+ *
+ *  בפעילויות שכבתיות המכסה מוגדרת גלובלית בלבד, ולכן שכבה אחת יכולה למלא
+ *  את כל המקומות. כאן המכסה הגלובלית מחולקת לשש, ושכבה שהתמלאה ננעלת.
+ *
+ *  נשען על השדה grade_counts שנוסף ל-load בשרת. בלי השדה — לא קורה כלום,
+ *  לא נעילה ולא תוויות. עדיף בלי מידע מאשר מידע שגוי.
+ */
+(function () {
+    var GRADES = 6;
+    var counts = {};            /* activity_id -> { "שכבה א׳": n } */
+    var last_id = null;
+    var wired  = false;
+
+    /* המכסה נגזרת מהמקסימום; אם אין מקסימום, מהיעד. אם אין אף אחד — אין
+       תקרה ולכן אין מה לאכוף. */
+    function quota(activity) {
+        var cap = parseInt(activity.mambers_maximum, 10);
+        if (isNaN(cap) || cap <= 0) cap = parseInt(activity.members_goal, 10);
+        if (isNaN(cap) || cap <= 0) return null;
+        return Math.max(1, Math.floor(cap / GRADES));
+    }
+
+    /* ההרשמה הקיימת של המשפחה עצמה נספרת ב-grade_counts, ולכן בלי החיסור
+       הזה מי שכבר רשום היה רואה את המקום של עצמו כתפוס — ובמכסה של 1 אף
+       היה ננעל מחוץ להרשמה שלו. */
+    function own_grades(activity_id) {
+        var own = {};
+        $.each(app.dat.initial_signup_list || [], function (i, row) {
+            if (String(row.id) !== String(activity_id)) return;
+            var g = row.activity_grades;
+            if (!g) return;
+            var list = Array.isArray(g) ? g : String(g).split(",");
+            $.each(list, function (j, name) {
+                name = String(name).trim();
+                if (name) own[name] = true;
+            });
+        });
+        return own;
+    }
+
+    function decorate() {
+        var $form = $(".dlg_form");
+        if (!$form.length || last_id === null) return;
+
+        var activity = (app.dat.idx.activity_list || {})[last_id];
+        if (!activity) return;
+
+        var per = quota(activity);
+        if (per === null) { v2.log("no cap on activity " + last_id); return; }
+
+        var taken_map = counts[String(last_id)];
+        if (!taken_map) { v2.log("no grade_counts for activity " + last_id); return; }
+
+        var own = own_grades(last_id);
+
+        $form.find('input[name="grade"]').each(function () {
+            var $cb = $(this), $label = $cb.closest("label");
+            var grade = $cb.val();
+            var taken = taken_map[grade] || 0;
+            if (own[grade]) taken -= 1;              /* לא לספור את עצמנו */
+            var left = per - taken;
+
+            var $note = $("<span>").addClass("v2_grade_left");
+            if (left <= 0) {
+                $cb.prop("disabled", true).prop("checked", false);
+                $label.addClass("v2_grade_full");
+                $note.addClass("v2_grade_left_full").text("מלא");
+            } else {
+                $note.text(left === 1 ? "מקום אחד" : left + " מקומות");
+            }
+            $label.append($note);
+        });
+    }
+
+    v2.add({
+        id:    "grade-quota",
+        title: "חלוקת המכסה בין השכבות ונעילת שכבה מלאה",
+        on:    true,
+
+        apply: function () {
+            if (wired) return;
+            wired = true;
+
+            /* לוכדים את הפעילות בשלב ה-capture, כלומר לפני שה-handler של
+               app.js פותח את הדיאלוג — אחרת הוא כבר פתוח ולא נדע למי. */
+            document.addEventListener("click", function (ev) {
+                var bt = ev.target && ev.target.closest && ev.target.closest(".bt_activity_add");
+                if (bt) last_id = $(bt).closest(".activity_box").attr("activity_id");
+            }, true);
+
+            /* עוטפים את swal כדי לזהות בדיוק את דיאלוג השכבות לפי התוכן
+               שלו, במקום לנחש מתוך תצפית על ה-DOM. */
+            var _swal = window.swal;
+            if (typeof _swal === "function") {
+                window.swal = function (opts) {
+                    var is_grades = opts && typeof opts.html === "string" &&
+                                    opts.html.indexOf('name="grade"') >= 0;
+                    var ret = _swal.apply(this, arguments);
+                    if (is_grades) {
+                        setTimeout(function () {
+                            v2.log("grade dialog for activity " + last_id);
+                            decorate();
+                        }, 0);
+                    }
+                    return ret;
+                };
+                /* swal.showValidationMessage וכו' נקראים ישירות מ-app.js,
+                   אז המאפיינים הסטטיים חייבים לעבור לעטיפה */
+                Object.keys(_swal).forEach(function (k) { window.swal[k] = _swal[k]; });
+            }
+        },
+
+        /* המנוע קורא ל-render בלי ארגומנטים, אבל app.js:474 שומר עותק מלא
+           של התשובה ב-app.dat.server_load_response — משם נוח לקרוא. */
+        render: function () {
+            var resp = app.dat.server_load_response;
+            counts = (resp && resp.grade_counts) || {};
+            v2.log("grade_counts: " +
+                   (resp && resp.grade_counts
+                        ? Object.keys(counts).length + " activities"
+                        : "MISSING — server field not arriving"));
+        }
+    });
+}());
+
 /*  Template for a change to rendered content — copy, rename, fill in:
 
 v2.add({
