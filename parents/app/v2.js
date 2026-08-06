@@ -727,6 +727,57 @@ v2.add({
     });
 }());
 
+/*  כיווץ התיאור בכרטיס פעילות במובייל.
+ *
+ *  התיאורים ארוכים, וכשכולם פתוחים הרשימה נעשית ארוכה מאוד ואי אפשר לסרוק
+ *  אותה. התיאור מוסתר, וכפתור "פרטים" פותח אותו לכרטיס בודד.
+ *
+ *  לא נשען על box_maximized הקיים: ה-handler שלו ניגש ל-#box_placeholder
+ *  ול-#mask_dialog, ששניהם לא קיימים ב-mobile.html, ואין לו עיצוב ב-mobile.css.
+ *  הוא מחליף שם class שלא עושה כלום. מנגנון עצמאי הוא גם ברור יותר וגם לא
+ *  יישבר אם מישהו יוסיף את האלמנטים האלה למובייל בעתיד.
+ */
+(function () {
+    var wired = false;
+
+    /* התיאור מרונדר כ-&nbsp; כשאין תוכן, אז trim לבדו לא מספיק. */
+    function has_text($d) {
+        return $d.length > 0 && $d.text().replace(/ /g, " ").trim() !== "";
+    }
+
+    v2.add({
+        id:    "mobile-desc-collapse",
+        title: "הסתרת תיאור הפעילות במובייל, עם כפתור פתיחה",
+        on:    true,
+        pages: ["mobile"],
+
+        apply: function () {
+            $("body").addClass("v2_desc_on");
+            if (wired) return;
+            wired = true;
+            /* delegation — הכרטיסים נבנים מחדש בכל rebuild, ובלי זה היינו
+               צריכים לחבר מאזין לכל כרטיס בכל פעם מחדש. */
+            $("#activity_boxes_wrapper").on("click", ".v2_desc_bt", function () {
+                var open = $(this).closest(".activity_box")
+                                  .toggleClass("v2_desc_open")
+                                  .hasClass("v2_desc_open");
+                $(this).text(open ? "פחות" : "פרטים").toggleClass("v2_desc_bt_open", open);
+            });
+        },
+
+        render: function () {
+            $("#activity_boxes_wrapper .activity_box").each(function () {
+                var $b = $(this);
+                if ($b.attr("activity_id") === "NEW_IDEA") return;
+                if ($b.find(".v2_desc_bt").length) return;      /* כבר יש */
+                var $d = $b.find(".activity_box_desc");
+                if (!has_text($d)) return;                      /* אין מה לפתוח */
+                $("<div>").addClass("v2_desc_bt").text("פרטים").insertBefore($d);
+            });
+        }
+    });
+}());
+
 /*  Template for a change to rendered content — copy, rename, fill in:
 
 v2.add({

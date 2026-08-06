@@ -370,6 +370,39 @@
     color: #2b3038;
 }
 
+/*  --- mobile-desc-collapse -------------------------------------------
+ *  Descriptions are long; with every one expanded the list becomes
+ *  unscannable. Hidden by default, opened per card by its own button.
+ * ------------------------------------------------------------------- */
+
+.v2_mobile.v2_desc_on .activity_box_desc { display: none; }
+.v2_mobile.v2_desc_on .activity_box.v2_desc_open .activity_box_desc { display: block; }
+
+.v2_desc_bt {
+    display: inline-block;
+    margin: 0 0.5em 0.4em;
+    padding: 3px 11px 3px 8px;
+    border-radius: 999px;
+    background: #eef1f5;
+    color: #4a525c;
+    font-size: 12px;
+    line-height: 1.7;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.v2_desc_bt::after {
+    content: "▾";
+    display: inline-block;
+    margin-right: 5px;
+    font-size: 10px;
+    transition: transform .15s ease;
+}
+
+.v2_desc_bt_open { background: #e2e6ec; color: #2b3038; }
+.v2_desc_bt_open::after { transform: rotate(180deg); }
+
 .v2_mobile .v2_home_title { margin: 18px 0 16px; font-size: 19px; }
 .v2_mobile .v2_home_grid  { grid-template-columns: 1fr; gap: 11px; padding: 0 12px; }
 .v2_mobile .v2_cat_card   { padding: 16px 18px; }
