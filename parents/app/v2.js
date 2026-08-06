@@ -850,6 +850,7 @@ v2.add({
 (function () {
     var GRADES = 6;
     var counts = {};            /* activity_id -> { "שכבה א׳": n } */
+    var has_field = false;      /* האם השרת בכלל מחזיר grade_counts */
     var last_id = null;
     var wired  = false;
 
@@ -887,11 +888,15 @@ v2.add({
         var activity = (app.dat.idx.activity_list || {})[last_id];
         if (!activity) return;
 
+        /* בלי השדה מהשרת אין על מה להסתמך — לא ננעל ולא נציג מספרים. */
+        if (!has_field) { v2.log("grade_counts not provided by server"); return; }
+
         var per = quota(activity);
         if (per === null) { v2.log("no cap on activity " + last_id); return; }
 
-        var taken_map = counts[String(last_id)];
-        if (!taken_map) { v2.log("no grade_counts for activity " + last_id); return; }
+        /* היעדר רשומה לפעילות פירושו שאיש עוד לא נרשם אליה, כלומר כל
+           המכסה פנויה — ודווקא אז חשוב להציג את המספרים. */
+        var taken_map = counts[String(last_id)] || {};
 
         var own = own_grades(last_id);
 
@@ -956,10 +961,11 @@ v2.add({
            של התשובה ב-app.dat.server_load_response — משם נוח לקרוא. */
         render: function () {
             var resp = app.dat.server_load_response;
-            counts = (resp && resp.grade_counts) || {};
+            has_field = !!(resp && resp.grade_counts);
+            counts = has_field ? resp.grade_counts : {};
             v2.log("grade_counts: " +
-                   (resp && resp.grade_counts
-                        ? Object.keys(counts).length + " activities"
+                   (has_field
+                        ? Object.keys(counts).length + " activities with signups"
                         : "MISSING — server field not arriving"));
         }
     });
