@@ -381,6 +381,9 @@ var v2 = (function () {
         /* Re-run the render phase by hand. */
         refresh: function () { phase("render"); return api; },
 
+        /* Console logging for experiments — silent unless ?v2debug=1 */
+        log: log,
+
         list:    function () { return changes.slice(); },
         active:  function () { return active().map(function (c) { return c.id; }); },
         enabled: function (id) {
@@ -430,14 +433,107 @@ v2.add({
  *  "מעגל השפעה" ו"תזמון" ממשיכים לעבוד כרגיל בתוך קטגוריה.
  */
 (function () {
-    var state = { category: null, wired: false };
+    /* קטגוריה וירטואלית — לא קיימת בגיליון. ראה last-year-category למטה. */
+    var VIRTUAL = "__last_year__";
+
+    var state = { category: null, wired: false, want_last_year: false };
+    var last_year = { status: "idle", uid: null, ids: {}, count: 0, title: "" };
+
+    function normalize(s) {
+        return (s === null || s === undefined ? "" : String(s)).replace(/\s+/g, " ").trim();
+    }
 
     /* השם היפה של הקטגוריה נלקח מה-<span> שליד הצ'קבוקס בפילטר הקיים,
        כי בנתונים הגרשיים מוסרים (סעפשים מול סעפ"שים). */
     function cat_label(value) {
+        if (value === VIRTUAL) return "פעילויות מ" + (last_year.title || "שנה שעברה");
         var txt = $("#filter_box_cat input[filter_name='" + value + "']")
                       .siblings("span").first().text();
         return txt || value;
+    }
+
+    /* ------------------------------------------------------------------
+     *  שליפת ההרשמות משנה שעברה
+     *
+     *  load מקבל campaign_id, ולכן קריאה שנייה עם הקמפיין הקודם מחזירה את
+     *  ההרשמות של אותה משפחה אשתקד. אין צורך בשום שינוי בשרת.
+     * ------------------------------------------------------------------ */
+
+    function prev_campaign_id() {
+        var cur = parseInt(app.dat.campaign_id, 10), best = null;
+        $.each(app.dat.campaign_list || [], function (i, c) {
+            var id = parseInt(c.id, 10);
+            if (!isNaN(id) && id < cur && (best === null || id > best)) best = id;
+        });
+        return best;
+    }
+
+    /* לכל קמפיין יש טאב פעילויות משלו, ולכן activity_id אינו יציב בין שנים.
+       ההצלבה נעשית לפי שם הפעילות, שהוא המזהה היחיד שמשמעותי חוצה-שנים.
+       פעילות שנרשמנו אליה אשתקד ואינה מוצעת השנה — נופלת מהרשימה. */
+    function absorb(resp, pid) {
+        var name_by_id = {}, wanted = {}, ids = {}, count = 0;
+
+        $.each(resp.activity_list || [], function (i, row) {
+            name_by_id[row[0]] = normalize(row[1]);
+        });
+        $.each(resp.signup_list || [], function (i, row) {
+            var name = name_by_id[row[1]];
+            if (name) wanted[name] = true;
+        });
+        /* נספרות רק פעילויות שבאמת יש להן כרטיס מרונדר, כדי שהמספר על
+           הכרטיס יתאים למה שיוצג בפועל אחרי הלחיצה. */
+        $.each(app.dat.idx.activity_list || {}, function (id, activity) {
+            if (!activity || !wanted[normalize(activity.name)]) return;
+            if (!$("#activity_boxes_wrapper .activity_box[activity_id='" + id + "']").length) return;
+            ids[id] = true;
+            count++;
+        });
+
+        var campaign = (app.dat.idx.campaign_by_id || {})[pid];
+        last_year.title  = (campaign && campaign.title) ? campaign.title : "שנה שעברה";
+        last_year.ids    = ids;
+        last_year.count  = count;
+        last_year.status = "ready";
+        v2.log("last year: " + Object.keys(wanted).length + " signups -> " + count + " matched");
+    }
+
+    function load_last_year(on_done) {
+        var uid = app.dat.user && app.dat.user.uid;
+        if (!uid) return;
+        if (last_year.uid !== uid) {            /* משתמש התחלף — לאפס את המטמון */
+            last_year = { status: "idle", uid: uid, ids: {}, count: 0, title: "" };
+        }
+        if (last_year.status !== "idle") return;
+
+        var pid = prev_campaign_id();
+        if (pid === null) { last_year.status = "none"; return; }
+
+        last_year.status = "loading";
+        function fail(e) { last_year.status = "error"; v2.log("last year load failed", e); }
+
+        app.post(
+            { act_id: "load", uid: uid, register_user: false, campaign_id: pid },
+            {
+                /* מנוטרל בכוונה — זו טעינת רקע ואסור לה לחסום את המסך */
+                please_wait:       function () {},
+                on_success:        function (resp) { absorb(resp, pid); on_done(); },
+                on_error_response: fail,
+                on_connect_error:  fail,
+                on_js_error:       fail
+            }
+        );
+    }
+
+    /* לקטגוריה הווירטואלית אין צ'קבוקס להניע, ולכן אחרי app.filter() מסתירים
+       ידנית את מה שלא ברשימה. רץ כ-hook על filter, כדי שגם שינוי של מעגל או
+       תזמון בתוך הקטגוריה ישמור על המיסוך. */
+    function apply_mask() {
+        if (state.category !== VIRTUAL) return;
+        $("#activity_boxes_wrapper .activity_box").each(function () {
+            var $b = $(this);
+            if (!last_year.ids[$b.attr("activity_id")]) $b.hide();
+        });
     }
 
     /* הקטגוריות נגזרות מהפעילויות שרונדרו בפועל, ולא מרשימה קשיחה,
@@ -450,16 +546,31 @@ v2.add({
             if (count[c] === undefined) { count[c] = 0; order.push(c); }
             count[c]++;
         });
-        return order.map(function (c) {
+        var list = order.map(function (c) {
             return { value: c, count: count[c], label: cat_label(c) };
         });
+
+        /* הקטגוריה הווירטואלית ראשונה, ורק אם באמת יש בה משהו. אם המשפחה לא
+           הייתה רשומה אשתקד, אם אף פעילות לא חזרה השנה, או אם הטעינה נכשלה —
+           אין כרטיס בכלל. עדיף בלי מאשר ריק. */
+        if (state.want_last_year && last_year.status === "ready" && last_year.count > 0) {
+            list.unshift({
+                value:   VIRTUAL,
+                count:   last_year.count,
+                label:   cat_label(VIRTUAL),
+                virtual: true
+            });
+        }
+        return list;
     }
 
     function open_category(value) {
         state.category = value;
         $("#filter_box_cat input[type='checkbox']").prop("checked", false);
-        $("#filter_box_cat input[filter_name='" + value + "']").prop("checked", true);
-        app.filter();
+        if (value !== VIRTUAL) {
+            $("#filter_box_cat input[filter_name='" + value + "']").prop("checked", true);
+        }
+        app.filter();          /* apply_mask רץ אחריו כ-hook ומצמצם לרשימה */
         paint();
         if (window.history && history.pushState) {
             history.pushState({ v2cat: value }, "", location.href);
@@ -500,7 +611,8 @@ v2.add({
 
         var $grid = $("<div>").addClass("v2_home_grid");
         collect().forEach(function (c, i) {
-            $("<div>").addClass("v2_cat_card v2_cat_c" + (i % 5))
+            $("<div>")
+                .addClass("v2_cat_card " + (c.virtual ? "v2_cat_last" : "v2_cat_c" + (i % 5)))
                 .append($("<div>").addClass("v2_cat_name").text(c.label))
                 .append($("<div>").addClass("v2_cat_count")
                     .text(c.count === 1 ? "פעילות אחת" : c.count + " פעילויות"))
@@ -526,27 +638,58 @@ v2.add({
             $(window).on("popstate", function () {
                 if (state.category !== null) go_home();
             });
+            /* המיסוך של הקטגוריה הווירטואלית חייב לרוץ אחרי כל סינון,
+               לא רק בפתיחה שלה. */
+            v2.after("filter", apply_mask);
         },
 
         /* רץ אחרי כל app.rebuild — כלומר גם בטעינה וגם אחרי שמירה.
            הספירות נבנות מחדש, אבל הקטגוריה הפתוחה נשמרת כדי שמי ששמר
            לא ייזרק בחזרה למסך הראשי. */
         render: function () {
+            /* טעינת הרקע של שנה שעברה מתחילה רק אחרי שהמסך הראשי כבר מוצג,
+               ומרעננת את הכרטיסים בעצמה כשהיא חוזרת. */
+            if (state.want_last_year) {
+                load_last_year(function () { build(); paint(); });
+            }
+
             build();
-            if (state.category !== null &&
+
+            if (state.category !== null && state.category !== VIRTUAL &&
                 !$("#filter_box_cat input[filter_name='" + state.category + "']").length) {
                 state.category = null;          /* הקטגוריה נעלמה מהנתונים */
+            }
+            if (state.category === VIRTUAL && last_year.count === 0) {
+                state.category = null;          /* אין יותר מה להציג בה */
             }
             if (state.category !== null) {
                 /* app.clear() מאפס את הצ'קבוקסים בהתנתקות, ולכן מסמנים
                    מחדש במקום להניח שהסימון שרד. */
                 $("#filter_box_cat input[type='checkbox']").prop("checked", false);
-                $("#filter_box_cat input[filter_name='" + state.category + "']")
-                    .prop("checked", true);
+                if (state.category !== VIRTUAL) {
+                    $("#filter_box_cat input[filter_name='" + state.category + "']")
+                        .prop("checked", true);
+                }
                 app.filter();
             }
             paint();
         }
+    });
+
+    /*  קטגוריה וירטואלית: הפעילויות שהמשפחה נרשמה אליהן בשנה הקודמת.
+     *
+     *  המידע לא קיים בנתונים של השנה הנוכחית, אבל load מקבל campaign_id —
+     *  ולכן קריאה שנייה עם הקמפיין הקודם מחזירה אותו, בלי שינוי בשרת.
+     *  ההצלבה לפי שם הפעילות ולא לפי מזהה, כי לכל שנה טאב פעילויות משלה
+     *  והמזהים אינם יציבים בין שנים. פעילות שאינה מוצעת השנה יורדת.
+     *
+     *  תלוי ב-category-home: זהו כרטיס במסך שלו.
+     */
+    v2.add({
+        id:    "last-year-category",
+        title: "קטגוריה של הפעילויות משנה שעברה",
+        on:    true,
+        apply: function () { state.want_last_year = true; }
     });
 }());
 
