@@ -1,0 +1,59 @@
+# Publishes the site to GitHub Pages.
+#
+# Replaces the built-in "legacy" Pages builder, which repeatedly wedged with
+# deployments stuck in deployment_queued. Nothing here depends on Jekyll — the
+# repo has no _config.yml, no Gemfile, no layouts and no front matter, so the
+# old builder was only copying files anyway.
+#
+# Manual redeploy without a commit: Actions tab -> Deploy Pages -> Run workflow
+# (or: gh workflow run pages.yml)
+
+name: Deploy Pages
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time. Two builds started a second apart previously
+# collided and left one wedged; this makes that impossible rather than relying
+# on remembering not to trigger twice.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # upload-pages-artifact only excludes .git and .github, while the legacy
+      # builder skipped every dot-directory. Staging explicitly keeps the
+      # published file set identical to what is served today — without this,
+      # the committed .vs/ Visual Studio files would start being served.
+      - name: Stage site
+        run: |
+          mkdir -p _site
+          rsync -a \
+            --exclude '.git' \
+            --exclude '.github' \
+            --exclude '.vs' \
+            --exclude '.vscode' \
+            --exclude '_site' \
+            ./ _site/
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
