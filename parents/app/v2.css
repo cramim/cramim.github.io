@@ -300,6 +300,39 @@
     font-size: 15px;
 }
 
+/*  The card holds its place in the grid from the first paint and only swaps
+ *  its own text, so the layout never shifts when the background lookup for
+ *  last year's signups comes back.
+ */
+.v2_cat_disabled {
+    cursor: default;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .06);
+    background: #fbfbfc;
+}
+
+.v2_cat_disabled .v2_cat_name { color: #9aa3ad; }
+.v2_cat_disabled .v2_cat_name::before { color: #c3c9d0; }
+.v2_cat_disabled .v2_cat_count { color: #a8b0b9; }
+.v2_cat_disabled::before { background: #dfe3e8; }
+
+.v2_cat_disabled:hover {
+    transform: none;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .06);
+}
+
+.v2_cat_loading .v2_cat_count {
+    animation: v2_pulse 1.25s ease-in-out infinite;
+}
+
+@keyframes v2_pulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: .42; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .v2_cat_loading .v2_cat_count { animation: none; }
+}
+
 .v2_cat_c0 { --v2-accent: #3085d6; }
 .v2_cat_c1 { --v2-accent: #e8a33d; }
 .v2_cat_c2 { --v2-accent: #4caf82; }

@@ -443,13 +443,38 @@ v2.add({
         return (s === null || s === undefined ? "" : String(s)).replace(/\s+/g, " ").trim();
     }
 
+    /* שם הקמפיין הקודם ידוע כבר מהטעינה הראשית (campaign_list מגיע בתשובה),
+       ולכן אפשר לכתוב את כותרת הכרטיס עוד לפני שהשליפה חוזרת. */
+    function last_year_title() {
+        var pid = prev_campaign_id();
+        var campaign = (app.dat.idx.campaign_by_id || {})[pid];
+        return (campaign && campaign.title) ? campaign.title : "שנה שעברה";
+    }
+
     /* השם היפה של הקטגוריה נלקח מה-<span> שליד הצ'קבוקס בפילטר הקיים,
        כי בנתונים הגרשיים מוסרים (סעפשים מול סעפ"שים). */
     function cat_label(value) {
-        if (value === VIRTUAL) return "פעילויות מ" + (last_year.title || "שנה שעברה");
+        if (value === VIRTUAL) return "פעילויות מ" + last_year_title();
         var txt = $("#filter_box_cat input[filter_name='" + value + "']")
                       .siblings("span").first().text();
         return txt || value;
+    }
+
+    /* טקסט השורה השנייה בכרטיס, לפי מצב השליפה. */
+    function last_year_note() {
+        switch (last_year.status) {
+            case "idle":
+            case "loading": return "מחפש פעילויות משנה שעברה…";
+            case "error":   return "לא הצלחנו לטעון פעילויות קודמות";
+            case "none":    return "לא נמצאו פעילויות קודמות";
+            default:
+                if (last_year.count === 0) return "לא נמצאו פעילויות קודמות";
+                return last_year.count === 1 ? "פעילות אחת" : last_year.count + " פעילויות";
+        }
+    }
+
+    function last_year_ready() {
+        return last_year.status === "ready" && last_year.count > 0;
     }
 
     /* ------------------------------------------------------------------
@@ -490,8 +515,6 @@ v2.add({
             count++;
         });
 
-        var campaign = (app.dat.idx.campaign_by_id || {})[pid];
-        last_year.title  = (campaign && campaign.title) ? campaign.title : "שנה שעברה";
         last_year.ids    = ids;
         last_year.count  = count;
         last_year.status = "ready";
@@ -500,7 +523,8 @@ v2.add({
 
     function load_last_year(on_done) {
         var uid = app.dat.user && app.dat.user.uid;
-        if (!uid) return;
+        /* בלי uid אין מה לשלוף — לסמן סופית, אחרת הכרטיס יישאר על "מחפש…" */
+        if (!uid) { last_year.status = "none"; return; }
         if (last_year.uid !== uid) {            /* משתמש התחלף — לאפס את המטמון */
             last_year = { status: "idle", uid: uid, ids: {}, count: 0, title: "" };
         }
@@ -550,15 +574,17 @@ v2.add({
             return { value: c, count: count[c], label: cat_label(c) };
         });
 
-        /* הקטגוריה הווירטואלית ראשונה, ורק אם באמת יש בה משהו. אם המשפחה לא
-           הייתה רשומה אשתקד, אם אף פעילות לא חזרה השנה, או אם הטעינה נכשלה —
-           אין כרטיס בכלל. עדיף בלי מאשר ריק. */
-        if (state.want_last_year && last_year.status === "ready" && last_year.count > 0) {
+        /* הכרטיס הווירטואלי תמיד ראשון וקיים מהרגע הראשון, גם בזמן השליפה.
+           הוא תופס את מקומו מיד ומשנה רק את הטקסט שלו, כדי שלא יקפוץ לתוך
+           הפריסה אחרי שהמסך כבר נראה מוכן. */
+        if (state.want_last_year) {
             list.unshift({
-                value:   VIRTUAL,
-                count:   last_year.count,
-                label:   cat_label(VIRTUAL),
-                virtual: true
+                value:    VIRTUAL,
+                label:    cat_label(VIRTUAL),
+                note:     last_year_note(),
+                virtual:  true,
+                loading:  (last_year.status === "idle" || last_year.status === "loading"),
+                disabled: !last_year_ready()
             });
         }
         return list;
@@ -611,13 +637,19 @@ v2.add({
 
         var $grid = $("<div>").addClass("v2_home_grid");
         collect().forEach(function (c, i) {
-            $("<div>")
-                .addClass("v2_cat_card " + (c.virtual ? "v2_cat_last" : "v2_cat_c" + (i % 5)))
+            var cls = "v2_cat_card " + (c.virtual ? "v2_cat_last" : "v2_cat_c" + (i % 5));
+            if (c.loading)  cls += " v2_cat_loading";
+            if (c.disabled) cls += " v2_cat_disabled";
+
+            var note = c.note !== undefined ? c.note
+                     : (c.count === 1 ? "פעילות אחת" : c.count + " פעילויות");
+
+            var $card = $("<div>").addClass(cls)
                 .append($("<div>").addClass("v2_cat_name").text(c.label))
-                .append($("<div>").addClass("v2_cat_count")
-                    .text(c.count === 1 ? "פעילות אחת" : c.count + " פעילויות"))
-                .on("click", function () { open_category(c.value); })
-                .appendTo($grid);
+                .append($("<div>").addClass("v2_cat_count").text(note));
+
+            if (!c.disabled) $card.on("click", function () { open_category(c.value); });
+            $card.appendTo($grid);
         });
         $home.append($grid);
     }
@@ -650,7 +682,9 @@ v2.add({
             /* טעינת הרקע של שנה שעברה מתחילה רק אחרי שהמסך הראשי כבר מוצג,
                ומרעננת את הכרטיסים בעצמה כשהיא חוזרת. */
             if (state.want_last_year) {
-                load_last_year(function () { build(); paint(); });
+                /* רק build — בלי paint. paint גולל למעלה, וגלילה מפתיעה
+                   כשהשליפה חוזרת היא בדיוק סוג ההפרעה שאנחנו מתקנים כאן. */
+                load_last_year(function () { build(); });
             }
 
             build();
