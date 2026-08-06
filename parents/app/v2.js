@@ -406,8 +406,8 @@ app.v2 = v2;
  *    render() after every app.rebuild — anything inside the activity or
  *             user lists, which are re-rendered on load and on save
  *
- *  Nothing here is enabled yet, so v2.html currently matches index.html
- *  exactly. Flip `on` to true, or preview with ?only=<id>.
+ *  Preview anything with ?only=<id>, and compare against the untouched
+ *  baseline with ?v2=off.
  * ==================================================================== */
 
 v2.add({
@@ -419,6 +419,136 @@ v2.add({
         $("#eb_login").trigger("focus");
     }
 });
+
+/*  מסך ראשי של קטגוריות.
+ *
+ *  במקום להציג את כל הפעילויות בערימה אחת עם פילטר קטגוריה בצד, נפתחים
+ *  במסך בחירה: כרטיס לכל קטגוריה, לחיצה נכנסת אליה, וכפתור חזרה מוביל בחזרה.
+ *
+ *  המימוש מניע את app.filter() הקיים — לחיצה על קטגוריה מסמנת את הצ'קבוקס
+ *  המתאים ומפעילה את הפילטר. כך לא משוכפלת שום לוגיקת סינון, ופילטרי
+ *  "מעגל השפעה" ו"תזמון" ממשיכים לעבוד כרגיל בתוך קטגוריה.
+ */
+(function () {
+    var state = { category: null, wired: false };
+
+    /* השם היפה של הקטגוריה נלקח מה-<span> שליד הצ'קבוקס בפילטר הקיים,
+       כי בנתונים הגרשיים מוסרים (סעפשים מול סעפ"שים). */
+    function cat_label(value) {
+        var txt = $("#filter_box_cat input[filter_name='" + value + "']")
+                      .siblings("span").first().text();
+        return txt || value;
+    }
+
+    /* הקטגוריות נגזרות מהפעילויות שרונדרו בפועל, ולא מרשימה קשיחה,
+       כדי שהמסך יישאר מסונכרן עם הגיליון בלי תחזוקה. */
+    function collect() {
+        var count = {}, order = [];
+        $("#activity_boxes_wrapper .activity_box").each(function () {
+            var $b = $(this), c = $b.attr("category");
+            if (!c || $b.attr("activity_id") === "NEW_IDEA") return;
+            if (count[c] === undefined) { count[c] = 0; order.push(c); }
+            count[c]++;
+        });
+        return order.map(function (c) {
+            return { value: c, count: count[c], label: cat_label(c) };
+        });
+    }
+
+    function open_category(value) {
+        state.category = value;
+        $("#filter_box_cat input[type='checkbox']").prop("checked", false);
+        $("#filter_box_cat input[filter_name='" + value + "']").prop("checked", true);
+        app.filter();
+        paint();
+        if (window.history && history.pushState) {
+            history.pushState({ v2cat: value }, "", location.href);
+        }
+    }
+
+    function go_home() {
+        state.category = null;
+        $("#filter_box_cat input[type='checkbox']").prop("checked", false);
+        app.filter();
+        paint();
+    }
+
+    /* הנראות מנוהלת דרך class על body ולא ב-inline style, כי app.filter()
+       עושה hide/fadeIn על אותם אלמנטים ושתי הגישות היו נאבקות. */
+    function paint() {
+        var at_home = (state.category === null);
+        $("body").toggleClass("v2_at_home", at_home);
+        if (!at_home) $("#v2_back_current").text(cat_label(state.category));
+        app.scroll_home();
+        $(window).scrollTop(0);
+    }
+
+    function build() {
+        if (!$("#v2_home").length) {
+            $("<div>").attr("id", "v2_home").insertBefore("#activity_boxes_wrapper");
+            $("<div>").attr("id", "v2_back")
+                .append($("<span>").attr("id", "v2_back_bt")
+                                   .append($("<span>").addClass("v2_back_arrow").text("←"),
+                                           $("<span>").text("כל הקטגוריות"))
+                                   .on("click", go_home))
+                .append($("<span>").attr("id", "v2_back_current"))
+                .insertBefore("#activity_boxes_wrapper");
+        }
+
+        var $home = $("#v2_home").empty();
+        $home.append($("<div>").addClass("v2_home_title").text("במה תרצו לעזור?"));
+
+        var $grid = $("<div>").addClass("v2_home_grid");
+        collect().forEach(function (c, i) {
+            $("<div>").addClass("v2_cat_card v2_cat_c" + (i % 5))
+                .append($("<div>").addClass("v2_cat_name").text(c.label))
+                .append($("<div>").addClass("v2_cat_count")
+                    .text(c.count === 1 ? "פעילות אחת" : c.count + " פעילויות"))
+                .on("click", function () { open_category(c.value); })
+                .appendTo($grid);
+        });
+        $home.append($grid);
+    }
+
+    v2.add({
+        id:    "category-home",
+        title: "מסך ראשי של קטגוריות במקום פילטר הקטגוריה",
+        on:    true,
+
+        apply: function () {
+            /* v2_at_home כבר עכשיו, כדי שלא תהיה הבזקה של הרשימה המלאה
+               בין הרינדור הראשון לבין paint(). */
+            $("body").addClass("v2_home_on v2_at_home");
+            if (state.wired) return;
+            state.wired = true;
+            /* במובייל כפתור החזרה של הדפדפן צריך להחזיר למסך הקטגוריות
+               ולא להוציא מהאתר. */
+            $(window).on("popstate", function () {
+                if (state.category !== null) go_home();
+            });
+        },
+
+        /* רץ אחרי כל app.rebuild — כלומר גם בטעינה וגם אחרי שמירה.
+           הספירות נבנות מחדש, אבל הקטגוריה הפתוחה נשמרת כדי שמי ששמר
+           לא ייזרק בחזרה למסך הראשי. */
+        render: function () {
+            build();
+            if (state.category !== null &&
+                !$("#filter_box_cat input[filter_name='" + state.category + "']").length) {
+                state.category = null;          /* הקטגוריה נעלמה מהנתונים */
+            }
+            if (state.category !== null) {
+                /* app.clear() מאפס את הצ'קבוקסים בהתנתקות, ולכן מסמנים
+                   מחדש במקום להניח שהסימון שרד. */
+                $("#filter_box_cat input[type='checkbox']").prop("checked", false);
+                $("#filter_box_cat input[filter_name='" + state.category + "']")
+                    .prop("checked", true);
+                app.filter();
+            }
+            paint();
+        }
+    });
+}());
 
 /*  Template for a change to rendered content — copy, rename, fill in:
 

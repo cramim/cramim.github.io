@@ -200,3 +200,128 @@
 
 /*  --- login-autofocus ---------------------------------------------- */
 /*  No styles needed. */
+
+
+/*  --- category-home -------------------------------------------------
+ *
+ *  Visibility is driven by two body classes set from v2.js:
+ *      .v2_home_on   the experiment is active
+ *      .v2_at_home   currently on the category screen, no category open
+ *
+ *  app.filter() calls hide()/fadeIn() on #activity_boxes_wrapper, which
+ *  writes inline styles — so the rules that have to beat it are !important.
+ *  Ours (#v2_home, #v2_back) are untouched by the app and need no help.
+ * ------------------------------------------------------------------- */
+
+/* the category filter is what this screen replaces */
+.v2_home_on #filter_box_cat { display: none; }
+
+.v2_home_on #v2_home,
+.v2_home_on #v2_back { display: none; }
+
+.v2_home_on.v2_at_home #v2_home { display: block; }
+.v2_home_on:not(.v2_at_home) #v2_back { display: flex; }
+
+/* on the category screen the list and the remaining filters are irrelevant */
+.v2_home_on.v2_at_home #activity_boxes_wrapper,
+.v2_home_on.v2_at_home #filter_box_wrapper,
+.v2_home_on.v2_at_home #ico_filter { display: none !important; }
+
+.v2_home_title {
+    margin: 26px 0 20px;
+    font-size: 21px;
+    font-weight: 700;
+    text-align: center;
+    color: #3a4048;
+}
+
+.v2_home_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 14px;
+    max-width: 860px;
+    margin: 0 auto 32px;
+    padding: 0 14px;
+}
+
+.v2_cat_card {
+    position: relative;
+    padding: 20px 22px;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .10);
+    cursor: pointer;
+    overflow: hidden;
+    transition: transform .13s ease, box-shadow .13s ease;
+}
+
+.v2_cat_card::before {          /* RTL: accent runs down the right edge */
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 5px;
+    height: 100%;
+    background: var(--v2-accent, #3085d6);
+}
+
+.v2_cat_card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .14);
+}
+
+.v2_cat_card:active { transform: translateY(0); }
+
+.v2_cat_name {
+    margin-bottom: 6px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #2b3038;
+}
+
+.v2_cat_count {
+    font-size: 13px;
+    color: #7d8792;
+}
+
+.v2_cat_c0 { --v2-accent: #3085d6; }
+.v2_cat_c1 { --v2-accent: #e8a33d; }
+.v2_cat_c2 { --v2-accent: #4caf82; }
+.v2_cat_c3 { --v2-accent: #b06ab3; }
+.v2_cat_c4 { --v2-accent: #e2705f; }
+
+#v2_back {
+    align-items: center;
+    gap: 14px;
+    margin: 14px auto 6px;
+    max-width: 860px;
+    padding: 0 14px;
+}
+
+#v2_back_bt {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px 6px 12px;
+    border-radius: 999px;
+    background: #eceff3;
+    color: #4a525c;
+    font-size: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+#v2_back_bt:hover { background: #e0e4ea; color: #2b3038; }
+
+.v2_back_arrow { font-size: 16px; line-height: 1; }
+
+#v2_back_current {
+    font-size: 17px;
+    font-weight: 700;
+    color: #2b3038;
+}
+
+.v2_mobile .v2_home_title { margin: 18px 0 16px; font-size: 19px; }
+.v2_mobile .v2_home_grid  { grid-template-columns: 1fr; gap: 11px; padding: 0 12px; }
+.v2_mobile .v2_cat_card   { padding: 16px 18px; }
+.v2_mobile #v2_back       { margin: 10px auto 4px; }
