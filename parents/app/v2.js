@@ -825,6 +825,34 @@ v2.add({
 }());
 
 
+/*  מסך הכניסה: קישור וואטסאפ במקום קישור ההרשמה המושבת.
+ *
+ *  "הרשמה למשפחות חדשות דרך דף קשר כרמים" מת מאז ספטמבר 2022 — ה-handler שלו
+ *  מסומן כהערה גם ב-app.js:881 וגם ב-mobile.js:137, ו-app.css:1026 אף מעצב
+ *  אותו באפור עם cursor: not-allowed. משפחה חדשה שמגיעה למסך הכניסה רואה
+ *  טקסט מת שלא מוביל לשום מקום.
+ *
+ *  האלמנט מוחלף ולא מוסתר: app.set_login_mode כותבת ל-#login_register_link
+ *  בכל קריאה (app.js:838), ולכן כל עוד הוא קיים היא הייתה דורסת את הכיתוב
+ *  החדש בכל התנתקות. בלי האלמנט הסלקטור שלה פשוט לא מוצא כלום, בלי hook.
+ */
+v2.add({
+    id:    "login-whatsapp",
+    title: "קישור וואטסאפ לפרטים והרשמה במסך הכניסה",
+    on:    true,
+    apply: function () {
+        var $old = $("#login_register_link");
+        if (!$old.length) return;
+        $("<a>").attr({
+            id:     "v2_login_wa",
+            /* wa.me רוצה מספר בינלאומי בלי + ובלי אפס מוביל */
+            href:   "https://wa.me/972549959886",
+            target: "_blank",
+            rel:    "noopener"
+        }).text("לפרטים והרשמה").replaceAll($old);
+    }
+});
+
 /*  יישור הדיאלוג של בחירת השכבות.
  *
  *  ב-app.css הוא מוגדר עם justify-content: right יחד עם text-align: left —
