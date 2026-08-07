@@ -493,15 +493,23 @@
 .v2_mobile.v2_desc_on .activity_box_desc { display: none; }
 .v2_mobile.v2_desc_on .activity_box.v2_desc_open .activity_box_desc { display: block; }
 
+/* block + auto margins rather than inline-block, so the pill is centred on the
+   card instead of hugging its right edge. fit-content keeps it hugging its own
+   text; -webkit- for the older iOS versions still in use here. */
 .v2_desc_bt {
-    display: inline-block;
-    margin: 0 0.5em 0.4em;
-    padding: 3px 11px 3px 8px;
+    display: block;
+    width: -webkit-fit-content;
+    width: fit-content;
+    margin: 4px auto 10px;
+    padding: 10px 26px;
     border-radius: 999px;
     background: #eef1f5;
-    color: #4a525c;
-    font-size: 12px;
-    line-height: 1.7;
+    color: #3f4852;
+    /* px, not em — .activity_box is 1.5em on mobile, so an em here would
+       inherit a size meant for the card's own text */
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.4;
     cursor: pointer;
     -webkit-user-select: none;
     user-select: none;
@@ -510,8 +518,8 @@
 .v2_desc_bt::after {
     content: "▾";
     display: inline-block;
-    margin-right: 5px;
-    font-size: 10px;
+    margin-right: 7px;
+    font-size: 12px;
     transition: transform .15s ease;
 }
 
