@@ -493,23 +493,75 @@ v2.add({
         return best;
     }
 
-    /* לכל קמפיין יש טאב פעילויות משלו, ולכן activity_id אינו יציב בין שנים.
-       ההצלבה נעשית לפי שם הפעילות, שהוא המזהה היחיד שמשמעותי חוצה-שנים.
-       פעילות שנרשמנו אליה אשתקד ואינה מוצעת השנה — נופלת מהרשימה. */
-    function absorb(resp, pid) {
-        var name_by_id = {}, wanted = {}, ids = {}, count = 0;
+    /* עמודה Q בטאב הפעילויות (אינדקס 16) — שם גנרי אופציונלי.
+     *
+     *  אותה פעילות מקבלת שם אחר בין השנים ("שישי הורים סבב 1" מול "שישי
+     *  הורים נובמבר"), ולכן הצלבה לפי השם בלבד מפספסת אותה. שם גנרי זהה
+     *  בשתי השנים מגשר על הפער.
+     *
+     *  load עושה getDataRange על הטאב ומחזיר את השורה כולה, ולכן עמודה
+     *  שנוספת בסוף הגיליון מגיעה מעצמה — אין שינוי ב-Code.gs ואין ב-app.js
+     *  (הוא קורא עד item[15], כלומר אינדקס 16 פנוי).
+     *
+     *  ⚠️ האינדקס קשיח בהכרח: load מסנן item[0] > 0, שורת הכותרות נופלת בסינון
+     *  והלקוח לא רואה אותה — אין דרך לזהות את העמודה לפי שמה. עמודה שתוכנס
+     *  לפני Q תזיז את המספר הזה, ואת כל האינדקסים ב-app.js וב-admin.js איתו.
+     *  להוסיף עמודות בסוף בלבד. */
+    var COL_NAME    = 1;
+    var COL_GROUP   = 14;
+    var COL_GENERIC = 16;
 
+    /* לכל קמפיין יש טאב פעילויות משלו, ולכן activity_id אינו יציב בין שנים —
+       ההצלבה חייבת להיות על טקסט.
+
+       כל פעילות מיוצגת ב*קבוצת* מפתחות ולא במפתח יחיד, ושתי פעילויות תואמות
+       אם יש חפיפה באחד מהם. זה מה שהופך את עמודה Q לתוספת בלבד: השם נשאר
+       תמיד מפתח, ולכן שורה שהעמודה שלה ריקה ממשיכה להתנהג בדיוק כמו היום,
+       ומילוי חלקי של הגנרי בשנה אחת בלבד לא יכול לשבור התאמה קיימת. */
+    function row_keys(row) {
+        var out = [];
+        [COL_NAME, COL_GROUP, COL_GENERIC].forEach(function (col) {
+            var k = normalize(row[col]);
+            if (k && out.indexOf(k) < 0) out.push(k);
+        });
+        return out;
+    }
+
+    function count_generic(list) {
+        var n = 0;
+        $.each(list || [], function (i, row) { if (normalize(row[COL_GENERIC])) n++; });
+        return n;
+    }
+
+    /* פעילות שנרשמנו אליה אשתקד ואינה מוצעת השנה — נופלת מהרשימה. */
+    function absorb(resp, pid) {
+        var keys_by_id = {}, wanted = {}, ids = {}, count = 0;
+
+        /* --- שנה שעברה: המפתחות של כל פעילות, ומהם אלה שנרשמנו אליהם --- */
         $.each(resp.activity_list || [], function (i, row) {
-            name_by_id[row[0]] = normalize(row[1]);
+            keys_by_id[String(row[0])] = row_keys(row);
         });
         $.each(resp.signup_list || [], function (i, row) {
-            var name = name_by_id[row[1]];
-            if (name) wanted[name] = true;
+            (keys_by_id[String(row[1])] || []).forEach(function (k) { wanted[k] = true; });
         });
+
+        /* --- השנה: אותם מפתחות, מהשורות הגולמיות ---
+           app.dat.idx.activity_list הוא אובייקט מפוענח ואין בו את עמודה Q,
+           אבל app.js:474 שומר עותק מלא של התשובה — משם המפתחות. */
+        var cur_resp = app.dat.server_load_response;
+        var cur_keys = {};
+        $.each((cur_resp && cur_resp.activity_list) || [], function (i, row) {
+            cur_keys[String(row[0])] = row_keys(row);
+        });
+
         /* נספרות רק פעילויות שבאמת יש להן כרטיס מרונדר, כדי שהמספר על
            הכרטיס יתאים למה שיוצג בפועל אחרי הלחיצה. */
         $.each(app.dat.idx.activity_list || {}, function (id, activity) {
-            if (!activity || !wanted[normalize(activity.name)]) return;
+            if (!activity) return;
+            /* בפעילות מקובצת app.js מחליף את השם בשם הקבוצה — זה מה שמוצג
+               בכרטיס, ולכן הוא מצטרף כמפתח נוסף. */
+            var keys = (cur_keys[String(id)] || []).concat(normalize(activity.name));
+            if (!keys.some(function (k) { return k && wanted[k]; })) return;
             if (!$("#activity_boxes_wrapper .activity_box[activity_id='" + id + "']").length) return;
             ids[id] = true;
             count++;
@@ -518,7 +570,10 @@ v2.add({
         last_year.ids    = ids;
         last_year.count  = count;
         last_year.status = "ready";
-        v2.log("last year: " + Object.keys(wanted).length + " signups -> " + count + " matched");
+        v2.log("last year: " + Object.keys(wanted).length + " keys signed up -> " +
+               count + " matched  (Q filled: " +
+               count_generic(resp.activity_list) + " last year, " +
+               count_generic(cur_resp && cur_resp.activity_list) + " this year)");
     }
 
     function load_last_year(on_done) {
