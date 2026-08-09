@@ -212,8 +212,19 @@ Apps Script חונק לפי מכסות. בהינתן שכבר היו בעיות 
 
 ## 6. ביטול
 
-`git revert` על commit ההעברה. Actions פורס תוך כדקה
-(`.github/workflows/pages.yml`, גם `workflow_dispatch` ידני).
+`git revert` על commit ההעברה ו-push. הפריסה יוצאת לדרך אוטומטית.
+
+⚠️ **מי באמת פורס (נבדק 2026-08-09):** לא ה-workflow. `gh api repos/cramim/cramim.github.io/pages`
+מחזיר `"build_type": "legacy"`, ו-`Deploy Pages` (`.github/workflows/pages.yml`)
+נמצא במצב **`disabled_manually`** — הוא לא רץ מאז שנוסף, ואין לו אף run.
+מה שפורס בפועל הוא הבנאי הישן, `pages-build-deployment`.
+
+המשמעות המעשית: `gh workflow run pages.yml` **לא יעשה כלום**. פריסה חוזרת בלי
+commit היא `gh api -X POST repos/cramim/cramim.github.io/pages/builds`.
+
+כדי להפעיל את ה-workflow באמת צריך שני צעדים בהגדרות הריפו — להעביר את
+Pages ל-Build and deployment → **GitHub Actions**, ולהפעיל את ה-workflow המושבת.
+עד אז ההערה שבראש `pages.yml` מתארת כוונה, לא מצב.
 
 בלי deploy אפשר לכבות רק פר-URL: `?v2=off` או `?off=<id>`. **אין מתג כיבוי גלובלי
 בלי פריסה** — ה-revert הוא המסלול, ולכן כדאי שההעברה תהיה commit אחד ונקי.
