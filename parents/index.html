@@ -15,8 +15,14 @@
     <link rel="stylesheet" href="app/app.css">
     <link rel="stylesheet" href="app/tooltip.css">
     <script src="app/app.js"></script>
+    <!-- Feature overlay. Order matters: after app.css / app.js, so its rules
+         and hooks win without !important. v2-test.js is NOT loaded here — that
+         one is test-page scaffolding (entry key, read-only) and must never
+         reach production. Kill switches: ?v2=off , ?off=<experiment-id> -->
+    <link rel="stylesheet" href="app/v2.css">
+    <script src="app/v2.js"></script>
 </head>
-<body>
+<body class="v2 v2_desktop">
     <div id="dv_screen_message"><div>
         <div><div id="dv_screen_message_logo"></div></div>
         <div id="dv_screen_message_txt"></div>
