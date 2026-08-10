@@ -1158,6 +1158,61 @@ v2.add({
     });
 }());
 
+/*  סימון מעגל ההשפעה בכרטיס הפעילות.
+ *
+ *  מעגל ההשפעה הוא היררכיה מקוננת — כיתה בתוך שכבה בתוך בית ספר — ולכן הוא
+ *  מצויר כשלוש טבעות שמתמלאות מבפנים החוצה. הצורה מוסרת את ה*סדר* (בית ספר
+ *  רחב יותר משכבה), מה שנקודה צבעונית או מילה בודדת לא עושות. התווית לצידה,
+ *  כדי שאף אחד לא יצטרך לפענח סמל.
+ *
+ *  הכרטיס כבר נושא circle="..." כמאפיין (app.js:229), ולכן אין כאן שום עבודת
+ *  נתונים — רק רינדור.
+ *
+ *  המיקום הוא שורת ה-toolbox הקיימת, בין הבר לכפתור ההצטרפות, ולכן גובה
+ *  הכרטיס לא משתנה כלל. שורה נפרדת הייתה מוסיפה 26px לכרטיס — כ-11% — ובמובייל,
+ *  שהוא טור אחד, זה כ-2.2 מסכי טלפון נוספים של גלילה על 45 פעילויות.
+ *
+ *  המרווח בין הכפתור לבר הוא 61px בלבד והתווית הארוכה ("בית ספר") רחבה ממנו,
+ *  ולכן v2.css מצמצם את הבר ל-34%. הבר הוא החיזוק היחיד שאפשר לוותר על חלקו:
+ *  שורת הסטטוס שמעליו כבר אומרת "הצטרפו: 3 מתוך: 6" במספרים.
+ *
+ *  הרמה נגזרת ב-JS ולא בסלקטור CSS על הערך העברי. ערך שישונה בגיליון יקבל
+ *  תג אפור עם הטקסט הנכון במקום להישבר בשקט — בדיוק התקלה שתוקנה בקטגוריות.
+ */
+(function () {
+    var LEVEL = { "כיתה": 1, "שכבה": 2, "בית ספר": 3 };
+
+    v2.add({
+        id:    "activity-circle-badge",
+        title: "סימון מעגל ההשפעה בכרטיס הפעילות",
+        on:    true,
+
+        apply: function () { $("body").addClass("v2_circle_on"); },
+
+        /* רץ אחרי כל app.rebuild — הכרטיסים נבנים מחדש משם, ולכן התג נבנה איתם. */
+        render: function () {
+            $("#activity_boxes_wrapper .activity_box").each(function () {
+                var $box = $(this);
+                if ($box.attr("activity_id") === "NEW_IDEA") return;
+
+                var value = $box.attr("circle");
+                if (!value) return;
+
+                var $toolbox = $box.find(".activity_box_toolbox");
+                if (!$toolbox.length || $toolbox.find(".v2_circle").length) return;
+
+                /* .text() ולא בנייה ממחרוזת — הערך מגיע מהגיליון */
+                $("<div>")
+                    .addClass("v2_circle v2_circle_" + (LEVEL[value] || 0))
+                    .attr("title", "מעגל השפעה: " + value)
+                    .append($("<span>").addClass("v2_circle_glyph"))
+                    .append($("<span>").addClass("v2_circle_txt").text(value))
+                    .appendTo($toolbox);
+            });
+        }
+    });
+}());
+
 /*  Template for a change to rendered content — copy, rename, fill in:
 
 v2.add({
