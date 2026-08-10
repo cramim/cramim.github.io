@@ -433,8 +433,11 @@ v2.add({
  *  "מעגל השפעה" ו"תזמון" ממשיכים לעבוד כרגיל בתוך קטגוריה.
  */
 (function () {
-    /* קטגוריה וירטואלית — לא קיימת בגיליון. ראה last-year-category למטה. */
+    /* קטגוריות וירטואליות — לא קיימות בגיליון.
+       VIRTUAL: ההרשמות משנה שעברה, ראה last-year-category למטה.
+       ALL: מציגה הכל בלי סינון קטגוריה, אחרונה ברשת. */
     var VIRTUAL = "__last_year__";
+    var ALL     = "__all__";
 
     var state = { category: null, wired: false, want_last_year: false };
     var last_year = { status: "idle", uid: null, ids: {}, count: 0, title: "" };
@@ -455,6 +458,7 @@ v2.add({
        כי בנתונים הגרשיים מוסרים (סעפשים מול סעפ"שים). */
     function cat_label(value) {
         if (value === VIRTUAL) return "פעילויות מ" + last_year_title();
+        if (value === ALL)     return "כל הפעילויות";
         var txt = $("#filter_box_cat input[filter_name='" + value + "']")
                       .siblings("span").first().text();
         return txt || value;
@@ -615,7 +619,8 @@ v2.add({
      *  רץ כ-hook על filter, כדי שגם שינוי של מעגל או תזמון בתוך הקטגוריה
      *  ישמור על המיסוך. */
     function apply_mask() {
-        if (state.category === null) return;
+        /* ALL היא היעדר צמצום — app.filter() כבר הציג את הכל, ואין מה למסך. */
+        if (state.category === null || state.category === ALL) return;
         var virtual = (state.category === VIRTUAL);
         $("#activity_boxes_wrapper .activity_box").each(function () {
             var $b = $(this), id = $b.attr("activity_id");
@@ -638,10 +643,14 @@ v2.add({
     /* הקטגוריות נגזרות מהפעילויות שרונדרו בפועל, ולא מרשימה קשיחה,
        כדי שהמסך יישאר מסונכרן עם הגיליון בלי תחזוקה. */
     function collect() {
-        var count = {}, order = [];
+        var count = {}, order = [], total = 0;
         $("#activity_boxes_wrapper .activity_box").each(function () {
             var $b = $(this), c = $b.attr("category");
-            if (!c || $b.attr("activity_id") === "NEW_IDEA") return;
+            if ($b.attr("activity_id") === "NEW_IDEA") return;
+            /* total סופר גם פעילות בלי קטגוריה — היא לא מקבלת כרטיס משלה,
+               אבל "כל הפעילויות" כן מציגה אותה, ולכן היא נספרת שם. */
+            total++;
+            if (!c) return;
             if (count[c] === undefined) { count[c] = 0; order.push(c); }
             count[c]++;
         });
@@ -661,6 +670,12 @@ v2.add({
                 loading:  (last_year.status === "idle" || last_year.status === "loading"),
                 disabled: !last_year_ready()
             });
+        }
+
+        /* אחרונה ברשת: מוצא בטוח למי שלא בטוח לאיזו קטגוריה מה שייך.
+           לא מוצגת כשאין בכלל פעילויות, כי אז אין מה לפתוח. */
+        if (total) {
+            list.push({ value: ALL, label: cat_label(ALL), count: total, all: true });
         }
         return list;
     }
@@ -711,7 +726,9 @@ v2.add({
 
         var $grid = $("<div>").addClass("v2_home_grid");
         collect().forEach(function (c, i) {
-            var cls = "v2_cat_card " + (c.virtual ? "v2_cat_last" : "v2_cat_c" + (i % 5));
+            var cls = "v2_cat_card " + (c.virtual ? "v2_cat_last"
+                                     : c.all     ? "v2_cat_all"
+                                                 : "v2_cat_c" + (i % 5));
             if (c.loading)  cls += " v2_cat_loading";
             if (c.disabled) cls += " v2_cat_disabled";
 
@@ -779,7 +796,7 @@ v2.add({
             build();
 
             if (state.category !== null && state.category !== VIRTUAL &&
-                !category_exists(state.category)) {
+                state.category !== ALL && !category_exists(state.category)) {
                 state.category = null;          /* הקטגוריה נעלמה מהנתונים */
             }
             if (state.category === VIRTUAL && last_year.count === 0) {

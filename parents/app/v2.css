@@ -333,6 +333,21 @@
     .v2_cat_loading .v2_cat_count { animation: none; }
 }
 
+/*  Last in the grid, and like the last-year card deliberately not one of the
+ *  five sheet categories — neutral grey rather than another colour, so it
+ *  reads as "no filter" instead of as one more category. */
+.v2_cat_all {
+    --v2-accent: #8b95a1;
+    background: linear-gradient(180deg, #f7f8fa 0%, #fff 60%);
+}
+
+.v2_cat_all .v2_cat_name::before {
+    content: "≡";
+    margin-left: 7px;
+    color: #8b95a1;
+    font-size: 15px;
+}
+
 .v2_cat_c0 { --v2-accent: #3085d6; }
 .v2_cat_c1 { --v2-accent: #e8a33d; }
 .v2_cat_c2 { --v2-accent: #4caf82; }
