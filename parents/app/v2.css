@@ -597,6 +597,14 @@
 
 .v2_filter_pills {
     --v2-filter-label: 8em;         /* fits the widest title, "מעגל השפעה:" */
+    /* #header_logo is absolute at right:4em and 10em wide (app.css:357), inside
+       a sticky header it overhangs — it lands on top of the first filter row.
+       Its start edge is 14em in, so the row has to begin past that. This is
+       what the 15em in app.css:507 was for; it has to be restated here because
+       the padding shorthand on .filter_box below replaces that rule outright.
+       Uniform across rows, so the title column stays aligned even though only
+       the first row is actually covered. */
+    --v2-filter-gutter: 15em;
     /* app.css:518 already uses this blue on the filter hover border. Swapping
        it for var(--campaign-color) would tie the row to the campaign theme,
        but that colour comes from the sheet and may be too light to carry
@@ -615,7 +623,7 @@
     align-items: center;
     white-space: normal;            /* was nowrap */
     padding: .55em 1em;
-    padding-inline-start: calc(1em + var(--v2-filter-label));
+    padding-inline-start: calc(var(--v2-filter-gutter) + var(--v2-filter-label));
     border-bottom: 1px dotted #dfe4ea;
 }
 
