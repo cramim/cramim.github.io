@@ -566,3 +566,123 @@
 .v2_mobile .v2_home_grid  { grid-template-columns: 1fr; gap: 11px; padding: 0 12px; }
 .v2_mobile .v2_cat_card   { padding: 16px 18px; }
 .v2_mobile #v2_back       { margin: 10px auto 4px; }
+
+
+/*  --- filter-pills -----------------------------------------------------
+ *
+ *  Two problems in app.css, both fixed here without touching the HTML:
+ *
+ *  1. Horizontal scrolling. .filter_box is white-space:nowrap (app.css:508)
+ *     inside a wrapper with overflow:auto (app.css:503), so the six long
+ *     labels of the "תזמון" row always spill into a scrollbar. The 15em
+ *     start-side padding on .filter_box (app.css:507) makes it worse.
+ *     Here the row wraps instead.
+ *
+ *  2. Rows not lining up. .filter_box_title is an inline-block of natural
+ *     width (app.css:512), so a wide title and a narrow one start their
+ *     rows at different offsets. Here the title gets a fixed column and is
+ *     pulled back into the row's own padding — a hanging indent, so the
+ *     first line and every wrapped line begin at the same place.
+ *
+ *  The checkbox is swapped for a pill. It stays in the DOM, visually
+ *  hidden rather than display:none, so it is still tabbable and the change
+ *  event still fires. The checked state is drawn with input:checked + span,
+ *  a plain sibling selector — no dependency on :has(). app.js:844 already
+ *  forwards a click anywhere on the item to the input, so the whole pill is
+ *  the hit target for free.
+ *
+ *  Desktop only: mobile.css:709 gives the filters a vertical panel of their
+ *  own, which has neither problem.
+ * ------------------------------------------------------------------- */
+
+.v2_filter_pills {
+    --v2-filter-label: 8em;         /* fits the widest title, "מעגל השפעה:" */
+    /* app.css:518 already uses this blue on the filter hover border. Swapping
+       it for var(--campaign-color) would tie the row to the campaign theme,
+       but that colour comes from the sheet and may be too light to carry
+       white text — hence a fixed, known-contrast accent. */
+    --v2-filter-accent: #1b74e4;
+}
+
+.v2_filter_pills #filter_box_wrapper {
+    padding: 10px 0;
+    overflow: visible;              /* was auto — this was the scrollbar */
+}
+
+.v2_filter_pills .filter_box {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    white-space: normal;            /* was nowrap */
+    padding: .55em 1em;
+    padding-inline-start: calc(1em + var(--v2-filter-label));
+    border-bottom: 1px dotted #dfe4ea;
+}
+
+.v2_filter_pills .filter_box:last-child { border-bottom: 0; }
+
+.v2_filter_pills .filter_box_title {
+    flex: 0 0 var(--v2-filter-label);
+    margin-inline-start: calc(-1 * var(--v2-filter-label));
+    padding-left: 0;                /* app.css:544 */
+    text-decoration: none;          /* the underline reads as noise beside pills */
+    font-weight: 700;
+    color: #3a4048;
+}
+
+/* the item div is now only a hit target — the pill itself is its <span> */
+.v2_filter_pills .filter_box_item,
+.v2_filter_pills .filter_box_item:hover {
+    position: relative;
+    margin: .22em .3em;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;               /* app.css:517 glows the wrapper */
+}
+
+.v2_filter_pills .filter_box input[type="checkbox"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    opacity: 0;
+    transform: none;                /* app.css:535 scales it 1.5x */
+    pointer-events: none;
+}
+
+.v2_filter_pills .filter_box_item > span {
+    display: inline-block;
+    padding: .38em .95em;
+    border: 1px solid #ccd4de;
+    border-radius: 999px;
+    background: #fff;
+    color: #3a4048;
+    line-height: 1.5;
+    white-space: nowrap;            /* wrap between pills, never inside one */
+    transition: background-color .15s ease, border-color .15s ease, color .15s ease;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.v2_filter_pills .filter_box_item:hover > span {
+    border-color: var(--v2-filter-accent);
+    color: var(--v2-filter-accent);
+}
+
+/* one class deeper than the hover rule above, so a checked pill keeps its
+   fill instead of flipping back to the outline on hover */
+.v2_filter_pills .filter_box input:checked + span {
+    background: var(--v2-filter-accent);
+    border-color: var(--v2-filter-accent);
+    color: #fff;
+}
+
+.v2_filter_pills .filter_box_item:hover input:checked + span {
+    filter: brightness(1.1);
+}
+
+.v2_filter_pills .filter_box input:focus-visible + span {
+    outline: 2px solid var(--v2-filter-accent);
+    outline-offset: 2px;
+}
