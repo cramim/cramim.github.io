@@ -1125,8 +1125,15 @@ body{
     z-index: 999; 
 }
 
+/*  fixed rather than absolute: absolute worked only because .parent happens to
+    be positioned (line 59). Anything that later positions #main_box or the
+    wrapper would silently drop the dialog back into the scroller. fixed is what
+    a modal actually wants, and #mask_dialog behind it is already fixed.
+    margin:0 because top:50% places the MARGIN edge, and .activity_box carries
+    margin:1em, which left the dialog ~14px below centre. */
 .activity_box.box_maximized {
-    position: absolute;
+    position: fixed;
+    margin: 0;
     max-width: 80%;
     max-height: 80%;
     top: 50%;
