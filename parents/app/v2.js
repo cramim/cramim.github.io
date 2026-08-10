@@ -364,17 +364,31 @@ v2.add({
         return n;
     }
 
-    /* פעילות שנרשמנו אליה אשתקד ואינה מוצעת השנה — נופלת מהרשימה. */
-    function absorb(resp, pid) {
-        var keys_by_id = {}, wanted = {}, ids = {}, count = 0;
-
-        /* --- שנה שעברה: המפתחות של כל פעילות, ומהם אלה שנרשמנו אליהם --- */
+    /* המפתחות של אשתקד, מתוך תשובת load של הקמפיין הקודם.
+       זהו הנתיב הישן — משמש רק כשהשרת לא מחזיר prev_signup_keys. */
+    function keys_from_response(resp) {
+        var keys_by_id = {}, wanted = [];
         $.each(resp.activity_list || [], function (i, row) {
             keys_by_id[String(row[0])] = row_keys(row);
         });
+        var seen = {};
         $.each(resp.signup_list || [], function (i, row) {
-            (keys_by_id[String(row[1])] || []).forEach(function (k) { wanted[k] = true; });
+            (keys_by_id[String(row[1])] || []).forEach(function (k) {
+                if (!seen[k]) { seen[k] = true; wanted.push(k); }
+            });
         });
+        return wanted;
+    }
+
+    /*  הצלבת מפתחות אשתקד מול הפעילויות של השנה.
+     *
+     *  שלושת המקורות — השדה מהשרת, המטמון, והקריאה השנייה — כולם מגיעים
+     *  לכאן עם אותו דבר בדיוק: מערך מפתחות טקסט. פעילות שנרשמנו אליה
+     *  אשתקד ואינה מוצעת השנה נופלת מהרשימה.
+     */
+    function match(key_list) {
+        var wanted = {}, ids = {}, count = 0;
+        (key_list || []).forEach(function (k) { if (k) wanted[k] = true; });
 
         /* --- השנה: אותם מפתחות, מהשורות הגולמיות ---
            app.dat.idx.activity_list הוא אובייקט מפוענח ואין בו את עמודה Q,
@@ -402,16 +416,53 @@ v2.add({
         last_year.count  = count;
         last_year.status = "ready";
         v2.log("last year: " + Object.keys(wanted).length + " keys signed up -> " +
-               count + " matched  (Q filled: " +
-               count_generic(resp.activity_list) + " last year, " +
-               count_generic(cur_resp && cur_resp.activity_list) + " this year)");
+               count + " matched  (Q filled this year: " +
+               count_generic(cur_resp && cur_resp.activity_list) + ")");
     }
 
+    /* ------------------------------------------------------------------
+     *  מטמון מקומי
+     *
+     *  הקמפיין הקודם סגור, ולכן המפתחות שלו אינם משתנים לעולם — זהו המקרה
+     *  הנדיר שבו אין בעיית התיישנות. שומרים לפי uid+קמפיין, כך שהחלפת
+     *  משתמש או מעבר קמפיין לא יכולים להציג נתון של מישהו אחר.
+     *
+     *  רשת ביטחון בלבד: כשהשרת מחזיר prev_signup_keys אין קריאה שנייה
+     *  ואין מה למטמן. הוא מכסה את החלון שבין פריסת הלקוח (מיידית ב-Pages)
+     *  לפריסת Code.gs (ידנית), ואת המקרה שבו השדה נעלם.
+     * ------------------------------------------------------------------ */
+
+    var CACHE_KEY = "cramim-parents-v2-prevkeys";
+
+    function cache_read(uid, pid) {
+        try {
+            var c = window.localStorage.getObj(CACHE_KEY);
+            if (c && c.v === 1 && c.uid === String(uid) && c.pid === String(pid) &&
+                Object.prototype.toString.call(c.keys) === "[object Array]") return c.keys;
+        } catch (e) {}
+        return null;
+    }
+
+    function cache_write(uid, pid, keys) {
+        try {
+            window.localStorage.setObj(CACHE_KEY, {
+                v: 1, uid: String(uid), pid: String(pid), keys: keys
+            });
+        } catch (e) {}   /* מצב פרטי / אחסון מלא — לא סיבה להיכשל */
+    }
+
+    /*  שלושה מקורות למפתחות של אשתקד, לפי סדר עלות:
+     *
+     *  1. השדה prev_signup_keys שמגיע עם load הראשי — אפס עלות נוספת.
+     *  2. המטמון המקומי — אפס עלות, כשהשרת עדיין לא מעודכן.
+     *  3. קריאת load שנייה עם הקמפיין הקודם — הנתיב הישן, יקר: load עושה
+     *     שש קריאות טווח מלא בשרת ומכאן משתמשים בשתיים בלבד.
+     */
     function load_last_year(on_done) {
         var uid = app.dat.user && app.dat.user.uid;
         /* בלי uid אין מה לשלוף — לסמן סופית, אחרת הכרטיס יישאר על "מחפש…" */
         if (!uid) { last_year.status = "none"; return; }
-        if (last_year.uid !== uid) {            /* משתמש התחלף — לאפס את המטמון */
+        if (last_year.uid !== uid) {            /* משתמש התחלף — לאפס */
             last_year = { status: "idle", uid: uid, ids: {}, count: 0, title: "" };
         }
         if (last_year.status !== "idle") return;
@@ -419,6 +470,25 @@ v2.add({
         var pid = prev_campaign_id();
         if (pid === null) { last_year.status = "none"; return; }
 
+        /* --- 1. מהשרת, יחד עם הטעינה הראשית --- */
+        var from_server = (app.dat.server_load_response || {}).prev_signup_keys;
+        if (Object.prototype.toString.call(from_server) === "[object Array]") {
+            v2.log("last year: " + from_server.length + " keys from the main load");
+            cache_write(uid, pid, from_server);
+            match(from_server);
+            return;                             /* אין קריאה שנייה בכלל */
+        }
+
+        /* --- 2. מהמטמון --- */
+        var cached = cache_read(uid, pid);
+        if (cached) {
+            v2.log("last year: " + cached.length + " keys from cache");
+            match(cached);
+            return;
+        }
+
+        /* --- 3. הנתיב הישן --- */
+        v2.log("last year: no server field and no cache — falling back to a second load");
         last_year.status = "loading";
         function fail(e) { last_year.status = "error"; v2.log("last year load failed", e); }
 
@@ -427,7 +497,12 @@ v2.add({
             {
                 /* מנוטרל בכוונה — זו טעינת רקע ואסור לה לחסום את המסך */
                 please_wait:       function () {},
-                on_success:        function (resp) { absorb(resp, pid); on_done(); },
+                on_success:        function (resp) {
+                    var keys = keys_from_response(resp);
+                    cache_write(uid, pid, keys);
+                    match(keys);
+                    on_done();
+                },
                 on_error_response: fail,
                 on_connect_error:  fail,
                 on_js_error:       fail
