@@ -784,6 +784,15 @@
     padding-bottom: 1.6em;
 }
 
+/*  Same story once the card is blown up into the dialog: the description grows
+ *  to auto (app.css:1147), so the card is taller than min-height and there is
+ *  no slack left at the bottom — the strip was landing on the join button,
+ *  covering it by 11px. Room has to be made explicitly here too.
+ *  Desktop only: box_maximized never happens on mobile. */
+.v2_desktop.v2_circle_on .activity_box.box_maximized {
+    padding-bottom: 2.1em;
+}
+
 .v2_circle_on .v2_circle {
     position: absolute;
     right: 0;
