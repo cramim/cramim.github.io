@@ -14,7 +14,8 @@
 | `v2-mobile.html` | וריאנט של `mobile.html` (מובייל) |
 | `app/v2.js` | **כל השינויים בקוד נכתבים כאן** — מנוע הניסויים + ה-hooks. קוד ייצור |
 | `app/v2-test.js` | תשתית דף הבדיקות בלבד: מפתח כניסה, `read_only`, ניתוב, תג, מסך חסימה. נטען רק ע"י `v2*.html` |
-| `app/v2.css` | כל השינויים בעיצוב |
+| `app/v2.css` | כל השינויים בעיצוב. קוד ייצור |
+| `app/v2-test.css` | עיצוב התג ומסך החסימה בלבד. נטען רק ע"י `v2*.html` |
 
 `index.html`, `mobile.html`, `admin.html`, `app/app.js`, `app/mobile.js`, `app/app.css`, `app/mobile.css` — **לא נגענו בהם**. אפשר לאמת:
 
@@ -27,7 +28,8 @@ git diff --stat        # ריק. רק ארבעה קבצים חדשים ב-git st
 ```html
 <link rel="stylesheet" href="app/v2.css">
 <script src="app/v2.js"></script>
-<script src="app/v2-test.js"></script>   <!-- דפי הווריאנט בלבד, ותמיד אחרי v2.js -->
+<link rel="stylesheet" href="app/v2-test.css">   <!-- דפי הווריאנט בלבד -->
+<script src="app/v2-test.js"></script>           <!-- דפי הווריאנט בלבד, ותמיד אחרי v2.js -->
 ...
 <body class="v2 v2_desktop">     <!-- או v2 v2_mobile -->
 ```
