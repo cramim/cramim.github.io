@@ -432,6 +432,28 @@
 }
 
 
+/*  Centre the maximized card on the viewport, not on the page.
+ *
+ *  app.css:1128 positions it absolute at top/left 50%. Its containing block is
+ *  .parent (app.css:59, position:absolute inset:0), which is viewport-sized —
+ *  but the card is also a descendant of #main_box, and .parent>div is
+ *  overflow-y:auto (app.css:71), so the dialog scrolls away with the list. Open
+ *  a card while scrolled down and it lands above the fold, half hidden.
+ *
+ *  position:fixed takes it out of the scroller entirely. #mask_dialog behind it
+ *  is already fixed (app.css:1117), so this makes the two agree. No ancestor
+ *  sets transform/filter/will-change, so fixed really does resolve against the
+ *  viewport here. max-width/max-height then resolve against the viewport too,
+ *  which is what a dialog wants.
+ * ------------------------------------------------------------------- */
+.v2_desktop .activity_box.box_maximized {
+    position: fixed;
+    /*  top:50% places the MARGIN edge, and app.css:412 leaves a 1em margin on
+        the card, so without this the dialog sits ~13.6px below centre. */
+    margin: 0;
+}
+
+
 /*  --- login-whatsapp ---------------------------------------------------
  *  Replaces the grey, unclickable "register" text on the login screen. The
  *  mark is an inline data URI rather than a file in img/, so the experiment
@@ -743,7 +765,11 @@
  *  The toolbox's 16px top padding is pure air. The description keeps about
  *  three visible lines at 3.6em, and it is a fixed-height scroller either way
  *  (app.css:452), so nothing becomes unreachable. */
-.v2_desktop.v2_circle_on .activity_box_desc {
+/*  :not(.box_maximized) matters. app.css:1147 gives the description height:auto
+ *  once the card is blown up into the dialog, at the same specificity as this
+ *  rule — and v2.css loads later, so without the guard this would win and clamp
+ *  the popup's description to 3.6em too. */
+.v2_desktop.v2_circle_on .activity_box:not(.box_maximized) .activity_box_desc {
     height: 3.6em;                  /* app.css:452 has 4.1em */
 }
 
