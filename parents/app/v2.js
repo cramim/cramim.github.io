@@ -604,15 +604,35 @@ v2.add({
         );
     }
 
-    /* לקטגוריה הווירטואלית אין צ'קבוקס להניע, ולכן אחרי app.filter() מסתירים
-       ידנית את מה שלא ברשימה. רץ כ-hook על filter, כדי שגם שינוי של מעגל או
-       תזמון בתוך הקטגוריה ישמור על המיסוך. */
+    /*  צמצום לקטגוריה הפתוחה, אחרי ש-app.filter() סיים.
+     *
+     *  הסינון לא עובר דרך הצ'קבוקסים של #filter_box_cat: הם קשיחים ב-HTML,
+     *  ואילו הכרטיסים כאן נגזרים מהגיליון. שם קטגוריה שהשתנה בגיליון לא נמצא
+     *  שם, אף צ'קבוקס לא מסומן, ו-app.filter() נופל ל-[category] שתופס הכל —
+     *  כלומר לחיצה על קטגוריה הציגה את *כל* הפעילויות. כאן מצמצמים לפי הערך
+     *  עצמו, ולכן שינוי בגיליון לא יכול לשבור את המסך.
+     *
+     *  רץ כ-hook על filter, כדי שגם שינוי של מעגל או תזמון בתוך הקטגוריה
+     *  ישמור על המיסוך. */
     function apply_mask() {
-        if (state.category !== VIRTUAL) return;
+        if (state.category === null) return;
+        var virtual = (state.category === VIRTUAL);
         $("#activity_boxes_wrapper .activity_box").each(function () {
-            var $b = $(this);
-            if (!last_year.ids[$b.attr("activity_id")]) $b.hide();
+            var $b = $(this), id = $b.attr("activity_id");
+            if (virtual) { if (!last_year.ids[id]) $b.hide(); return; }
+            if (id === "NEW_IDEA") return;   /* app.filter מציג אותו בכוונה תמיד */
+            if ($b.attr("category") !== state.category) $b.hide();
         });
+    }
+
+    /* האם הקטגוריה עדיין קיימת בפעילויות שרונדרו. מחליף בדיקה קודמת שחיפשה
+       צ'קבוקס תואם — הנתונים הם המקור, לא ה-HTML. */
+    function category_exists(value) {
+        var found = false;
+        $("#activity_boxes_wrapper .activity_box").each(function () {
+            if ($(this).attr("category") === value) { found = true; return false; }
+        });
+        return found;
     }
 
     /* הקטגוריות נגזרות מהפעילויות שרונדרו בפועל, ולא מרשימה קשיחה,
@@ -647,11 +667,10 @@ v2.add({
 
     function open_category(value) {
         state.category = value;
+        /* מנקים סימון ישן כדי שלא יצמצם מעבר לקטגוריה עצמה. הסימון החיובי
+           מיותר — apply_mask הוא זה שמצמצם. */
         $("#filter_box_cat input[type='checkbox']").prop("checked", false);
-        if (value !== VIRTUAL) {
-            $("#filter_box_cat input[filter_name='" + value + "']").prop("checked", true);
-        }
-        app.filter();          /* apply_mask רץ אחריו כ-hook ומצמצם לרשימה */
+        app.filter();          /* apply_mask רץ אחריו כ-hook ומצמצם לקטגוריה */
         paint();
         if (window.history && history.pushState) {
             history.pushState({ v2cat: value }, "", location.href);
@@ -745,20 +764,14 @@ v2.add({
             build();
 
             if (state.category !== null && state.category !== VIRTUAL &&
-                !$("#filter_box_cat input[filter_name='" + state.category + "']").length) {
+                !category_exists(state.category)) {
                 state.category = null;          /* הקטגוריה נעלמה מהנתונים */
             }
             if (state.category === VIRTUAL && last_year.count === 0) {
                 state.category = null;          /* אין יותר מה להציג בה */
             }
             if (state.category !== null) {
-                /* app.clear() מאפס את הצ'קבוקסים בהתנתקות, ולכן מסמנים
-                   מחדש במקום להניח שהסימון שרד. */
                 $("#filter_box_cat input[type='checkbox']").prop("checked", false);
-                if (state.category !== VIRTUAL) {
-                    $("#filter_box_cat input[filter_name='" + state.category + "']")
-                        .prop("checked", true);
-                }
                 app.filter();
             }
             paint();
