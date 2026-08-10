@@ -698,71 +698,74 @@
 
 /*  --- activity-circle-badge --------------------------------------------
  *
- *  Sits in the existing .activity_box_toolbox row, between the progress bar
- *  and the join button, so the card does not grow by a single pixel. That
- *  row is already position:relative (app.css:797), so it anchors the badge
- *  with no extra rule.
+ *  A full-width strip along the bottom of the card, quiet tint, plain text.
+ *  It names the field ("מעגל השפעה") and not just the value, so it reads on
+ *  its own without a legend and without a symbol to decode.
  *
- *  The gap between button and bar is only 61px and the longest label needs
- *  75px, so the bar gives up some width below. It is the one thing on the
- *  card that can afford it — the status row right above already states
- *  "הצטרפו: 3 מתוך: 6" in numerals, so the bar is reinforcement, not the
- *  only carrier of that fact.
+ *  Positioned absolutely rather than in flow, so it spans the card's full
+ *  width including the 10px padding, instead of being inset by it. On desktop
+ *  it then costs no height at all — see the next block for why.
  *
- *  No font-size on .v2_circle itself: `left` is in em, and an em on the
- *  badge would resolve against the badge's own font size. Keeping it at the
- *  toolbox's 1em makes the offset mean the same thing on both pages, where
- *  the only difference is that mobile.css sets the card to 1.5em. The label
- *  carries its own smaller size instead.
+ *  overflow:hidden so the strip is clipped to the card's 10px corner radius
+ *  on desktop; mobile has square corners and is unaffected.
  * ------------------------------------------------------------------- */
 
-.v2_circle_on .dv_activity_progress {
-    max-width: 34%;                 /* app.css:479 has 50% */
+.v2_circle_on .activity_box {
+    position: relative;
+    overflow: hidden;
+}
+
+/*  Room for the strip, without making the card any taller.
+ *
+ *  min-height:15.5em (app.css:417) applies to the card's CONTENT box, so a
+ *  desktop card is pinned at 210.8 + 10 + 10 = 230.8px no matter what its
+ *  children do — shrinking them changes nothing, and any padding-bottom adds
+ *  height one for one. The strip therefore goes into the content box's own
+ *  slack: the children only fill ~209 of the 210.8 they are given, and the two
+ *  rules below free the rest. Measured result is 230.8px with the strip, the
+ *  same as without, and 6.2px of clearance above it.
+ *
+ *  The toolbox's 16px top padding is pure air. The description keeps about
+ *  three visible lines at 3.6em, and it is a fixed-height scroller either way
+ *  (app.css:452), so nothing becomes unreachable. */
+.v2_desktop.v2_circle_on .activity_box_desc {
+    height: 3.6em;                  /* app.css:452 has 4.1em */
+}
+
+.v2_circle_on .activity_box_toolbox {
+    padding-top: 8px;               /* app.css:795 has 16px */
+}
+
+/*  Mobile has no min-height, and mobile-desc-collapse already hides the
+ *  description, so there is no slack to reclaim — there the strip costs its
+ *  own height and nothing else can be given up for it. */
+.v2_mobile.v2_circle_on .activity_box {
+    padding-bottom: 1.6em;
 }
 
 .v2_circle_on .v2_circle {
     position: absolute;
-    left: 6em;                      /* past the absolutely positioned join button */
-    top: 50%;
-    transform: translateY(-50%);
-    display: flex;
-    align-items: center;
-    gap: .35em;
-    padding: .15em .55em .15em .4em;
-    border-radius: 999px;
-    white-space: nowrap;
-    cursor: default;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    padding: .25em .9em;
+    font-size: .75em;
+    line-height: 1.5;
+    text-align: right;
     -webkit-user-select: none;
     user-select: none;
 }
 
-.v2_circle_txt {
-    font-size: .8em;
-    font-weight: 600;
-    line-height: 1.5;
-}
+.v2_circle_ttl { opacity: .7; }
+.v2_circle_txt { font-weight: 700; }
 
-/*  Three nested rings, filled from the inside out. Drawn as one gradient
- *  rather than SVG so nothing has to be parsed into the SVG namespace, and
- *  the stops are in em so the glyph scales with the card on mobile. */
-.v2_circle_glyph {
-    flex: none;
-    width: 1.12em;
-    height: 1.12em;
-    border-radius: 50%;
-    background: radial-gradient(circle at center,
-        var(--v2-ring-1) 0 .2em, transparent .2em .29em,
-        var(--v2-ring-2) .29em .385em, transparent .385em .465em,
-        var(--v2-ring-3) .465em .56em, transparent .56em);
-}
-
-/*  One hue, chip tint deepening as the reach widens — so "wider" reads
- *  without a legend, and no new colours enter a page that already carries
- *  the campaign colour, green points and blue buttons. */
-.v2_circle_1 { background: #eef4fd; color: #1b56a8; --v2-ring-1: #2f6fd0; --v2-ring-2: #c3d3e8; --v2-ring-3: #c3d3e8; }
-.v2_circle_2 { background: #dfeafb; color: #17457f; --v2-ring-1: #2f6fd0; --v2-ring-2: #2f6fd0; --v2-ring-3: #c3d3e8; }
-.v2_circle_3 { background: #cfe0f9; color: #123763; --v2-ring-1: #2f6fd0; --v2-ring-2: #2f6fd0; --v2-ring-3: #2f6fd0; }
+/*  One hue, tint deepening as the reach widens, so "wider" is legible at a
+ *  glance without adding new colours to a page that already carries the
+ *  campaign colour, green points and blue buttons. */
+.v2_circle_1 { background: #eff4fb; color: #24598f; }
+.v2_circle_2 { background: #e4edf8; color: #1d4a7c; }
+.v2_circle_3 { background: #d8e5f4; color: #163c66; }
 
 /*  A value the sheet no longer matches: correct text, neutral styling,
- *  rather than a silently broken badge. */
-.v2_circle_0 { background: #eceff2; color: #5a6470; --v2-ring-1: #9aa5b1; --v2-ring-2: #cbd2d9; --v2-ring-3: #cbd2d9; }
+ *  rather than something silently broken. */
+.v2_circle_0 { background: #eef0f2; color: #5a6470; }
