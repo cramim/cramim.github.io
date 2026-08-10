@@ -1104,6 +1104,60 @@ v2.add({
     apply: function () { $("body").addClass("v2_filter_pills"); }
 });
 
+/*  לשונית ברירת המחדל במובייל: הפעילויות במקום הרשימה.
+ *
+ *  mobile.js:195 פותח את "הרשימה שלנו" מיד אחרי הכניסה. למי שנכנס בפעם
+ *  הראשונה הרשימה ריקה, כך שהמסך הראשון שהוא רואה לא מציע לו מה לעשות.
+ *
+ *  סדר הלשוניות ושם הלשונית עצמם ב-v2-mobile.html — הם markup סטטי ואין
+ *  צורך בקוד בשבילם. כאן נשאר רק מה ש-mobile.js קובע בזמן ריצה, ו-mobile.js
+ *  משותף לשני הדפים ולכן אסור לגעת בו ישירות.
+ *
+ *  replace, ולא מעבר לשונית אחרי הרינדור: מעבר מאוחר היה מרנדר קודם את
+ *  הלשונית הלא נכונה ואז מחליף אותה לעיני המשתמש.
+ *
+ *  רק הקריאה הראשונה מנותבת. שמירה חוזרת ללשונית הרשימה בכוונה
+ *  (mobile.js:71), וזה נשאר כפי שהוא.
+ */
+(function () {
+    var armed = true;
+
+    function reroute(orig, disarm) {
+        return function (id) {
+            if (armed && id === "user") {
+                id = "activity";
+                if (disarm) armed = false;
+            }
+            return orig.apply(this, [id].concat([].slice.call(arguments, 1)));
+        };
+    }
+
+    v2.add({
+        id:    "mobile-default-tab",
+        title: "פתיחה בלשונית בחירת הפעילויות במקום הרשימה",
+        on:    true,
+        pages: ["mobile"],
+
+        apply: function () {
+            /* הזוג נקרא כ-change_tab ואז change_page (mobile.js:195), ולכן
+               הנטרול תלוי בשני שבהם. */
+            v2.replace("change_tab",  function (orig) { return reroute(orig, false); });
+            v2.replace("change_page", function (orig) { return reroute(orig, true);  });
+
+            /*  טקסט העזרה מפנה ללשוניות לפי צד ולפי שם, ושניהם השתנו:
+             *  לשונית הפעילויות עברה לימין וקיבלה שם חדש. החלפה בסריקה אחת,
+             *  אחרת ההחלפה השנייה הייתה פוגעת בתוצאה של הראשונה. */
+            if (app.help_message_txt && app.help_message_txt.welcome) {
+                app.help_message_txt.welcome = app.help_message_txt.welcome
+                    .replace(/הוספת פעילויות/g, "בחירת פעילויות")
+                    .replace(/הלשונית (השמאלית|הימנית)/g, function (m, side) {
+                        return "הלשונית " + (side === "השמאלית" ? "הימנית" : "השמאלית");
+                    });
+            }
+        }
+    });
+}());
+
 /*  Template for a change to rendered content — copy, rename, fill in:
 
 v2.add({
