@@ -90,13 +90,26 @@ body{
     background-color: #f6f6f6;
 } */
 
+/*  הפאנל הוא עמודה בת שלוש שורות: כותרת, רשימה גוללת וכפתור ההצעה.
+    הגלילה יושבת על #user_box_items ולא על #user_box, כדי שהכפתור יתפוס
+    שורה משלו במקום לרחף מעל הרשימה ולהסתיר פריטים. */
 #user_box{
     direction: rtl;
+    display: flex;
+    flex-direction: column;
+    overflow-y: hidden;
 }
 
+#user_box_items{
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+/*  היה sticky כשהגלילה ישבה על #user_box. עכשיו זו שורה קבועה בעמודה,
+    ולכן די ב-flex:none כדי שלא תתכווץ. z-index עובד על פריט flex גם בלי position. */
 #user_box_head_wrapper{
-    top: 0;
-    position: sticky;
+    flex: none;
     background-color: #cbd3d3;
     z-index: 1;
 }
@@ -1038,8 +1051,7 @@ body{
     border-bottom: navajowhite;
     color: white;
     background-size: 55px;
-    position: sticky;
-    bottom: 10px;
+    flex: none;
     background-color: rgb(27, 116, 228);
     font-weight: 500;
     font-size: 1.1em;

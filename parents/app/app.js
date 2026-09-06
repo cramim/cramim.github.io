@@ -629,7 +629,7 @@ var app = {
         const html = app.signup_tmpl(activity, signup_state);
         $("#user_box_items").prepend(html);
         $user_item_box = $(`.user_box_item[activity_id="${activity_id}"]`);
-        $("#user_box")[0].scrollTo({top: 0});
+        $("#user_box_items")[0].scrollTo({top: 0});
         $user_item_box.slideDown();
         $user_item_box.find(".bt_item_delete").click((ev)=>{
             app.unsign($(ev.target).closest(".user_box_item"));
@@ -718,7 +718,8 @@ var app = {
         $("#user_box_items").append(html);
         $user_item_box = $(`.user_box_item[private_activity_id="${private_activity.id}"]`);
         $user_item_box.slideDown(()=>{
-            $("#user_box")[0].scrollTo({top:$("#user_box").height(), behavior: 'smooth'})
+            const items = $("#user_box_items")[0];
+            items.scrollTo({top: items.scrollHeight, behavior: 'smooth'});
         });
         $user_item_box.find(".bt_item_delete").click((ev)=>{
             app.unsign_private($(ev.target).closest(".user_box_item"));
@@ -827,8 +828,10 @@ var app = {
         $("#head_toolbox_ico").toggle(!shrink);
     },
     init_scroll:()=>{
-        $("#user_box").on("scroll", ()=>{
-            var st = $("#user_box")[0].scrollTop;
+        /* הגלילה עברה ל-#user_box_items, אבל head_shrink נשאר על #user_box
+           כי הסלקטורים ב-CSS נשענים עליו. */
+        $("#user_box_items").on("scroll", ()=>{
+            var st = $("#user_box_items")[0].scrollTop;
             var hc = $("#user_box").hasClass("head_shrink");
             if (st>250 && !hc) $("#user_box").addClass("head_shrink");
             if (st<50 && hc) $("#user_box").removeClass("head_shrink");
