@@ -848,24 +848,32 @@ body{
     background-size: 70px;
 }
 
+/*  הגודל והמיקום משותפים לארבעת הסמלים, ולכן יושבים בכלל אחד.
+ *  ב-40px הסמל גלש מתחתית התיבה ונחתך: v2.css:593 מקצץ את הריפוד
+ *  העליון של התיבה מ-16px ל-8px, ורצועת מעגל ההשפעה יושבת על התחתית שלה.
+ *  28px קרוב יותר לראש התיבה נכנס בשלמותו וגם מאוזן טוב יותר מול הכרטיס. */
+.activity_box[signup_state="signed"] .activity_box_toolbox,
+.activity_box[signup_state="pending"] .activity_box_toolbox,
+.activity_box[mandatory="true"] .activity_box_toolbox,
+.activity_box[locked="true"] .activity_box_toolbox{
+    background-size: 28px;
+    background-position: 10px 6px;
+}
+
 .activity_box[signup_state="signed"] .activity_box_toolbox{
     background-image: url(../img/check.png);
-    background-size: 40px;
 }
 
 .activity_box[signup_state="pending"] .activity_box_toolbox{
     background-image: url(../img/check-pending.png);
-    background-size: 40px;
 }
 
 .activity_box[mandatory="true"] .activity_box_toolbox{
     background-image: url(../img/pin.png);
-    background-size: 40px;
 }
 
 .activity_box[locked="true"] .activity_box_toolbox{
     background-image: url(../img/lock.png);
-    background-size: 40px;
 }
 
 #ttl_mode {
