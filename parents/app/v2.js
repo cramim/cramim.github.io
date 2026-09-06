@@ -616,7 +616,7 @@ v2.add({
             $("<div>").attr("id", "v2_home").insertBefore("#activity_boxes_wrapper");
             $("<div>").attr("id", "v2_back")
                 .append($("<span>").attr("id", "v2_back_bt")
-                                   .append($("<span>").addClass("v2_back_arrow").text("←"),
+                                   .append($("<span>").addClass("v2_back_arrow").text("→"),
                                            $("<span>").text("כל הקטגוריות"))
                                    .on("click", go_home))
                 .append($("<span>").attr("id", "v2_back_current"))
