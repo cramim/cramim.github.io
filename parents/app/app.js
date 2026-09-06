@@ -536,7 +536,7 @@ var app = {
     help_message_txt:{
         welcome: 
             '<div id="help_welcome">' + 
-                '<div class="help_paragraph">ברוכים הבאים לממשק ההרשמה למעורבות ההורים בכרמים. מוזמנים להירשם לפעילויות בהן תרצו להשתלב. שימו לב, ההרשמה הינה לשנת תשפ"ו והיא משפחתית.</div>' +
+                '<div class="help_paragraph">ברוכים הבאים לממשק ההרשמה למעורבות ההורים בכרמים. מוזמנים להירשם לפעילויות בהן תרצו להשתלב. שימו לב, ההרשמה הינה לשנת {{YEAR}} והיא משפחתית.</div>' +
                 '<div class="help_paragraph">מצאו פעילויות ולחצו על הכפתור "הצטרפ/י".<br>הפעילויות אליהן הצטרפתם נאספות ומופיעות בצדו השמאלי של המסך.</div>' +
                 '<div class="help_paragraph">חלק מהפעילויות יציגו בחירה של הרשמה שכבתית. אנא בחרו לאיזה שכבה/ות להרשם</div>' +
                 '<div class="help_paragraph">העזרו באפשרויות הסינון שבראש הדף כדי למצוא פעילויות לרוחכם.</div>' +
@@ -548,12 +548,20 @@ var app = {
                 '<div class="help_nagging"><input id="cb_help_signup_nagging" type="checkbox" checked="true" /><label for="cb_help_signup_nagging">הבנתי, אין צורך להציג הודעה זו שוב.</label></div>' +
             '</div'
     },
+    /*  שנת הלימודים לטקסטים. נגזרת מכותרת הקמפיין הפעיל ("שנת תשפ"ז") ולא
+        קשיחה בקוד, כי היא הייתה קשיחה פעמיים — ב-app.js וב-mobile.js —
+        והשתיים נפרדו: דסקטופ הציג שנה אחת ומובייל אחרת. */
+    campaign_year: ()=>{
+        const campaign = (app.dat.idx.campaign_by_id || {})[app.dat.campaign_id];
+        const match = (campaign && campaign.title || '').match(/תש[א-ת]?["״”'׳][א-ת]/);
+        return match ? match[0].replace(/["״”'׳]/, '"') : 'תשפ"ז';
+    },
     help_message:{
         show_welcome: ()=>{
             const nag_status = window.localStorage.getObj('cramim-parents-help_message-nag_status') || {};
             if (!nag_status.welcome) swal({
                 title: `${app.dat.user.name}, ברוכים הבאים :)`,
-                html: app.help_message_txt.welcome,
+                html: app.help_message_txt.welcome.replace("{{YEAR}}", app.campaign_year()),
                 showCancelButton: false, confirmButtonColor: '#3085d6', cancelButtonColor: '#d33', confirmButtonText: 'סגור',
             }).then(function(result){
                 nag_status.welcome = $('#help_welcome .help_nagging>input[type="checkbox"]').is(":checked");
