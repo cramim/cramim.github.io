@@ -220,3 +220,181 @@ div[report_type]{display: none;}
 #classes_filter{
     margin-bottom: 4em;
 }
+
+/* ============================================================================
+   מסך צר (טלפון / טאבלט קטן).
+
+   admin.html משתמש בפריסת app.css: גריד של שתי עמודות —
+   minmax(20rem,auto) לדו"ח ועוד 20rem לסרגל הצד. יחד זה 40rem מינימום,
+   כלומר רחב פי ~1.5 ממסך טלפון, ולכן הדף נדחס ונגלל לצדדים.
+
+   כאן מקפלים אותו לעמודה אחת: סרגל הדו"חות עולה למעלה כפס דק,
+   הדו"ח עצמו יורד מתחתיו וממשיך להיות אלמנט הגלילה (#main_box) —
+   וזה חשוב, כי admin.js תולה עליו את head_shrink ואת scroll_home.
+   אין כאן שינוי HTML ואין JS; מעל 768px שום דבר לא מושפע.
+   ============================================================================ */
+@media screen and (max-width: 768px) {
+
+    /* --- פריסה: עמודה אחת, סרגל למעלה והדו"ח מתחת --- */
+    .parent{
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+    }
+    .div3 { grid-area: 1 / 1 / 2 / 2; }   /* #option_box - הפס העליון */
+    .div2 { grid-area: 2 / 1 / 3 / 2; }   /* #main_box   - הדו"ח, הוא הגולל */
+
+    /* הצל היה מופנה הצידה כשזו היתה עמודה; עכשיו הוא צריך לרדת למטה.
+       max-height מונע מהפס לבלוע את המסך כשיש הרבה כיתות בסינון. */
+    #option_box{
+        box-shadow: 0 3px 8px gray;
+        max-height: 45vh;
+    }
+
+    #option_box_head{
+        font-size: 1.2em;
+        padding: 0.5em;
+    }
+
+    #option_box_pick_report{ padding: 0.5em; }
+
+    #sl_report_type{
+        font-size: 1.1em;
+        padding: 0.4em;
+    }
+
+    #dv_report_options>div{
+        padding: 0.5em;
+        font-size: 1em;
+    }
+    #dv_report_options>div>div{ padding: 0.5em; }
+
+    /* סינון הכיתות: רשימה אנכית בסרגל צד הופכת לשורת "צ'יפים" נגללת לרוחב.
+       ה-margin-bottom של 4em נועד לפנות מקום ל-#filter_stat הצף - שכבר לא צף.
+
+       שים לב: אסור להסתמך כאן על display של #classes_filter עצמו. admin.js
+       (שורה 914) עושה עליו fadeIn, ו-jQuery כותב display:block ישירות על
+       ה-style של האלמנט - מה שגובר על כל גיליון סגנונות. לכן השורה האופקית
+       נבנית מ-white-space:nowrap על האב ו-inline-block על הפריטים, ולא מ-flex. */
+    #classes_filter.filter_box{
+        white-space: nowrap;
+        overflow-x: auto;
+        padding: 0.5em;
+        margin-bottom: 0;
+    }
+    #classes_filter.filter_box .filter_box_item{
+        display: inline-block;
+        margin: 0 0.25em;
+        padding: 0.4em 0.8em;
+        background-color: white;
+        border: 1px silver solid;
+        border-radius: 2em;
+    }
+
+    /* היה position:fixed עם width:100% - נכון כשהאב ברוחב 20rem, אבל בעמודה
+       אחת זה נמרח על כל המסך ומכסה את הדו"ח. מחזירים אותו לזרימה הרגילה.
+       גם כאן ה-display נקבע ב-inline ע"י fadeIn, אז שתי המונים נסדרים
+       לשורה אחת דרך inline-block על הילדים. */
+    #dv_report_options>#filter_stat{
+        position: static;
+        text-align: center;
+        padding: 0.5em;
+    }
+    #dv_report_options>#filter_stat>div{
+        display: inline-block;
+        margin: 0 0.75em;
+    }
+
+    /* --- כותרת: הלוגו והתפריט היו absolute משני הצדדים, עם 17.5em ריפוד
+           מימין שנשמר ללוגו. בטלפון אין מקום לזה. --- */
+    #header{
+        padding: 0.8em;
+        padding-top: 0.8em;
+    }
+    #header_logo{ display: none; }   /* דקורטיבי בלבד, ומופיע ממילא במסך הכניסה */
+
+    #header_title_1{
+        font-size: 1.5em;
+        white-space: normal;
+    }
+    #header_title_2{
+        font-size: 1.1em;
+        white-space: normal;
+    }
+
+    #head_toolbox{
+        position: static;
+        direction: rtl;
+        width: 100%;
+        margin-top: 0.5em;
+        border-radius: 0;
+    }
+    #head_toolbox td{
+        padding: 0.5em 0.2em;
+        min-width: 0;
+        font-size: 0.9em;
+        background-size: 1.6em;
+        background-position: center 0.3em;
+    }
+    .head_bt{ padding-top: 2.2em; }
+
+    /* head_shrink נדלק מ-admin.js בגלילה. ברירת המחדל שלו (ריפוד 12em,
+       scale(0.8) על התפריט) שייכת לדסקטופ, אז מגדירים אותו מחדש: בטלפון
+       הוא רק מקטין את שורת המשנה. הסלקטורים חייבים להיות ספציפיים כמו
+       המקור (#main_box.head_shrink) כדי לגבור עליו. */
+    #main_box.head_shrink #header{ padding: 0.8em; }
+    #main_box.head_shrink #header_title_1{ font-size: 1.3em; }
+    #main_box.head_shrink #head_toolbox{ transform: none; }
+
+    /* --- דו"ח לפי פעילות --- */
+    .filter_box{
+        padding: 0.5em;
+        white-space: normal;
+    }
+    .filter_box>.filter_box_title{
+        display: block;
+        padding-left: 0;
+        padding-bottom: 0.3em;
+    }
+    .filter_box_item{ margin: 0.2em; }
+
+    .activity_box{
+        display: block;
+        width: auto;
+        margin: 0.8em 0.5em;
+    }
+    /* טבלת המשתתפים היא 7 עמודות עם white-space:nowrap, ולכן חייבת
+       גלילה אופקית משלה במקום למתוח את הדף כולו. */
+    .activity_box_desc{ overflow-x: auto; }
+
+    .dv_activity_progress{
+        width: 100%;
+        max-width: none;
+    }
+
+    /* --- דו"ח לפי שכבות --- */
+    #class_boxes_wrapper{ padding: 0 0.5em 2em 0.5em; }
+    #filter_box_class_wrapper{ padding: 0.5em 0; }
+    .class_head{
+        font-size: 1.4em;
+        padding: 0.8em 0.2em;
+    }
+    .tb_class td, .tb_class th{
+        padding: 4px;
+        font-size: 0.95em;
+    }
+
+    /* --- מסך כניסה --- */
+    #dv_login table{ max-width: calc(100vw - 2rem); }
+    #dv_login_title{
+        font-size: 1.8rem;
+        padding: 2.5rem 0.5rem 1.5rem;
+    }
+    #dv_login_logo{
+        height: 7rem;
+        width: 7rem;
+        top: -5.5rem;
+    }
+
+    /* התפריט נפתח לפי rect.left של הכפתור ויכול לגלוש מהמסך בטלפון */
+    #context_menu{ max-width: calc(100vw - 2em); }
+}
