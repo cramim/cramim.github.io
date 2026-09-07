@@ -939,12 +939,12 @@ var app = {
         $("#sl_report_type").change();
     },
     start: ()=>{
-        if (js.is_mobile()) {
-            // app.show_screen_message("הדף עדיין לא מתאים למכשירים ניידים");
-            if (window.location.href.toLowerCase().indexOf("mobile.html")<0) window.location.href = "mobile.html";
-        } else {
-            app.init();
-        }
+        // עד ספטמבר 2026 עמד כאן שער שהפנה כל מכשיר נייד ל-mobile.html, כי
+        // הפריסה של admin.html היתה רחבה מדי לטלפון (גריד של 40rem מינימום).
+        // admin.css מקפל אותה עכשיו לעמודה אחת מתחת ל-768px, אז השער ירד
+        // ומנהלים נכנסים מהטלפון לדף הזה עצמו. שים לב ש-mobile.html הוא דף
+        // ההורים - הפניה לשם שלחה מנהל למסך כניסה שאינו שלו.
+        app.init();
     }
 }
 
