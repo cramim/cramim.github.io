@@ -440,6 +440,14 @@
  *  own, which has neither problem.
  * ------------------------------------------------------------------- */
 
+/*  Every rule below is scoped to #filter_box_wrapper, not to .filter_box on
+ *  its own. In the admin report the sidebar's class filter (#classes_filter)
+ *  is also a .filter_box full of .filter_box_item children, and the start
+ *  padding below would shove it clean out of a 20rem column. Scoping by the
+ *  wrapper keeps it on the styling admin.css already gives it, and raises
+ *  this side's specificity on purpose rather than leaning on load order.
+ */
+
 .v2_filter_pills {
     --v2-filter-label: 8em;         /* fits the widest title, "מעגל השפעה:" */
     /* #header_logo is absolute at right:4em and 10em wide (app.css:357), inside
@@ -448,7 +456,8 @@
        what the 15em in app.css:507 was for; it has to be restated here because
        the padding shorthand on .filter_box below replaces that rule outright.
        Uniform across rows, so the title column stays aligned even though only
-       the first row is actually covered. */
+       the first row is actually covered. Both pages carry the same logo and the
+       same header padding, so the figure holds for admin too. */
     --v2-filter-gutter: 15em;
     /* app.css:518 already uses this blue on the filter hover border. Swapping
        it for var(--campaign-color) would tie the row to the campaign theme,
@@ -462,7 +471,7 @@
     overflow: visible;              /* was auto — this was the scrollbar */
 }
 
-.v2_filter_pills .filter_box {
+.v2_filter_pills #filter_box_wrapper .filter_box {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -472,9 +481,9 @@
     border-bottom: 1px dotted #dfe4ea;
 }
 
-.v2_filter_pills .filter_box:last-child { border-bottom: 0; }
+.v2_filter_pills #filter_box_wrapper .filter_box:last-child { border-bottom: 0; }
 
-.v2_filter_pills .filter_box_title {
+.v2_filter_pills #filter_box_wrapper .filter_box_title {
     flex: 0 0 var(--v2-filter-label);
     margin-inline-start: calc(-1 * var(--v2-filter-label));
     padding-left: 0;                /* app.css:544 */
@@ -484,8 +493,8 @@
 }
 
 /* the item div is now only a hit target — the pill itself is its <span> */
-.v2_filter_pills .filter_box_item,
-.v2_filter_pills .filter_box_item:hover {
+.v2_filter_pills #filter_box_wrapper .filter_box_item,
+.v2_filter_pills #filter_box_wrapper .filter_box_item:hover {
     position: relative;
     margin: .22em .3em;
     padding: 0;
@@ -494,7 +503,7 @@
     box-shadow: none;               /* app.css:517 glows the wrapper */
 }
 
-.v2_filter_pills .filter_box input[type="checkbox"] {
+.v2_filter_pills #filter_box_wrapper .filter_box input[type="checkbox"] {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -504,7 +513,7 @@
     pointer-events: none;
 }
 
-.v2_filter_pills .filter_box_item > span {
+.v2_filter_pills #filter_box_wrapper .filter_box_item > span {
     display: inline-block;
     padding: .38em .95em;
     border: 1px solid #ccd4de;
@@ -518,26 +527,48 @@
     user-select: none;
 }
 
-.v2_filter_pills .filter_box_item:hover > span {
+.v2_filter_pills #filter_box_wrapper .filter_box_item:hover > span {
     border-color: var(--v2-filter-accent);
     color: var(--v2-filter-accent);
 }
 
 /* one class deeper than the hover rule above, so a checked pill keeps its
    fill instead of flipping back to the outline on hover */
-.v2_filter_pills .filter_box input:checked + span {
+.v2_filter_pills #filter_box_wrapper .filter_box input:checked + span {
     background: var(--v2-filter-accent);
     border-color: var(--v2-filter-accent);
     color: #fff;
 }
 
-.v2_filter_pills .filter_box_item:hover input:checked + span {
+.v2_filter_pills #filter_box_wrapper .filter_box_item:hover input:checked + span {
     filter: brightness(1.1);
 }
 
-.v2_filter_pills .filter_box input:focus-visible + span {
+.v2_filter_pills #filter_box_wrapper .filter_box input:focus-visible + span {
     outline: 2px solid var(--v2-filter-accent);
     outline-offset: 2px;
+}
+
+/*  Narrow screens, admin only.
+ *
+ *  admin.html is responsive instead of having a mobile twin: below 768px
+ *  admin.css folds it to one column and hides #header_logo. With no logo left
+ *  to clear, the 15em gutter is pure damage on a phone, and an 8em label
+ *  column leaves nothing for the pills — so the title goes back onto its own
+ *  line, which is what admin.css:353 already did with display:block.
+ *
+ *  The parents pages need none of this: filter-pills is not active on mobile
+ *  at all, and their phone layout is a separate page with its own CSS.
+ */
+@media screen and (max-width: 768px) {
+    .v2_admin.v2_filter_pills #filter_box_wrapper .filter_box {
+        padding: .5em .8em;
+    }
+    .v2_admin.v2_filter_pills #filter_box_wrapper .filter_box_title {
+        flex: 0 0 100%;
+        margin-inline-start: 0;
+        margin-bottom: .3em;
+    }
 }
 
 

@@ -16,8 +16,17 @@
     <link rel="stylesheet" href="app/admin.css">
     <link rel="stylesheet" href="app/tooltip.css">
     <script src="app/admin.js"></script>
+    <!-- Feature overlay, shared with the parents app. Order matters: after
+         app.css / admin.css and after admin.js, so its rules and hooks win
+         without !important. Only experiments that name "admin" in their
+         pages list run here, and an omitted pages list never does - see
+         app/v2.js. v2-test.js is NOT loaded here and must not be: that one
+         is scaffolding for the parents test pages.
+         Kill switches: ?v2=off , ?off=<experiment-id> -->
+    <link rel="stylesheet" href="app/v2.css">
+    <script src="app/v2.js"></script>
 </head>
-<body>
+<body class="v2 v2_admin">
     <div id="dv_screen_message"><div>
         <div><div id="dv_screen_message_logo"></div></div>
         <div id="dv_screen_message_txt"></div>
@@ -76,7 +85,7 @@
                         </div>
                         <div class="filter_box_item">
                             <input type="checkbox" name="cb_filter_cat_4" id="cb_filter_cat_4" filter_name='סעפשים'>
-                            <span>סעפש"ים</span>
+                            <span>סעפ"שים</span>
                         </div>
                         <div class="filter_box_item">
                             <input type="checkbox" name="cb_filter_cat_5" id="cb_filter_cat_5" filter_name="ליווי פעילות">

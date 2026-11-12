@@ -24,9 +24,30 @@ var v2 = (function () {
      *  0.  Which page are we on
      * ------------------------------------------------------------------ */
 
-    /* Matches mobile.html and v2-mobile.html alike — which is exactly what
-     * the pages: ["mobile"] / ["desktop"] filter needs on all four pages. */
-    var PAGE = /mobile\.html/i.test(window.location.pathname) ? "mobile" : "desktop";
+    /*  Three pages now, not two — admin.html carries the layer as well.
+     *
+     *  admin.html is tested first and gets a token of its own. Its report
+     *  screen shares app.css with the parents app, and therefore shares its
+     *  layout bugs, but little else: the activity card's description there
+     *  holds the family table, and there is no grade dialog and no signup
+     *  flow. So "desktop" must not quietly come to mean "admin too".
+     *
+     *  The mobile test matches mobile.html and v2-mobile.html alike, which is
+     *  what pages: ["mobile"] needs on both. admin has no variant twin and no
+     *  separate mobile page — it is responsive, folded to a single column by
+     *  a media query in admin.css. */
+    var PATH = window.location.pathname;
+    var PAGE = /admin\.html/i.test(PATH)  ? "admin"
+             : /mobile\.html/i.test(PATH) ? "mobile"
+             :                              "desktop";
+
+    /*  What an omitted `pages` means.
+     *
+     *  Deliberately NOT every page. An experiment written for the parents app
+     *  must not land in the admin report just because nobody thought about it;
+     *  admin opts in by name. Every registered experiment states `pages`
+     *  explicitly anyway — this is the safety net for the next one. */
+    var PARENT_PAGES = ["desktop", "mobile"];
 
     /* ------------------------------------------------------------------
      *  1.  Configuration
@@ -67,7 +88,7 @@ var v2 = (function () {
     }
 
     function is_enabled(c) {
-        if (c.pages && c.pages.indexOf(PAGE) < 0) return false;   /* not for this page */
+        if ((c.pages || PARENT_PAGES).indexOf(PAGE) < 0) return false;   /* not for this page */
         if (baseline) return false;
         if (only.length) return only.indexOf(c.id) >= 0;
         if (off.indexOf(c.id) >= 0) return false;
@@ -231,7 +252,8 @@ app.v2 = v2;
  *    id      lowercase kebab-case, stable — it is the ?only= / ?off= key
  *    title   Hebrew description, for the team
  *    on      true = live for everyone on the variant page. Default true.
- *    pages   ["desktop"] / ["mobile"] / both. Omit for both.
+ *    pages   any of ["desktop", "mobile", "admin"]. Omitted means the two
+ *            parents pages — admin is never included unless it is named
  *    apply() once, on DOM ready — static chrome: header, login, menus
  *    render() after every app.rebuild — anything inside the activity or
  *             user lists, which are re-rendered on load and on save
@@ -651,6 +673,7 @@ v2.add({
         id:    "category-home",
         title: "מסך ראשי של קטגוריות במקום פילטר הקטגוריה",
         on:    true,
+        pages: ["desktop", "mobile"],
 
         apply: function () {
             /* v2_at_home כבר עכשיו, כדי שלא תהיה הבזקה של הרשימה המלאה
@@ -725,6 +748,7 @@ v2.add({
         id:    "last-year-category",
         title: "קטגוריה של הפעילויות משנה שעברה",
         on:    true,
+        pages: ["desktop", "mobile"],
         apply: function () { state.want_last_year = true; }
     });
 }());
@@ -842,6 +866,7 @@ v2.add({
     id:    "login-whatsapp",
     title: "קישור וואטסאפ לפרטים והרשמה במסך הכניסה",
     on:    true,
+    pages: ["desktop", "mobile"],
     apply: function () {
         var $old = $("#login_register_link");
         if (!$old.length) return;
@@ -865,6 +890,7 @@ v2.add({
     id:    "grade-dialog-layout",
     title: "יישור ועימוד של דיאלוג בחירת השכבות",
     on:    true,
+    pages: ["desktop", "mobile"],
     /* ה-CSS תלוי ב-class הזה, אחרת הוא היה חל תמיד ו-?off= לא היה מכבה אותו */
     apply: function () { $("body").addClass("v2_gradedlg_on"); }
 });
@@ -953,6 +979,7 @@ v2.add({
         id:    "grade-quota",
         title: "חלוקת המכסה בין השכבות ונעילת שכבה מלאה",
         on:    true,
+        pages: ["desktop", "mobile"],
 
         apply: function () {
             if (wired) return;
@@ -1012,14 +1039,18 @@ v2.add({
  *  לשורות במקום לגלול, והצ'קבוקס מוחלף בתגית לחיצה. אין שינוי ב-HTML וב-app.js
  *  — ה-handler הקיים ב-app.js:844 ממשיך להמיר לחיצה על הפריט ללחיצה על ה-input.
  *
- *  דסקטופ בלבד: במובייל הפילטרים הם פאנל אנכי משלו (mobile.css:709) ואין שם
- *  לא גלילה אופקית ולא בעיית יישור.
+ *  דסקטופ ואדמין, לא מובייל: במובייל הפילטרים הם פאנל אנכי משלו
+ *  (mobile.css:709) ואין שם לא גלילה אופקית ולא בעיית יישור. דוח האדמין,
+ *  לעומת זאת, טוען את אותו app.css ולכן יש בו את שני הבאגים בדיוק — ושם
+ *  זה נוגע גם למסך צר, כי admin.html רספונסיבי ואין לו דף מובייל נפרד.
+ *  ראה ב-v2.css את בלוק ה-media למסך הצר, ואת הסיבה שכל הכללים שם
+ *  מתוחמים ב-#filter_box_wrapper ולא ב-.filter_box לבדה.
  */
 v2.add({
     id:    "filter-pills",
     title: "שורת פילטרים כתגיות במקום צ'קבוקסים",
     on:    true,
-    pages: ["desktop"],
+    pages: ["desktop", "admin"],
     apply: function () { $("body").addClass("v2_filter_pills"); }
 });
 
@@ -1102,6 +1133,7 @@ v2.add({
         id:    "activity-circle-badge",
         title: "סימון מעגל ההשפעה בכרטיס הפעילות",
         on:    true,
+        pages: ["desktop", "mobile"],
 
         apply: function () { $("body").addClass("v2_circle_on"); },
 
