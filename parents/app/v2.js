@@ -1,7 +1,9 @@
 /*  v2.js  —  the feature overlay for the parents app.
  *
- *  Loaded by ALL FOUR pages, after app.js (and mobile.js where present):
- *  index.html, mobile.html, v2.html, v2-mobile.html.
+ *  Loaded by ALL FIVE pages, after their own app script:
+ *  index.html, mobile.html, v2.html, v2-mobile.html — and admin.html, the
+ *  report screen, which runs on its own copy-paste fork of app.js. Only the
+ *  experiments that name "admin" in `pages` run there; see PAGE below.
  *
  *  This file is production code. It holds the experiment engine and the
  *  experiments themselves — nothing that belongs only to a test page.
@@ -564,6 +566,27 @@ v2.add({
         return found;
     }
 
+    /*  האם הפעילות נספרת בכרטיס הקטגוריה.
+     *
+     *  בדפי ההורים כל כרטיס נספר. באדמין app.filter מסנן גם ברמת
+     *  השורה: פעילות שאין בה אף משפחה שעברה את סינון הכיתות מוסתרת
+     *  (admin.js:843). המספר על הכרטיס חייב להסכים עם מה שייפתח בלחיצה,
+     *  ולכן מוחל כאן בדיוק אותו תנאי — כולל המקרה שבו לא סומנה אף כיתה,
+     *  שבו הסלקטור הוא "*" ופעילות בלי נרשמים כלל נופלת גם היא. */
+    /* נראות האלמנט עצמו, בלי האבות — ראה ההערה על update_stat למטה. */
+    function shown(selector) {
+        return $(selector).filter(function () { return this.style.display !== "none"; }).length;
+    }
+
+    function countable($box) {
+        if (v2.page !== "admin") return true;
+        var sel = [];
+        $("#classes_filter input[type='checkbox']:checked").each(function () {
+            sel.push(".grade_class_" + $(this).attr("grade_class"));
+        });
+        return $box.find(".activity_row").filter(sel.length ? sel.join(",") : "*").length > 0;
+    }
+
     /* הקטגוריות נגזרות מהפעילויות שרונדרו בפועל, ולא מרשימה קשיחה,
        כדי שהמסך יישאר מסונכרן עם הגיליון בלי תחזוקה. */
     function collect() {
@@ -571,6 +594,7 @@ v2.add({
         $("#activity_boxes_wrapper .activity_box").each(function () {
             var $b = $(this), c = $b.attr("category");
             if ($b.attr("activity_id") === "NEW_IDEA") return;
+            if (!countable($b)) return;
             /* total סופר גם פעילות בלי קטגוריה — היא לא מקבלת כרטיס משלה,
                אבל "כל הפעילויות" כן מציגה אותה, ולכן היא נספרת שם. */
             total++;
@@ -646,7 +670,9 @@ v2.add({
         }
 
         var $home = $("#v2_home").empty();
-        $home.append($("<div>").addClass("v2_home_title").text("במה תרצו לעזור?"));
+        $home.append($("<div>").addClass("v2_home_title")
+                               .text(v2.page === "admin" ? "בחרו קטגוריה"
+                                                         : "במה תרצו לעזור?"));
 
         var $grid = $("<div>").addClass("v2_home_grid");
         collect().forEach(function (c, i) {
@@ -673,7 +699,7 @@ v2.add({
         id:    "category-home",
         title: "מסך ראשי של קטגוריות במקום פילטר הקטגוריה",
         on:    true,
-        pages: ["desktop", "mobile"],
+        pages: ["desktop", "mobile", "admin"],
 
         apply: function () {
             /* v2_at_home כבר עכשיו, כדי שלא תהיה הבזקה של הרשימה המלאה
@@ -687,7 +713,14 @@ v2.add({
                 if (state.category !== null) go_home();
             });
             /* המיסוך חייב לרוץ אחרי כל סינון, לא רק בפתיחת הקטגוריה. */
-            v2.after("filter", apply_mask);
+            v2.after("filter", function () {
+                apply_mask();
+                /*  באדמין סינון הכיתות יושב בסרגל הצד, מחוץ ל-#filter_box_wrapper,
+                 *  ולכן הוא זמין גם כשמסך הקטגוריות פתוח. הוא משנה את
+                 *  המספרים שעל הכרטיסים, ולכן הם נבנים מחדש. build בלבד — paint
+                 *  היה גולל למעלה בכל סימון כיתה. */
+                if (v2.page === "admin" && state.category === null) build();
+            });
 
             /*  ה-hook לבדו לא מספיק.
              *
@@ -704,6 +737,19 @@ v2.add({
              *  במובייל הקישור הזה מנוטרל (mobile.js:114) והסינון עובר דרך
              *  #bt_apply_filter שקורא app.filter() בשמו — שם ה-hook כן תופס. */
             $("#filter_box_wrapper").on("change", "input[type='checkbox']", apply_mask);
+
+            /*  המונים בסרגל האדמין סופרים :visible (admin.js:819), ו-jQuery
+             *  מחשיב אלמנט כמוסתר גם כשרק אב שלו מוסתר. במסך הקטגוריות
+             *  #activity_boxes_wrapper מוסתר כולו (v2.css), ולכן שני המונים היו
+             *  מציגים 0. נבדקת הנראות של האלמנט עצמו ולא של האבות שלו, כך
+             *  שהמספרים ממשיכים לתאר את הסינון הנוכחי: במסך הקטגוריות
+             *  הסה"כ, ובתוך קטגוריה מה שיש בה. */
+            if (v2.page === "admin") v2.replace("update_stat", function () {
+                return function () {
+                    $("#stat_activity_count").html(shown(".activity_box"));
+                    $("#stat_family_count").html(shown(".activity_row"));
+                };
+            });
         },
 
         /* רץ אחרי כל app.rebuild — כלומר גם בטעינה וגם אחרי שמירה.
@@ -729,6 +775,14 @@ v2.add({
             }
             if (state.category !== null) {
                 $("#filter_box_cat input[type='checkbox']").prop("checked", false);
+                app.filter();
+            } else if (v2.page === "admin") {
+                /*  admin.js:623 משאיר את app.filter() מוער ב-rebuild, ולכן עד
+                 *  לסינון הראשון אף קופסה אינה מוסתרת — גם לא פעילות שאין
+                 *  בה אף נרשם, ש-app.filter מסתיר (admin.js:843). המונים בסרגל
+                 *  היו סופרים אותה והכרטיסים לא, והמספרים לא היו מסתדרים.
+                 *  מעבר אחד של הסינון מיישר את שניהם. הרשימה עצמה מוסתרת
+                 *  במסך הקטגוריות, ולכן אין כאן שינוי נראה לעין. */
                 app.filter();
             }
             paint();

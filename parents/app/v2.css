@@ -1,8 +1,8 @@
 /*  v2.css  —  styles for the feature overlay.
  *
- *  Loaded by ALL FOUR pages — index.html, mobile.html, v2.html, v2-mobile.html
- *  — always AFTER app.css / mobile.css. Because it comes last in the cascade,
- *  a rule of equal specificity here wins.
+ *  Loaded by ALL FIVE pages — index.html, mobile.html, v2.html, v2-mobile.html
+ *  and admin.html — always AFTER app.css / mobile.css / admin.css. Because it
+ *  comes last in the cascade, a rule of equal specificity here wins.
  *
  *  ⚠️ That is a sharp edge, not a convenience. A rule here that ties an
  *  app.css rule on specificity overrides it silently, and two such collisions
@@ -11,9 +11,11 @@
  *  override a shared rule, make the win explicit rather than leaning on order.
  *
  *  Scope every rule by page, so the desktop and mobile pages stay independent:
- *      .v2          all four pages
+ *      .v2          all five pages
  *      .v2_desktop  index.html + v2.html
  *      .v2_mobile   mobile.html + v2-mobile.html
+ *      .v2_admin    admin.html  (responsive: no mobile twin, so narrow-screen
+ *                   rules for it go in a 768px media query, as admin.css does)
  *  The classes are set statically on <body>, so there is no flash of
  *  unstyled content while the scripts boot.
  *
@@ -43,8 +45,16 @@
  *  Ours (#v2_home, #v2_back) are untouched by the app and need no help.
  * ------------------------------------------------------------------- */
 
-/* the category filter is what this screen replaces */
-.v2_home_on #filter_box_cat { display: none; }
+/*  The category filter is what this screen replaces.
+ *
+ *  The wrapper id is load-bearing, not decoration. filter-pills below is
+ *  scoped .v2_filter_pills #filter_box_wrapper .filter_box - one id and two
+ *  classes - and it sets display:flex. Without #filter_box_wrapper here this
+ *  rule is one class short of that and loses, so the category row comes back
+ *  inside an open category, on both pages that run the two experiments
+ *  together. Specificity, not source order, has to decide it.
+ */
+.v2_home_on #filter_box_wrapper #filter_box_cat { display: none; }
 
 .v2_home_on #v2_home,
 .v2_home_on #v2_back { display: none; }
@@ -213,6 +223,19 @@
     font-size: 17px;
     font-weight: 700;
     color: #2b3038;
+}
+
+/*  Narrow screens, admin only.
+ *
+ *  The same trims the mobile parents page gets below, but behind a media
+ *  query: admin.html is responsive and has no mobile twin to carry a
+ *  .v2_mobile body class. 768px is the breakpoint admin.css already uses.
+ */
+@media screen and (max-width: 768px) {
+    .v2_admin .v2_home_title { margin: 18px 0 16px; font-size: 19px; }
+    .v2_admin .v2_home_grid  { grid-template-columns: 1fr; gap: 11px; padding: 0 12px; }
+    .v2_admin .v2_cat_card   { padding: 16px 18px; }
+    .v2_admin #v2_back       { margin: 10px auto 4px; }
 }
 
 /*  --- desktop-desc-popup ---------------------------------------------
