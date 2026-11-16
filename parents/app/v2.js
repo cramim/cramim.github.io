@@ -571,8 +571,10 @@ v2.add({
      *  בדפי ההורים כל כרטיס נספר. באדמין app.filter מסנן גם ברמת
      *  השורה: פעילות שאין בה אף משפחה שעברה את סינון הכיתות מוסתרת
      *  (admin.js:843). המספר על הכרטיס חייב להסכים עם מה שייפתח בלחיצה,
-     *  ולכן מוחל כאן בדיוק אותו תנאי — כולל המקרה שבו לא סומנה אף כיתה,
-     *  שבו הסלקטור הוא "*" ופעילות בלי נרשמים כלל נופלת גם היא. */
+     *  ולכן נקרא כאן app.row_passes_class_filter — התנאי של app.filter
+     *  עצמו, ולא העתקה שלו. התנאי מצליב כיתות עם השכבה
+     *  שנבחרה ברישום, וכשלא סומנה אף כיתה הוא מחזיר true לכל שורה -
+     *  כך שפעילות בלי נרשמים כלל עדיין נופלת, כמו קודם. */
     /* נראות האלמנט עצמו, בלי האבות — ראה ההערה על update_stat למטה. */
     function shown(selector) {
         return $(selector).filter(function () { return this.style.display !== "none"; }).length;
@@ -580,11 +582,13 @@ v2.add({
 
     function countable($box) {
         if (v2.page !== "admin") return true;
-        var sel = [];
-        $("#classes_filter input[type='checkbox']:checked").each(function () {
-            sel.push(".grade_class_" + $(this).attr("grade_class"));
-        });
-        return $box.find(".activity_row").filter(sel.length ? sel.join(",") : "*").length > 0;
+        /*  התנאי הוא של app.filter עצמו ולא העתקה שלו: הסינון מצליב
+            כיתות עם השכבה שנבחרה ברישום, ושתי הספירות חייבות להסכים. */
+        if (!app.row_passes_class_filter) return true;
+        var checked = app.checked_grade_classes();
+        return $box.find(".activity_row").filter(function () {
+            return app.row_passes_class_filter($(this), checked);
+        }).length > 0;
     }
 
     /* הקטגוריות נגזרות מהפעילויות שרונדרו בפועל, ולא מרשימה קשיחה,

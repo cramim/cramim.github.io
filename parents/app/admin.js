@@ -509,11 +509,54 @@ var app = {
      *  value equal to the activity id means "not recorded" - a leftover from rows
      *  written before the signup form asked which grade. Blank, not a stray number. */
     clean_signup_grade:(grade, activity_id)=>{
-        const s_grade = (grade === undefined || grade === null) ? "" : String(grade).trim();
+        /*  Quotes stripped for the same reason the category is at build_activity_list:
+         *  this value goes into an attribute and gets read back by selector. */
+        const s_grade = (grade === undefined || grade === null) ? "" : String(grade).replace(/"/g, "").trim();
         return (s_grade === String(activity_id)) ? "" : s_grade;
     },
     signup_grade_of:(activity_id, uid)=>{
         return app.dat.idx.signup_grade[app.signup_grade_key(activity_id, uid)] || "";
+    },
+    /*  השכבה שנבחרה ברישום נשמרת כמו שהטופס כתב אותה: "שכבה ד׳",
+     *  ולפעמים כמה מופרדות בפסיק, בעוד שכבת הילדים היא אות בודדת ("ד").
+     *  מחזיר null כשהרישום לא מגביל שכבה - פעילות שאינה שכבתית
+     *  ("כל השכבות"), ערך ריק, או פורמט לא מזוהה. null פירושו "לא לסנן
+     *  לפי זה" - עדיף להראות יותר מלהסתיר רישום אמיתי בשקט. */
+    GRADE_ALL: "כל השכבות",
+    parse_signup_grades:(s_grades)=>{
+        const raw = String(s_grades || "").trim();
+        if (!raw) return null;
+        if (raw.indexOf(app.GRADE_ALL) > -1) return null;
+        const letters = raw.split(",")
+            .map((token)=>{return token.replace(/שכבה/g, "").replace(/[׳״'`"]/g, "").trim()})
+            /*  רק אות עברית בודדת היא שכבה. ערך בפורמט לא מזוהה לא
+             *  מצמצם כלום במקום להעלים רישום אמיתי מכל סינון שכבה. */
+            .filter((token)=>{return /^[א-ת]$/.test(token)});
+        return letters.length ? letters : null;
+    },
+    /*  "ד1" -> "ד". הכיתה היא ספרות בסוף, השכבה היא מה שלפניהן. */
+    grade_of_grade_class:(grade_class_name)=>{
+        return String(grade_class_name || "").replace(/[0-9]+$/, "");
+    },
+    checked_grade_classes:()=>{
+        const checked = [];
+        $("#classes_filter input[type='checkbox']:checked").each((i, item)=>{
+            const name = $(item).attr("grade_class");
+            checked.push({name: name, grade: app.grade_of_grade_class(name)});
+        });
+        return checked;
+    },
+    /*  שתי עובדות נפרדות על כל שורה: באילו כיתות יש למשפחה ילדים,
+     *  ולאיזו שכבה נעשה הרישום. שתיהן נבדקות מול אותה תיבה
+     *  מסומנת, לא בנפרד: משפחה עם ילדים ב״ד״ וב״ו״ שנרשמה ל״ד״
+     *  תעבור סינון על ד1 ותיפול בסינון על וג - וזו הנקודה. */
+    row_passes_class_filter:($row, checked)=>{
+        if (!checked || checked.length == 0) return true;
+        const signup_grades = app.parse_signup_grades($row.attr("signup_grade"));
+        return checked.some((grade_class)=>{
+            if (!$row.hasClass(`grade_class_${grade_class.name}`)) return false;
+            return (signup_grades === null) || (signup_grades.indexOf(grade_class.grade) > -1);
+        });
     },
     build_activity_list_html:()=>{
         var html = "";
@@ -527,7 +570,7 @@ var app = {
                     arr_kids2.push(`grade_class_${kid.grade}${kid.class}`);
                 });
                 contact_html += 
-                    `<tr class="activity_row ${arr_kids2.join(' ')}">` + 
+                    `<tr class="activity_row ${arr_kids2.join(' ')}" signup_grade="${app.signup_grade_of(item.id, contact_item.uid)}">` + 
                         `<td>${contact_item.name}</td>` + 
                         `<td>${contact_item.hours}</td>` + 
                         `<td>${arr_kids.join(', ')}</td>` + 
@@ -857,10 +900,8 @@ var app = {
         $(".activity_box").filter(cat_selector).filter(circle_selector).filter(timing_selector).show();
         $(".activity_row").hide();
         $(".activity_row").attr("include", false);
-        $grade_class_checked = $("#classes_filter input[type='checkbox']:checked");
-        const grade_class_arr = [];  $grade_class_checked.each((i, item)=>{grade_class_arr.push(`.grade_class_${$(item).attr("grade_class")}`)});
-        const grade_class_selector = (grade_class_arr.length == 0) ? "*" : grade_class_arr.join();
-        const included_rows = $(".activity_row").filter(grade_class_selector);
+        const checked_grade_classes = app.checked_grade_classes();
+        const included_rows = $(".activity_row").filter((i, row)=>{return app.row_passes_class_filter($(row), checked_grade_classes)});
         included_rows.show();
         included_rows.attr("include", true);
         $(".activity_box").each((i,box)=>{if ($(box).find("tr[include=true]").length == 0) $(box).hide()});
