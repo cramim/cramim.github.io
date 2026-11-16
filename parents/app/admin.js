@@ -20,12 +20,16 @@ var js = {
     },
     tableToCSV:(tb, only_visible)=> {
         var arr_rows=[];
-        var rows = $(tb).find(`tbody tr${(only_visible)?':visible':''}`);
+        /*  Header rows come from thead and are always included: only_visible is
+         *  about hiding filtered-out families, not the column names. */
+        var rows = $(tb).find("thead tr").add($(tb).find(`tbody tr${(only_visible)?':visible':''}`));
         $.each(rows, (i, row)=>{
-            var cells = $(row).find("td");
+            var cells = $(row).find("th, td");
             var arr_cells=[];
             $.each(cells, (i, cell)=>{
-                arr_cells.push('"' + $(cell).text() + '"');
+                /*  A field may legitimately contain a double quote - סעפ"שים is one -
+                 *  and in CSV that has to be doubled or the field ends early. */
+                arr_cells.push('"' + $(cell).text().replace(/"/g, '""') + '"');
             });
             arr_rows.push(arr_cells.join(","))
         });
@@ -66,7 +70,8 @@ var app = {
             group_by_activity:{},
             contacts:{},
             contacts_strip:{},
-            contact_grade_class:{}
+            contact_grade_class:{},
+            signup_grade:{}
         }
     },
     is_mobile: false,
@@ -474,13 +479,18 @@ var app = {
         $.each(response_signup_list, (i, item)=>{
             const signup = {
                 uid : item[0],
-                activity_id: item[1]
+                activity_id: item[1],
+                grade: item[2]   /* השכבה שנבחרה ברישום - Code.gs כותב אותה בעמודה השלישית */
             }
             const activity = app.dat.idx.activity_list[signup.activity_id];
             const contact = app.dat.idx.contacts[signup.uid];
             if (activity && contact) { // should always be
                 activity.memebers.push(contact);
                 contact.activity_list.push(activity);
+                /*  Keyed per signup, not stored on the contact: one family can sign up
+                 *  to several activities, each with its own grade. */
+                app.dat.idx.signup_grade[app.signup_grade_key(signup.activity_id, signup.uid)] =
+                    app.clean_signup_grade(signup.grade, signup.activity_id);
             }
         });
         $.each(app.dat.contacts, (i, contact)=>{
@@ -493,6 +503,17 @@ var app = {
             contact.s_activity_list = arr_activity_name.join(", ");
         });
 
+    },
+    signup_grade_key:(activity_id, uid)=>{return `${activity_id}|${uid}`},
+    /*  Code.gs:496 falls back to the item id when a signup carries no grade, so a
+     *  value equal to the activity id means "not recorded" - a leftover from rows
+     *  written before the signup form asked which grade. Blank, not a stray number. */
+    clean_signup_grade:(grade, activity_id)=>{
+        const s_grade = (grade === undefined || grade === null) ? "" : String(grade).trim();
+        return (s_grade === String(activity_id)) ? "" : s_grade;
+    },
+    signup_grade_of:(activity_id, uid)=>{
+        return app.dat.idx.signup_grade[app.signup_grade_key(activity_id, uid)] || "";
     },
     build_activity_list_html:()=>{
         var html = "";
@@ -510,6 +531,7 @@ var app = {
                         `<td>${contact_item.name}</td>` + 
                         `<td>${contact_item.hours}</td>` + 
                         `<td>${arr_kids.join(', ')}</td>` + 
+                        `<td>${app.signup_grade_of(item.id, contact_item.uid)}</td>` + 
                         `<td>${contact_item.phone1 || ''}</td>` + 
                         `<td><a href="mailto:${contact_item.email1 || ''}">${contact_item.email1 || ''}</a></td>` + 
                         `<td>${contact_item.phone2 || ''}</td>` + 
@@ -526,7 +548,7 @@ var app = {
                     ` mandatory="${item.mandatory}"` + 
                     ` locked="${item.locked}">` + 
                     `<div class="activity_box_title">${item.name||'&nbsp'}<div class="bt_download_activity_table" title="שמור לקובץ אקסל"></div></div>` +
-                    `<div class="activity_box_desc"><table class="tb_activity_members" activity_name="${item.name}">${contact_html}</table></div>` +
+                    `<div class="activity_box_desc"><table class="tb_activity_members" activity_name="${item.name}"><thead><tr><th>משפחה</th><th>נקודות</th><th>ילדים</th><th>שכבה ברישום</th><th>טלפון</th><th>אימייל</th><th>טלפון נוסף</th><th>אימייל נוסף</th></tr></thead><tbody>${contact_html}</tbody></table></div>` +
                     `<div class="activity_box_status"><table><tr>` +
                         `<td class="activity_box_status_value_title">נקודות:</td><td class="activity_box_status_value">${item.hours||'&nbsp'}</td>` +
                         `<td class="activity_box_status_joined_title">הצטרפו:</td><td class="activity_box_status_joined">${item.signedup}</td>` +
@@ -635,6 +657,7 @@ var app = {
         $("#filter_box_wrapper input[type='checkbox']").prop("checked", false);
         app.dat.activity_list = [];
         app.dat.idx.activity_list = {};
+        app.dat.idx.signup_grade = {};
         app.dat.idx.activity_groups = {};
         app.dat.idx.group_by_activity = {};
         app.dat.user = {};

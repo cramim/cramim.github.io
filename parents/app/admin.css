@@ -3,14 +3,18 @@
     padding: 0.5em;
     overflow-y: auto;
 }
-.tb_activity_members tr:nth-child(even) {background: #f8f8f8}
-.tb_activity_members tr:nth-child(odd) {background: #f0f0f0}
-.tb_activity_members td {
+/*  Scoped to tbody, like .tb_class below. The table now carries a thead, and an
+ *  unscoped tr rule would paint and hover the header row along with the data. */
+.tb_activity_members tbody tr:nth-child(even) {background: #f8f8f8}
+.tb_activity_members tbody tr:nth-child(odd) {background: #f0f0f0}
+.tb_activity_members td, .tb_activity_members th {
     padding: 6px;
     white-space: nowrap;
 }
+.tb_activity_members th {text-align: right;}
+.tb_activity_members thead tr {background-color: aliceblue;}
 .tb_activity_members td:first-child {font-weight: 600}
-.tb_activity_members tr:hover {background-color: #e5e5e5;}
+.tb_activity_members tbody tr:hover {background-color: #e5e5e5;}
 
 /* #head_bt_feedback{display: none;} */
 
