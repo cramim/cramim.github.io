@@ -728,7 +728,7 @@ var app = {
                 app.rebuild(response);
                 $("#dv_login").fadeOut();
                 $("#parent").fadeIn();
-                app.help_message.show_welcome();
+                // app.help_message.show_welcome();  הודעת הבאים שייכת למסך ההרשמה בלבד
                 app.update_stat();
              }, 
             on_error_response: (error)=>{
