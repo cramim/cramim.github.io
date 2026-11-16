@@ -178,6 +178,40 @@ div[report_type]{display: none;}
     margin-right: 0.5em;
 }
 
+/* --- ייצוא לאקסל בסרגל הדוחות --------------------------------------- */
+#dv_export_box{
+    padding: 0 1em 1em 1em;
+}
+
+#dv_export_head{
+    font-weight: 600;
+    color: darkslategrey;
+    margin-bottom: 0.5em;
+}
+
+.bt_export{
+    display: block;
+    background-color: azure;
+    border: 1px darkslategrey solid;
+    border-radius: 4px;
+    padding: 0.5em;
+    margin-bottom: 0.4em;
+    text-align: center;
+    font-size: 1.1em;
+    color: darkslategrey;
+    cursor: pointer;
+    user-select: none;
+}
+
+.bt_export:hover{ background-color: #d9f0f0; }
+.bt_export:active{ transform: translateY(1px); }
+
+#dv_export_note{
+    font-size: 0.85em;
+    color: gray;
+    text-align: center;
+}
+
 #context_menu {
     position: absolute;
     display: flex;
@@ -397,6 +431,32 @@ div[report_type]{display: none;}
         height: 7rem;
         width: 7rem;
         top: -5.5rem;
+    }
+
+    /* הסרגל הוא פס אופקי בטלפון, ולכן גם בלוק הייצוא נשכב - שתי שורות
+       מלאות רוחב היו גוזלות חצי מהפס. */
+    #dv_export_box{
+        padding: 0.5em;
+        text-align: center;
+        white-space: nowrap;
+        overflow-x: auto;
+    }
+    #dv_export_head{
+        display: inline-block;
+        margin: 0 0 0 0.5em;
+        vertical-align: middle;
+    }
+    .bt_export{
+        display: inline-block;
+        margin: 0 0.25em;
+        padding: 0.4em 0.8em;
+        font-size: 1em;
+        vertical-align: middle;
+    }
+    #dv_export_note{
+        display: inline-block;
+        margin-right: 0.5em;
+        vertical-align: middle;
     }
 
     /* התפריט נפתח לפי rect.left של הכפתור ויכול לגלוש מהמסך בטלפון */

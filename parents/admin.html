@@ -163,6 +163,17 @@
                     <option value="BY_CLASS">השתתפות לפי שכבות</option>
                 </select>
             </div>
+            <!-- ייצוא לאקסל. פעולה ברמת הדוח, ולכן כאן ליד בוחר הדוח ולא
+                 ליד טבלה בודדת: שני הייצואים זמינים בשני סוגי הדוחות, והם
+                 תמיד מייצאים הכל - בלי קשר לסינון שעל המסך. זו בדיוק הסיבה
+                 שהם לא יושבים ליד הצלמיות שבתוך הטבלאות, שמייצאות טבלה אחת
+                 ומציעות "רק מה שמוצג". -->
+            <div id="dv_export_box">
+                <div id="dv_export_head">ייצוא לאקסל</div>
+                <div class="bt_export" id="bt_export_activity">לפי פעילויות</div>
+                <div class="bt_export" id="bt_export_grade">לפי שכבות</div>
+                <div id="dv_export_note">הכל, ללא סינון</div>
+            </div>
             <div id="dv_report_options">
                 <div report_type="BY_ACTIVITY" id="classes_filter" class="filter_box"></div>
                 <div report_type="BY_ACTIVITY" id="filter_stat">

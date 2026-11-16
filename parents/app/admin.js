@@ -47,6 +47,21 @@ var js = {
         temp_link.click();
         document.body.removeChild(temp_link);
     },
+    /*  נטען פעם אחת, בלחיצה הראשונה. מנוע האקסל הוא 276K שאין טעם לשלם
+     *  עליהם בכל פתיחה של הדוח. ה-Promise נשמר, כך שלחיצה שנייה לא מורידה
+     *  שוב; כשלון מוחק אותו כדי שאפשר יהיה לנסות מחדש. */
+    load_script:(src)=>{
+        js.load_script.cache = js.load_script.cache || {};
+        if (js.load_script.cache[src]) return js.load_script.cache[src];
+        js.load_script.cache[src] = new Promise((resolve, reject)=>{
+            const el = document.createElement("script");
+            el.src = src;
+            el.onload = ()=>{resolve()};
+            el.onerror = ()=>{delete js.load_script.cache[src]; reject(new Error("failed to load " + src))};
+            document.head.appendChild(el);
+        });
+        return js.load_script.cache[src];
+    },
     AB2Num:(letter)=>{
         return letter?.toLowerCase().charCodeAt(0) - 97
     }
@@ -733,6 +748,105 @@ var app = {
             on_connect_error: on_connect_error
         });
     },
+    /*  ייצוא לאקסל — חוברת אחת, לשונית לכל פעילות או לכל שכבה.
+     *
+     *  נבנה מ-app.dat ולא מה-DOM, בכוונה: הייצוא אמור להיות "הכל, ללא
+     *  סינון", וכך זה נכון מבנית ולא מכוח זהירות לא לכתוב :visible. זה גם
+     *  מה שמאפשר לאחד כיתות לשכבה אחת — במסך יש טבלה נפרדת לד1 ולד3,
+     *  ובייצוא הן לשונית אחת של "שכבה ד", כי מספר הכיתה לא מעניין כאן. */
+    export_tools:{
+        XLSX_SRC: "lib/xlsx/0.20.3/xlsx.mini.min.js",
+        GRADE_ORDER: ["א","ב","ג","ד","ה","ו"],
+        /*  אקסל: שם לשונית עד 31 תווים, בלי : \ / ? * [ ] , וחייב להיות
+         *  ייחודי. שמות הפעילויות הם משפטים בעברית, ולכן צריך גם חיתוך וגם
+         *  מניעת כפילויות — אחרת book_append_sheet זורק. */
+        sheet_name:(raw_name, used)=>{
+            var base = String(raw_name || "").replace(/[:\\\/\?\*\[\]]/g, "-").trim();
+            if (!base) base = "ללא שם";
+            if (base.length > 31) base = base.substring(0, 31);
+            if (!used[base]) { used[base] = true; return base; }
+            for (var n = 2; n < 1000; n++) {
+                const suffix = " (" + n + ")";
+                const candidate = base.substring(0, 31 - suffix.length) + suffix;
+                if (!used[candidate]) { used[candidate] = true; return candidate; }
+            }
+            const fallback = base.substring(0, 24) + " " + String(Date.now()).slice(-6);
+            used[fallback] = true;
+            return fallback;
+        },
+        /*  לשונית לכל פעילות, באותן עמודות שבמסך. פעילות בלי נרשמים מקבלת
+         *  לשונית עם כותרות בלבד — זה מידע, לא רעש. */
+        by_activity:()=>{
+            const sheets = [];
+            $.each(app.dat.activity_list, (i, activity)=>{
+                const aoa = [["משפחה","נקודות","ילדים","שכבה ברישום","טלפון","אימייל","טלפון נוסף","אימייל נוסף"]];
+                $.each(activity.memebers || [], (j, contact)=>{
+                    const kids = (contact.kids || []).map((kid)=>{return `${kid.name} (${kid.grade}${kid.class})`}).join(", ");
+                    aoa.push([contact.name || "", contact.hours || 0, kids,
+                              app.signup_grade_of(activity.id, contact.uid),
+                              contact.phone1 || "", contact.email1 || "",
+                              contact.phone2 || "", contact.email2 || ""]);
+                });
+                sheets.push({title: activity.name, aoa: aoa});
+            });
+            return sheets;
+        },
+        /*  לשונית לכל שכבה. מספר הכיתה נבלע: א1 ו-א2 הן "שכבה א" אחת.
+         *  משפחה עם כמה ילדים באותה שכבה מופיעה פעם אחת. */
+        by_grade:()=>{
+            const buckets = {};
+            $.each(app.dat.idx.contact_grade_class, (key, grade_class)=>{
+                const grade = app.grade_of_grade_class(grade_class.name || key);
+                if (!buckets[grade]) buckets[grade] = {seen:{}, list:[]};
+                $.each(grade_class.list || [], (i, contact)=>{
+                    if (buckets[grade].seen[contact.uid]) return;
+                    buckets[grade].seen[contact.uid] = true;
+                    buckets[grade].list.push(contact);
+                });
+            });
+            /*  סדר השכבות קבוע; שכבה לא מזוהה (אם תופיע) נדחפת לסוף ולא נעלמת. */
+            const ordered = app.export_tools.GRADE_ORDER.filter((g)=>{return buckets[g]})
+                .concat(Object.keys(buckets)
+                    .filter((g)=>{return app.export_tools.GRADE_ORDER.indexOf(g) < 0}).sort());
+            return ordered.map((grade)=>{
+                const aoa = [["משפחה","נקודות","פעילויות"]];
+                buckets[grade].list.slice()
+                    .sort((a, b)=>{return (b.hours || 0) - (a.hours || 0)})
+                    .forEach((contact)=>{
+                        aoa.push([contact.name || "", contact.hours || 0, contact.s_activity_list || ""]);
+                    });
+                return {title: "שכבה " + grade, aoa: aoa};
+            });
+        },
+        file_name:(kind)=>{
+            const d = new Date();
+            const stamp = d.getFullYear() + "-" + js.pad_zero(d.getMonth() + 1, 2) + "-" + js.pad_zero(d.getDate(), 2);
+            return "cramim-" + ((kind === "grade") ? "by-grade" : "by-activity") + "-" + stamp + ".xlsx";
+        },
+        run:(kind)=>{
+            app.please_wait(true);
+            js.load_script(app.export_tools.XLSX_SRC).then(()=>{
+                const sheets = (kind === "grade") ? app.export_tools.by_grade() : app.export_tools.by_activity();
+                if (!sheets.length) {
+                    app.please_wait(false);
+                    app.pop_err("אין מה לייצא עדיין");
+                    return;
+                }
+                const wb = XLSX.utils.book_new();
+                const used = {};
+                sheets.forEach((sheet)=>{
+                    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(sheet.aoa),
+                                                 app.export_tools.sheet_name(sheet.title, used));
+                });
+                XLSX.writeFile(wb, app.export_tools.file_name(kind));
+                app.please_wait(false);
+            }).catch((err)=>{
+                app.please_wait(false);
+                app.pop_err("לא הצלחנו לטעון את מנוע האקסל. נסו שוב.");
+                console.error(err);
+            });
+        },
+    },
     update_stat:()=>{
         $("#stat_activity_count").html($(".activity_box:visible").length);
         $("#stat_family_count").html($(".activity_row:visible").length);
@@ -785,6 +899,8 @@ var app = {
     },
     init_buttons: ()=>{
         $("#bt_home").click(app.scroll_home);
+        $("#bt_export_activity").click(()=>{app.export_tools.run("activity")});
+        $("#bt_export_grade").click(()=>{app.export_tools.run("grade")});
         $("#frm_login").submit((e)=>{
             e.preventDefault(e);
             app.login();
