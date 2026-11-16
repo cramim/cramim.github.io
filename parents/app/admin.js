@@ -904,7 +904,11 @@ var app = {
         const included_rows = $(".activity_row").filter((i, row)=>{return app.row_passes_class_filter($(row), checked_grade_classes)});
         included_rows.show();
         included_rows.attr("include", true);
-        $(".activity_box").each((i,box)=>{if ($(box).find("tr[include=true]").length == 0) $(box).hide()});
+        /*  מסתיר פעילות שלא נותרה בה אף משפחה אחרי הסינון - אבל רק
+         *  כשבאמת סומנה כיתה. בלי התנאי הזה פעילות שאין בה אף
+         *  נרשם נעלמת תמיד, גם בלי סינון - ודווח שלא מראה פעילות
+         *  שאיש לא נרשם אליה מסתיר בדיוק את מה שצריך לבלוט. */
+        if (checked_grade_classes.length) $(".activity_box").each((i,box)=>{if ($(box).find("tr[include=true]").length == 0) $(box).hide()});
         $("#activity_boxes_wrapper").fadeIn(app.update_stat);
     },
     progress_bar:($container, percent)=>{

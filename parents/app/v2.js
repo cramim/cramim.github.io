@@ -586,6 +586,9 @@ v2.add({
             כיתות עם השכבה שנבחרה ברישום, ושתי הספירות חייבות להסכים. */
         if (!app.row_passes_class_filter) return true;
         var checked = app.checked_grade_classes();
+        /*  כשלא סומנה כיתה app.filter לא מסתיר כלום, ולכן גם כאן
+            נספרת כל פעילות - כולל אחת שאין בה אף נרשם. */
+        if (!checked.length) return true;
         return $box.find(".activity_row").filter(function () {
             return app.row_passes_class_filter($(this), checked);
         }).length > 0;
