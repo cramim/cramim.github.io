@@ -136,6 +136,13 @@ git diff pre-v2-promotion --stat -- index.html mobile.html admin.html app/app.cs
 > בכך שבאמת סומנה כיתה. `countable` ב-`v2.js` מקבל את אותו תנאי, אחרת
 > המספר על הכרטיס היה מפספס את אותן פעילויות.
 
+> **ניקוי קוד מת (2026-11):** כל תת-המערכת של הרשמת הורים הוסרה
+> מ-`admin.js` (כ-165 שורות: `signup`, `unsign`, `save`, `abort`, `signup_tmpl`,
+> `enable_user_toolbox`, `refresh_user_progress`, `build_user_info`, `help_message`).
+> היא הגיעה מה-fork של `app.js`, אף אחת מהן לא נקראה, וכולן פנו לאלמנטים
+> (`#user_box`, `#bt_user_save`) שאינם קיימים ב-`admin.html`. בדפי ההורים הן חיות
+> ולא נגענו — הן יושבות ב-`app.js`.
+
 > `activity-points-badge` מופיע בתחתית `v2.js` אבל **אינו רשום** — הוא יושב
 > בתוך הערה, כתבנית להעתקה. `v2.list()` מחזיר 11.
 

@@ -619,37 +619,6 @@ var app = {
             "חלק מהשורות מוסתרות");
         });
     },
-    signup_tmpl:(item, signup_state)=>{ 
-        tmpl =
-            `<div class="user_box_item" activity_id="${item.id}" signup_state="${signup_state}" mandatory="${item.mandatory}" locked="${item.locked}">` +
-                `<div class="user_box_item_toolbox">` +
-                    `<div class="bt_item_delete tooltip"><span class="tooltiptext">הסר</span></div>` +
-                    `<div class="bt_item_info tooltip"><span class="tooltiptext"><span>${item.name}</span><br>${item.description}</span></div>` +
-                `</div>` +
-                `<table class="tb_user_box_item">` +
-                    `<tr><td>פעילות:</td><td class="user_box_item_title">${item.name}</td></tr>` +
-                    `<tr><td>שעות:</td><td class="user_box_item_value">${item.hours||''}</td></tr>` +
-                `</table>` +
-            `</div>`;
-        return tmpl;
-    },
-    refresh_user_progress:()=>{
-        var hours = 0;
-        $.each(app.dat.signup_list, (i, item)=>{hours += item.hours;});
-        app.progress_bar($("#user_box_progress"), hours*100/app.dat.user_goal);
-        $("#user_hours").html(hours);
-        $("#hours_goal").html(app.dat.user_goal);
-    },
-    build_user_info:(response)=>{
-        app.dat.user = {
-            name: "משפחת " + response.user[0],
-            uid: response.user[1]
-        }
-        window.localStorage.setObj("cramim-parents-admin-user", app.dat.user);
-        $("#user_box_head_name").html(app.dat.user.name);
-        $("#user_box_head_id").html(app.dat.user.uid);
-        app.dat.user_goal = response.user_goal;
-    },
     init_filters:()=>{
         var html = '';
         const grade_class_list = [];
@@ -681,10 +650,6 @@ var app = {
         app.build_contact_list_html();
         app.build_activity_list_html();
         app.init_filters();
-        // app.build_signup_list(response.signup_list);
-        // app.build_user_info(response);
-        // app.enable_user_toolbox();
-        // app.refresh_user_progress();
         // app.filter();
         app.scroll_home();
         app.on_after_rebuild?.call();
@@ -693,9 +658,6 @@ var app = {
         $("#main_box")[0].scrollTo({top: 0, behavior: 'smooth'});
     },
     clear:()=>{
-        $("#user_box_head_name").html('');
-        $("#user_box_head_id").html('');
-        $("#user_box_items").html('');
         $("#activity_boxes_wrapper").html('');
         $("#filter_box_wrapper input[type='checkbox']").prop("checked", false);
         app.dat.activity_list = [];
@@ -711,6 +673,10 @@ var app = {
     clear_storage:()=>{
         window.localStorage.setObj("cramim-parents-admin-user", null);
     },
+    /*  באדמין זה תמיד false: המחלקה user_toolbox_enabled נקבעה
+     *  רק ע"י תיבת ההרשמה של ההורים, שאינה קיימת כאן. כלומר אין
+     *  בדוח "שינויים שלא נשמרו" - יציאה לא תשאל, ו-onbeforeunload
+     *  לא יזהיר. נשמר כי שתי נקודות חיות עדיין קוראות לו. */
     changed:()=>{
         return $(".user_toolbox_enabled").length > 0;
     },
@@ -737,44 +703,6 @@ var app = {
             swal.ok = true;
         });
     },
-    help_message_txt:{
-        welcome: 
-            '<div id="help_welcome">' + 
-                '<div class="help_paragraph">ברוכים הבאים לממשק ההרשמה למעורבות ההורים בכרמים. מוזמנים להירשם לפעילויות בהן תרצו להשתלב. שימו לב, ההרשמה הינה לרבעון הקרוב והיא משותפת לזוג ההורים.</div>' +
-                '<div class="help_paragraph">מצאו פעילויות ולחצו על הכפתור "הצטרפ/י".<br>הפעילויות אליהן הצטרפתם נאספות ומופיעות בצדו השמאלי של המסך.</div>' +
-                '<div class="help_paragraph">העזרו באפשרויות הסינון שבראש הדף כדי למצוא פעילויות לרוחכם.</div>' +
-                '<div class="help_nagging"><input id="cb_help_welcome_nagging" type="checkbox" checked="true" /><label for="cb_help_welcome_nagging">הבנתי, אין צורך להציג הודעה זו שוב.</label></div>' +
-            '</div>',
-        signup:'<div id="help_signup">' + 
-            '<div class="help_paragraph">המשיכו לחפש ולהצטרף לפעילויות נוספות, ולסיום לחצו "שמירה".</div>' +
-                '<div class="help_paragraph">בכל שלב (גם לאחר השמירה) ניתן להסיר ההצטרפות ע"י לחיצה על צלמית הפח, המופיעה במעבר העכבר, מעל כל פעילות ברשימה שלכם בצד שמאל.</div>' + 
-                '<div class="help_nagging"><input id="cb_help_signup_nagging" type="checkbox" checked="true" /><label for="cb_help_signup_nagging">הבנתי, אין צורך להציג הודעה זו שוב.</label></div>' +
-            '</div'
-    },
-    help_message:{
-        show_welcome: ()=>{
-            const nag_status = window.localStorage.getObj('cramim-parents-help_message-nag_status') || {};
-            if (!nag_status.welcome) swal({
-                title: `${app.dat.user.name}, ברוכים הבאים :)`,
-                html: app.help_message_txt.welcome,
-                showCancelButton: false, confirmButtonColor: '#3085d6', cancelButtonColor: '#d33', confirmButtonText: 'סגור',
-            }).then(function(result){
-                nag_status.welcome = $('#help_welcome .help_nagging>input[type="checkbox"]').is(":checked");
-                window.localStorage.setObj("cramim-parents-help_message-nag_status", nag_status);
-            });
-        },
-        show_signup: ()=>{
-            const nag_status = window.localStorage.getObj('cramim-parents-help_message-nag_status') || {};
-            if (!nag_status?.signup) swal({
-                title: 'אחלה :)',
-                html: app.help_message_txt.signup,
-                showCancelButton: false, confirmButtonColor: '#3085d6', cancelButtonColor: '#d33', confirmButtonText: 'סגור',
-            }).then(function(result){
-                nag_status.signup = $('#help_signup .help_nagging>input[type="checkbox"]').is(":checked");
-                window.localStorage.setObj("cramim-parents-help_message-nag_status", nag_status);
-            });
-        },
-    },
     login:(uid, on_connect_error, on_user_not_found)=>{
         app.clear();
         uid = uid || $("#eb_login").val().trim();
@@ -794,7 +722,6 @@ var app = {
                 app.rebuild(response);
                 $("#dv_login").fadeOut();
                 $("#parent").fadeIn();
-                // app.help_message.show_welcome();  הודעת הבאים שייכת למסך ההרשמה בלבד
                 app.update_stat();
              }, 
             on_error_response: (error)=>{
@@ -804,81 +731,6 @@ var app = {
                 } else app.pop_srv_err(error);
             },
             on_connect_error: on_connect_error
-        });
-    },
-    signup: ($activity_box)=>{
-        const activity_id = parseInt($activity_box.attr("activity_id"));
-        const server_already = app.dat.initial_signup_list.indexOf(activity_id) > -1;
-        const signup_state = (server_already)?"signed":"pending";
-        $activity_box.attr("signup_state", signup_state);
-        const activity = app.dat.idx.activity_list[activity_id];
-        app.dat.signup_list.push(activity);
-        const html = app.signup_tmpl(activity, signup_state);
-        $("#user_box_items").prepend(html);
-        $user_item_box = $(`.user_box_item[activity_id="${activity_id}"]`);
-        $("#user_box")[0].scrollTo({top: 0});
-        $user_item_box.slideDown();
-        $user_item_box.find(".bt_item_delete").click((ev)=>{
-            app.unsign($(ev.target).closest(".user_box_item"));
-        });
-        app.enable_user_toolbox();
-        app.refresh_user_progress();
-        app.on_after_signup?.call();
-    },
-    on_after_signup: ()=>{
-        app.help_message.show_signup();
-    },
-    unsign: ($user_box_item)=>{
-        const activity_id = parseInt($user_box_item.attr("activity_id"));
-        const activity = app.dat.idx.activity_list[activity_id];
-        app.dat.signup_list = app.dat.signup_list.filter((item)=>{return item.id != activity_id});
-        $user_box_item.slideUp(()=>{
-            $user_box_item.remove()
-        });
-        var $activity_box = $(`.activity_box[activity_id='${activity.id}']`);
-        $activity_box.attr("signup_state", "not_signed");
-        app.enable_user_toolbox();
-        app.refresh_user_progress();
-    },
-    save:()=>{
-        const post_data = {
-            act_id: "save",
-            uid: app.dat.user.uid,
-            signup_list: [],
-            unsign_list: []
-        }
-        var idx_signup_list = {};
-        $.each(app.dat.signup_list, (i, item)=>{
-            if (item.save_anyway || app.dat.initial_signup_list.indexOf(item.id) < 0) post_data.signup_list.push(item.id);
-            idx_signup_list[item.id]=item;
-        });
-        $.each(app.dat.initial_signup_list, (i, item)=>{
-            if (!idx_signup_list[item]) post_data.unsign_list.push(item);
-        });
-        app.post(post_data, {
-            on_success :(response)=>{
-                app.pop_success("הרשימה עודכנה בהצלחה :)");
-                app.clear();
-                app.clear_storage();
-                app.rebuild(response);
-            }, 
-            on_error_response: app.pop_srv_err
-        });
-    },
-    abort:()=>{
-        const do_abort = ()=>{
-            app.clear();
-            app.rebuild(app.dat.server_load_response);
-        };
-        swal.ok = false;
-        swal({
-            title: 'ביטול שינויים',
-            html: 'לאבד את כל השינויים ולהתחיל מחדש?',
-            showCancelButton: true, confirmButtonColor: '#3085d6', cancelButtonColor: '#d33', confirmButtonText: 'כן', cancelButtonText: 'לא',
-            onAfterClose:()=>{if (swal.ok) do_abort();}
-        }).then(function(result){
-            if (result.dismiss) return;
-            swal.ok = true;
         });
     },
     update_stat:()=>{
@@ -917,27 +769,6 @@ var app = {
             $(el).toggleClass("in_progress", (i+1)*10<=percent);
         });
     },
-    enable_user_toolbox:()=>{
-        var enabled = app.dat.signup_list.length != app.dat.initial_signup_list.length;
-        if (!enabled) {
-            var idx_signup_list = {};
-            $.each(app.dat.signup_list, (i, item)=>{
-                if (app.dat.initial_signup_list.indexOf(item.id) < 0) enabled = true;
-                idx_signup_list[item.id]=item;
-                if (enabled) return false;
-            });
-            if (!enabled) $.each(app.dat.initial_signup_list, (i, item)=>{
-                if (!idx_signup_list[item]) {
-                    enabled = true;
-                    return false;
-                }
-            });
-        };
-        app.on_user_toolbox_enabled(enabled);
-    },
-    on_user_toolbox_enabled:(enabled)=>{
-        $("#user_toolbox").toggleClass("user_toolbox_enabled", Boolean(enabled));
-    },
     init_scroll:()=>{
         $("#user_box").on("scroll", ()=>{
             var st = $("#user_box")[0].scrollTop;
@@ -954,12 +785,6 @@ var app = {
     },
     init_buttons: ()=>{
         $("#bt_home").click(app.scroll_home);
-        $("#bt_user_abort").click(()=>{
-            app.abort();
-        });
-        $("#bt_user_save").click(()=>{
-            app.save();
-        });
         $("#frm_login").submit((e)=>{
             e.preventDefault(e);
             app.login();
